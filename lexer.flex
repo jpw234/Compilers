@@ -172,10 +172,10 @@ Identifier = {Letter} [a-zA-Z0-9_]*
 	\\r 							{ string.append("\\r"); }
 	\\\" 							{ string.append("\""); }
 	\\								{ string.append('\\'); }
-	\\x {HexNumber}					{ int k = Integer.parseInt(yytext().substring(2), 16);
+	\\0x {HexNumber}				{ int k = Integer.parseInt(yytext().substring(3), 16);
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext()); }
-	\\ {Integer}					{ int k = Integer.parseInt(yytext().substring(2));
+	\\ {Integer}					{ int k = Integer.parseInt(yytext().substring(1));
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext()); }
 }
