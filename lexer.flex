@@ -9,7 +9,7 @@ package commandLine;
 
 %{
 public enum TokenType {
-	ID, INTEGER, CHARACTER, STRING, KEYWORD, SYMBOL
+	ID, INTEGER, CHARACTER, STRING, KEYWORD, SYMBOL, ERROR
 }
 public enum Subtype {
 	LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET, COMMA,
@@ -174,7 +174,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 
 <CHAR> {
 	\'								{ yybegin(YYINITIAL);
-									  if(string.length() == 0) throw new Error("error:invalid character constant (empty)");
+									  if(string.length() == 0) return token(TokenType.ERROR, "error:empty character literal");
 									  return token(TokenType.CHARACTER, string.toString()); }
 	
 	[^\n\r\'\\]+					{ string.append(yytext()); }
@@ -192,6 +192,5 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 }
 
 /* error fallback */
-[^] 								{ throw new Error("Illegal character <"+
-									  yytext()+">"); }
+[^] 								{ return token(TokenType.ERROR, "Illegal character <"+yytext()+">"); }
 
