@@ -360,7 +360,7 @@ public class Token {
 		return new Token(type, s, yyline, yycolumn);
 	}
 	private Token token(TokenType type, String value) {
-		if(type == TokenType.STRING || type == TokenType.CHARACTER) {
+		if(type == TokenType.STRING || type == TokenType.CHARACTER || type == TokenType.ERROR) {
 			return new Token(type, value, line, col);
 		}
 		else return new Token(type, value, yyline, yycolumn);
