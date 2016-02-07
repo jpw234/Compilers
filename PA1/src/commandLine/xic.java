@@ -137,10 +137,12 @@ public class xic {
 
 				Lexer lexer = new Lexer(fr);
 				System.out.println(lexer.yytext());
-				while (lexer.yylex() != null){
-					System.out.print(lexer.yytext()+" ");
-					Token tok = lexer.yylex();
-					System.out.println(tok.getLine() + ":" + tok.getCol() + " " + tok.getType().toString());
+				Token tok = lexer.yylex();
+				while (tok != null){
+					System.out.println(tok.getLine() + ":" + tok.getCol() + " " +
+										( tok.getValue() == null?"" + lexer.yytext(): 
+										  tok.getType().toString().toLowerCase()+" "+ tok.getValue()));
+					tok = lexer.yylex();
 				}
 			}
 		}
