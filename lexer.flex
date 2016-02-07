@@ -11,7 +11,7 @@ public enum TokenType {
 	ID, INTEGER, CHARACTER, STRING, KEYWORD, SYMBOL
 }
 public enum Subtype {
-	LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET,
+	LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET, COMMA,
 	COLON, SEMI, EQ, EQEQ, LEQ, GEQ, NEQ, PLUS, MINUS, NEGATION, TIMES, DIV, MOD,
 	LANGLE, RANGLE, AND, OR, USE, IF, WHILE, ELSE, RETURN, LENGTH, TRUE, FALSE, INT, BOOL, UNDERSCORE
 }
@@ -88,7 +88,7 @@ Integer = [1-9] [0-9]* | 0
 HexNumber = [0-9A-F]+
 
 Letter = [a-zA-Z]
-Identifier = {Letter} [a-zA-Z0-9_]*
+Identifier = {Letter} [a-zA-Z0-9_']*
 
 %state STRING
 %state CHAR
@@ -133,6 +133,7 @@ Identifier = {Letter} [a-zA-Z0-9_]*
 	"&"								{ return token(TokenType.SYMBOL, Subtype.AND); }
 	"|"								{ return token(TokenType.SYMBOL, Subtype.OR); }
 	"_"								{ return token(TokenType.SYMBOL, Subtype.UNDERSCORE); }
+	","								{ return token(TokenType.SYMBOL, Subtype.COMMA); }
 	
 	{WhiteSpace}					{ /* ignore */ }
 	{Comment} 						{ /* ignore */ }
@@ -164,6 +165,7 @@ Identifier = {Letter} [a-zA-Z0-9_]*
 
 <CHAR> {
 	\'								{ yybegin(YYINITIAL);
+									  if(string.length() == 0) throw new Error("error:invalid character constant (empty)");
 									  return token(TokenType.CHARACTER, string.toString()); }
 	
 	[^\n\r\'\\]+					{ string.append(yytext()); }
