@@ -158,6 +158,9 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	\\0x {HexNumber}				{ int k = Integer.parseInt(yytext().substring(3), 16);
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext()); }
+	\\x {HexNumber}					{ int k = Integer.parseInt(yytext().substring(2), 16);
+									  if(k > 31 && k < 127) string.append((char) k);
+									  else string.append(yytext()); }
 	\\ {Integer}					{ int k = Integer.parseInt(yytext().substring(1));
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext()); }
