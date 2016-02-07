@@ -83,7 +83,7 @@ LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
 
-Comment = "//" {InputCharacter}* "\n"
+Comment = "//" {InputCharacter}*
 Integer = [1-9] [0-9]* | 0
 HexNumber = [0-9A-F]+
 
@@ -149,15 +149,15 @@ Identifier = {Letter} [a-zA-Z0-9_]*
 									  return token(TokenType.STRING, string.toString()); }
 									  
 	[^\n\r\"\\]+					{ string.append(yytext()); }
-	\\t 							{ string.append('\t'); }
-	\\n 							{ string.append('\n'); }
-	\\r 							{ string.append('\r'); }
-	\\\" 							{ string.append('\"'); }
-	\\								{ string.append('\\'); }
-	\\x {HexNumber}					{ int k = Integer.parseInt(yytext().substring(2), 16);
+	\\t 							{ string.append("\\t"); }
+	\\n 							{ string.append("\\n"); }
+	\\r 							{ string.append("\\r"); }
+	\\\" 							{ string.append("\""); }
+	\\\\							{ string.append('\\'); }
+	\\0x {HexNumber}				{ int k = Integer.parseInt(yytext().substring(3), 16);
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext()); }
-	\\ {Integer}					{ int k = Integer.parseInt(yytext().substring(2));
+	\\ {Integer}					{ int k = Integer.parseInt(yytext().substring(1));
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext()); }
 }
@@ -166,11 +166,11 @@ Identifier = {Letter} [a-zA-Z0-9_]*
 	\'								{ yybegin(YYINITIAL);
 									  return token(TokenType.CHARACTER, string.toString()); }
 	
-	[^\n\r\"\\]+					{ string.append(yytext()); }
-	\\t 							{ string.append('\t'); }
-	\\n 							{ string.append('\n'); }
-	\\r 							{ string.append('\r'); }
-	\\\" 							{ string.append('\"'); }
+	[^\n\r\'\\]+					{ string.append(yytext()); }
+	\\t								{ string.append("\\t"); }
+	\\n 							{ string.append("\\n"); }
+	\\r 							{ string.append("\\r"); }
+	\\\" 							{ string.append("\""); }
 	\\								{ string.append('\\'); }
 	\\x {HexNumber}					{ int k = Integer.parseInt(yytext().substring(2), 16);
 									  if(k > 31 && k < 127) string.append((char) k);
