@@ -59,11 +59,12 @@ class Lexer {
     "\1\27\1\30\1\31\1\32\1\33\1\34\1\35\1\1"+
     "\1\34\1\36\1\37\1\2\2\5\1\40\7\5\1\41"+
     "\1\42\1\43\1\44\2\45\1\46\1\47\1\50\1\51"+
-    "\1\37\1\52\1\5\1\53\6\5\1\0\1\54\4\5"+
-    "\1\55\1\56\1\57\1\60\1\61\2\5\1\62\1\63";
+    "\1\37\1\0\1\52\1\5\1\53\6\5\1\0\1\54"+
+    "\1\55\4\5\1\56\1\57\1\60\1\61\1\62\2\5"+
+    "\1\63\1\64";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[93];
+    int [] result = new int[95];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -96,13 +97,13 @@ class Lexer {
     "\0\220\0\u03f0\0\220\0\u0420\0\u0450\0\220\0\u0480\0\u04b0"+
     "\0\u04e0\0\u0510\0\u0150\0\u0540\0\u0570\0\u05a0\0\u05d0\0\u0600"+
     "\0\u0630\0\u0660\0\220\0\220\0\220\0\220\0\u0690\0\u06c0"+
-    "\0\220\0\220\0\220\0\220\0\220\0\u0150\0\u06f0\0\u0150"+
-    "\0\u0720\0\u0750\0\u0780\0\u07b0\0\u07e0\0\u0810\0\u0840\0\u0150"+
-    "\0\u0870\0\u08a0\0\u08d0\0\u0900\0\u0150\0\u0150\0\u0840\0\u0150"+
-    "\0\u0150\0\u0930\0\u0960\0\u0150\0\u0150";
+    "\0\220\0\220\0\220\0\220\0\220\0\u06f0\0\u0150\0\u0720"+
+    "\0\u0150\0\u0750\0\u0780\0\u07b0\0\u07e0\0\u0810\0\u0840\0\u0870"+
+    "\0\u06f0\0\u0150\0\u08a0\0\u08d0\0\u0900\0\u0930\0\u0150\0\u0150"+
+    "\0\u0870\0\u0150\0\u0150\0\u0960\0\u0990\0\u0150\0\u0150";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[93];
+    int [] result = new int[95];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -145,35 +146,36 @@ class Lexer {
     "\23\12\1\72\22\0\1\12\3\0\1\12\31\0\1\73"+
     "\57\0\1\74\57\0\1\75\57\0\1\76\26\0\1\52"+
     "\2\0\52\52\2\0\1\52\5\0\1\77\1\100\13\0"+
-    "\1\101\1\102\1\103\30\0\1\104\1\105\1\0\1\55"+
+    "\1\101\1\102\1\103\30\0\1\104\1\105\1\106\1\55"+
     "\2\0\6\55\1\0\44\55\1\0\1\55\5\0\1\77"+
     "\1\100\13\0\1\101\1\102\1\103\30\0\1\104\2\0"+
-    "\1\60\2\0\55\60\5\0\7\12\1\106\14\12\22\0"+
-    "\1\12\3\0\1\12\5\0\6\12\1\107\15\12\22\0"+
-    "\1\12\3\0\1\12\5\0\16\12\1\110\5\12\22\0"+
-    "\1\12\3\0\1\12\5\0\14\12\1\111\7\12\22\0"+
-    "\1\12\3\0\1\12\5\0\10\12\1\112\13\12\22\0"+
-    "\1\12\3\0\1\12\5\0\17\12\1\113\4\12\22\0"+
-    "\1\12\3\0\1\12\5\0\16\12\1\114\5\12\22\0"+
-    "\1\12\3\0\1\12\5\0\5\12\1\115\16\12\22\0"+
-    "\1\12\3\0\1\12\5\0\23\12\1\116\22\0\1\12"+
-    "\3\0\1\12\5\0\2\77\130\0\1\117\5\0\7\12"+
-    "\1\120\14\12\22\0\1\12\3\0\1\12\5\0\6\12"+
-    "\1\121\15\12\22\0\1\12\3\0\1\12\5\0\14\12"+
-    "\1\122\7\12\22\0\1\12\3\0\1\12\5\0\20\12"+
-    "\1\123\3\12\22\0\1\12\3\0\1\12\5\0\5\12"+
-    "\1\124\16\12\22\0\1\12\3\0\1\12\5\0\7\12"+
-    "\1\125\14\12\22\0\1\12\3\0\1\12\5\0\14\12"+
-    "\1\126\7\12\22\0\1\12\3\0\1\12\5\0\3\127"+
-    "\55\0\7\12\1\130\14\12\22\0\1\12\3\0\1\12"+
-    "\5\0\7\12\1\131\14\12\22\0\1\12\3\0\1\12"+
-    "\5\0\16\12\1\132\5\12\22\0\1\12\3\0\1\12"+
-    "\5\0\15\12\1\133\6\12\22\0\1\12\3\0\1\12"+
-    "\5\0\13\12\1\134\10\12\22\0\1\12\3\0\1\12"+
-    "\5\0\17\12\1\135\4\12\22\0\1\12\3\0\1\12";
+    "\1\60\2\0\55\60\5\0\7\12\1\107\14\12\22\0"+
+    "\1\12\3\0\1\12\5\0\6\12\1\110\15\12\22\0"+
+    "\1\12\3\0\1\12\5\0\16\12\1\111\5\12\22\0"+
+    "\1\12\3\0\1\12\5\0\14\12\1\112\7\12\22\0"+
+    "\1\12\3\0\1\12\5\0\10\12\1\113\13\12\22\0"+
+    "\1\12\3\0\1\12\5\0\17\12\1\114\4\12\22\0"+
+    "\1\12\3\0\1\12\5\0\16\12\1\115\5\12\22\0"+
+    "\1\12\3\0\1\12\5\0\5\12\1\116\16\12\22\0"+
+    "\1\12\3\0\1\12\5\0\23\12\1\117\22\0\1\12"+
+    "\3\0\1\12\5\0\2\77\130\0\1\120\5\0\3\121"+
+    "\55\0\7\12\1\122\14\12\22\0\1\12\3\0\1\12"+
+    "\5\0\6\12\1\123\15\12\22\0\1\12\3\0\1\12"+
+    "\5\0\14\12\1\124\7\12\22\0\1\12\3\0\1\12"+
+    "\5\0\20\12\1\125\3\12\22\0\1\12\3\0\1\12"+
+    "\5\0\5\12\1\126\16\12\22\0\1\12\3\0\1\12"+
+    "\5\0\7\12\1\127\14\12\22\0\1\12\3\0\1\12"+
+    "\5\0\14\12\1\130\7\12\22\0\1\12\3\0\1\12"+
+    "\5\0\3\131\55\0\7\12\1\132\14\12\22\0\1\12"+
+    "\3\0\1\12\5\0\7\12\1\133\14\12\22\0\1\12"+
+    "\3\0\1\12\5\0\16\12\1\134\5\12\22\0\1\12"+
+    "\3\0\1\12\5\0\15\12\1\135\6\12\22\0\1\12"+
+    "\3\0\1\12\5\0\13\12\1\136\10\12\22\0\1\12"+
+    "\3\0\1\12\5\0\17\12\1\137\4\12\22\0\1\12"+
+    "\3\0\1\12";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[2448];
+    int [] result = new int[2496];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -213,10 +215,10 @@ class Lexer {
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\3\0\1\11\1\1\1\11\2\1\1\11\1\1\1\11"+
     "\15\1\21\11\1\1\1\11\2\1\1\11\14\1\4\11"+
-    "\2\1\5\11\11\1\1\0\16\1";
+    "\2\1\5\11\1\0\11\1\1\0\17\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[93];
+    int [] result = new int[95];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -737,214 +739,220 @@ public class Token {
             { throw new Error("Illegal character <"+
 									  yytext()+">");
             }
-          case 52: break;
+          case 53: break;
           case 2: 
             { /* ignore */
             }
-          case 53: break;
+          case 54: break;
           case 3: 
             { return token(TokenType.SYMBOL, Subtype.DIV);
             }
-          case 54: break;
+          case 55: break;
           case 4: 
             { return token(TokenType.INTEGER, Integer.parseInt(yytext()));
             }
-          case 55: break;
+          case 56: break;
           case 5: 
             { return token(TokenType.ID, yytext());
             }
-          case 56: break;
+          case 57: break;
           case 6: 
             { string.setLength(0); yybegin(CHAR);
             }
-          case 57: break;
+          case 58: break;
           case 7: 
             { return token(TokenType.SYMBOL, Subtype.EQ);
             }
-          case 58: break;
+          case 59: break;
           case 8: 
             { return token(TokenType.SYMBOL, Subtype.LANGLE);
             }
-          case 59: break;
+          case 60: break;
           case 9: 
             { return token(TokenType.SYMBOL, Subtype.RANGLE);
             }
-          case 60: break;
+          case 61: break;
           case 10: 
             { return token(TokenType.SYMBOL, Subtype.NEGATION);
             }
-          case 61: break;
+          case 62: break;
           case 11: 
             { return token(TokenType.SYMBOL, Subtype.LBRACE);
             }
-          case 62: break;
+          case 63: break;
           case 12: 
             { return token(TokenType.SYMBOL, Subtype.RBRACE);
             }
-          case 63: break;
+          case 64: break;
           case 13: 
             { return token(TokenType.SYMBOL, Subtype.LPAREN);
             }
-          case 64: break;
+          case 65: break;
           case 14: 
             { return token(TokenType.SYMBOL, Subtype.RPAREN);
             }
-          case 65: break;
+          case 66: break;
           case 15: 
             { return token(TokenType.SYMBOL, Subtype.LBRACKET);
             }
-          case 66: break;
+          case 67: break;
           case 16: 
             { return token(TokenType.SYMBOL, Subtype.RBRACKET);
             }
-          case 67: break;
+          case 68: break;
           case 17: 
             { return token(TokenType.SYMBOL, Subtype.COLON);
             }
-          case 68: break;
+          case 69: break;
           case 18: 
             { return token(TokenType.SYMBOL, Subtype.SEMI);
             }
-          case 69: break;
+          case 70: break;
           case 19: 
             { return token(TokenType.SYMBOL, Subtype.PLUS);
             }
-          case 70: break;
+          case 71: break;
           case 20: 
             { return token(TokenType.SYMBOL, Subtype.MINUS);
             }
-          case 71: break;
+          case 72: break;
           case 21: 
             { return token(TokenType.SYMBOL, Subtype.TIMES);
             }
-          case 72: break;
+          case 73: break;
           case 22: 
             { return token(TokenType.SYMBOL, Subtype.MOD);
             }
-          case 73: break;
+          case 74: break;
           case 23: 
             { return token(TokenType.SYMBOL, Subtype.AND);
             }
-          case 74: break;
+          case 75: break;
           case 24: 
             { return token(TokenType.SYMBOL, Subtype.OR);
             }
-          case 75: break;
+          case 76: break;
           case 25: 
             { return token(TokenType.SYMBOL, Subtype.UNDERSCORE);
             }
-          case 76: break;
+          case 77: break;
           case 26: 
             { return token(TokenType.SYMBOL, Subtype.COMMA);
             }
-          case 77: break;
+          case 78: break;
           case 27: 
             { string.setLength(0); yybegin(STRING);
             }
-          case 78: break;
+          case 79: break;
           case 28: 
             { string.append(yytext());
             }
-          case 79: break;
+          case 80: break;
           case 29: 
             { yybegin(YYINITIAL); 
 									  return token(TokenType.STRING, string.toString());
             }
-          case 80: break;
+          case 81: break;
           case 30: 
             { yybegin(YYINITIAL);
 									  if(string.length() == 0) throw new Error("error:invalid character constant (empty)");
 									  return token(TokenType.CHARACTER, string.toString());
             }
-          case 81: break;
+          case 82: break;
           case 31: 
             { string.append('\\');
             }
-          case 82: break;
+          case 83: break;
           case 32: 
             { return token(TokenType.KEYWORD, Subtype.IF);
             }
-          case 83: break;
+          case 84: break;
           case 33: 
             { return token(TokenType.SYMBOL, Subtype.EQEQ);
             }
-          case 84: break;
+          case 85: break;
           case 34: 
             { return token(TokenType.SYMBOL, Subtype.LEQ);
             }
-          case 85: break;
+          case 86: break;
           case 35: 
             { return token(TokenType.SYMBOL, Subtype.GEQ);
             }
-          case 86: break;
+          case 87: break;
           case 36: 
             { return token(TokenType.SYMBOL, Subtype.NEQ);
             }
-          case 87: break;
+          case 88: break;
           case 37: 
             { int k = Integer.parseInt(yytext().substring(1));
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext());
             }
-          case 88: break;
+          case 89: break;
           case 38: 
             { string.append("\\r");
             }
-          case 89: break;
+          case 90: break;
           case 39: 
             { string.append("\\t");
             }
-          case 90: break;
+          case 91: break;
           case 40: 
             { string.append("\\n");
             }
-          case 91: break;
+          case 92: break;
           case 41: 
             { string.append("\"");
             }
-          case 92: break;
+          case 93: break;
           case 42: 
             { return token(TokenType.KEYWORD, Subtype.USE);
             }
-          case 93: break;
+          case 94: break;
           case 43: 
             { return token(TokenType.KEYWORD, Subtype.INT);
             }
-          case 94: break;
-          case 44: 
-            { return token(TokenType.KEYWORD, Subtype.ELSE);
-            }
           case 95: break;
-          case 45: 
-            { return token(TokenType.KEYWORD, Subtype.TRUE);
+          case 44: 
+            { int k = Integer.parseInt(yytext().substring(2), 16);
+									  if(k > 31 && k < 127) string.append((char) k);
+									  else string.append(yytext());
             }
           case 96: break;
-          case 46: 
-            { return token(TokenType.KEYWORD, Subtype.BOOL);
+          case 45: 
+            { return token(TokenType.KEYWORD, Subtype.ELSE);
             }
           case 97: break;
+          case 46: 
+            { return token(TokenType.KEYWORD, Subtype.TRUE);
+            }
+          case 98: break;
           case 47: 
+            { return token(TokenType.KEYWORD, Subtype.BOOL);
+            }
+          case 99: break;
+          case 48: 
             { int k = Integer.parseInt(yytext().substring(3), 16);
 									  if(k > 31 && k < 127) string.append((char) k);
 									  else string.append(yytext());
             }
-          case 98: break;
-          case 48: 
+          case 100: break;
+          case 49: 
             { return token(TokenType.KEYWORD, Subtype.FALSE);
             }
-          case 99: break;
-          case 49: 
+          case 101: break;
+          case 50: 
             { return token(TokenType.KEYWORD, Subtype.WHILE);
             }
-          case 100: break;
-          case 50: 
+          case 102: break;
+          case 51: 
             { return token(TokenType.KEYWORD, Subtype.LENGTH);
             }
-          case 101: break;
-          case 51: 
+          case 103: break;
+          case 52: 
             { return token(TokenType.KEYWORD, Subtype.RETURN);
             }
-          case 102: break;
+          case 104: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
