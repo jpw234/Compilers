@@ -133,30 +133,32 @@ public class xic {
 
 			for (CodePath p: codeToCompile){
 				System.out.println(p.getFile());
-				
 				Reader fr = new FileReader(p.getFile());
-				System.out.println(fr.read());
+
 				Lexer lexer = new Lexer(fr);
+				System.out.println(lexer.yytext());
 				while (lexer.yylex() != null){
+					System.out.print(lexer.yytext()+" ");
 					Token tok = lexer.yylex();
 					System.out.println(tok.getLine() + ":" + tok.getCol() + " " + tok.getType().toString());
 				}
 			}
 		}
 
-		
+
 	}
 
 	public static void printUsage() {
 		System.out.println("xic");
 		System.out.println("SYNOPSIS");
-		System.out.println("xic [--lex] [--help] [-testpath path] [file ...]");
+		System.out.println("xic [--lex] [--help] [-p path] [file ...]");
 		System.out.println("DESCRIPTION");
 		System.out.println("Compile programming code. Transfer input string into a set of tokens.");
 		System.out.println("--help: A synopsis of options lists all possible options along with brief descriptions.");
 		System.out.println("--lex: Generate output from lexical analysis. For each source file named filename.xi,");
 		System.out.println("an output file named filename.lexed is generated to provide the result of lexing");
 		System.out.println("the source file.");
+		System.out.println("-p setting the file path of the xi files to be compiled");
 
 	}
 }

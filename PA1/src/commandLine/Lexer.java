@@ -323,10 +323,10 @@ public class Token {
 		return ttype;
 	}
 	public int getCol() {
-		return column;
+		return column+1;
 	}
 	public int getLine() {
-		return line;
+		return line+1;
 	}
 	public Subtype getSubtype() {
 		return stype;
