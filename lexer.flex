@@ -1,3 +1,4 @@
+package commandLine;
 
 %%
 %class Lexer
@@ -8,7 +9,7 @@
 
 %{
 public enum TokenType {
-	ID, INTEGER, CHARACTER, STRING, KEYWORD, SYMBOL
+	ID, INTEGER, CHARACTER, STRING, KEYWORD, SYMBOL, ERROR
 }
 public enum Subtype {
 	LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET, COMMA,
@@ -66,11 +67,16 @@ public class Token {
 
 
 	StringBuffer string = new StringBuffer();
+	int line = 0;
+	int col = 0;
 	private Token token(TokenType type, Subtype s) {
 		return new Token(type, s, yyline, yycolumn);
 	}
 	private Token token(TokenType type, String value) {
-		return new Token(type, value, yyline, yycolumn);
+		if(type == TokenType.STRING || type == TokenType.CHARACTER || type == TokenType.ERROR) {
+			return new Token(type, value, line, col);
+		}
+		else return new Token(type, value, yyline, yycolumn);
 	}
 	private Token token(TokenType type, int value) {
 		return new Token(type, value, yyline, yycolumn);
@@ -141,8 +147,8 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	{Integer}						{ return token(TokenType.INTEGER, Integer.parseInt(yytext())); }
 	{Identifier}					{ return token(TokenType.ID, yytext()); }
 	
-	\"								{ string.setLength(0); yybegin(STRING); }
-	\'								{ string.setLength(0); yybegin(CHAR); }
+	\"								{ string.setLength(0); line = yyline; col = yycolumn; yybegin(STRING); }
+	\'								{ string.setLength(0); line = yyline; col = yycolumn; yybegin(CHAR); }
 }
 
 <STRING> {
@@ -168,7 +174,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 
 <CHAR> {
 	\'								{ yybegin(YYINITIAL);
-									  if(string.length() == 0) throw new Error("error:invalid character constant (empty)");
+									  if(string.length() == 0) return token(TokenType.ERROR, "error:empty character literal");
 									  return token(TokenType.CHARACTER, string.toString()); }
 	
 	[^\n\r\'\\]+					{ string.append(yytext()); }
@@ -186,6 +192,5 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 }
 
 /* error fallback */
-[^] 								{ throw new Error("Illegal character <"+
-									  yytext()+">"); }
+[^] 								{ return token(TokenType.ERROR, "Illegal character <"+yytext()+">"); }
 
