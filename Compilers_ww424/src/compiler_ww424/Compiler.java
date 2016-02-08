@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import compiler_ww424.Lexer.Token;
+import compiler_ww424.Lexer.TokenType;
 
 public class Compiler {
 	public static final String INPUT_HELPER = "--help";
@@ -138,9 +139,25 @@ public class Compiler {
 				while (tok != null){
 					int _line = tok.getLine() + 1 ;
 					int _col = tok.getCol() + 1; 
-					String line = _line + ":" + _col + " " +
-							( tok.getValue() == null?"" + lexer.yytext(): 
-								tok.getType().toString().toLowerCase()+" "+ tok.getValue());
+					//System.out.println(lexer.yytext() +" "+ tok.getType());
+					String lineVal = new String ();
+					if (tok.getType() == TokenType.ERROR){
+						lineVal = tok.getValue();
+						String line = _line + ":" + _col + " " + lineVal ;
+						generateFile(fileName,line);
+						break;
+					}
+					else if (tok.getType() == TokenType.SYMBOL ||tok.getType() == TokenType.KEYWORD){
+						lineVal = "" + lexer.yytext();
+					}
+					else if (tok.getType() == TokenType.INTEGER) {
+						lineVal = tok.getType().toString().toLowerCase()+" "+ lexer.yytext();
+					}
+					else {
+						lineVal = tok.getType().toString().toLowerCase()+" "+ tok.getValue();
+					}
+				
+					String line = _line + ":" + _col + " " + lineVal ; 
 					//System.out.println(line);
 					generateFile(fileName,line);
 					tok = lexer.yylex();
