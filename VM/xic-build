@@ -1,0 +1,4 @@
+javac src/*.java -d $(pwd)
+jar -cvfm xic.jar manifest.txt compiler_ww424/*.class
+echo "java -jar $(pwd)/xic.jar \$@" > xic
+chmod +x xic
