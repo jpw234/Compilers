@@ -157,8 +157,7 @@ public class Compiler {
 						lineVal = tok.getType().toString().toLowerCase()+" "+ tok.getValue();
 					}
 				
-					String line = _line + ":" + _col + " " + lineVal ; 
-					//System.out.println(line);
+					String line = _line + ":" + _col + " " + lineVal ;
 					generateFile(fileName,line);
 					tok = lexer.yylex();
 				}
