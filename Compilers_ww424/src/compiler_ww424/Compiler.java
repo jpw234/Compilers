@@ -1,5 +1,6 @@
 package compiler_ww424;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,6 +15,9 @@ import compiler_ww424.Lexer.TokenType;
 public class Compiler {
 	public static final String INPUT_HELPER = "--help";
 	public static final String INPUT_LEX = "--lex";
+	public static final String INPUT_PARSE = "--parse";
+	public static final String INPUT_SOURCEPATH = "-sourcepath";
+	public static final String INPUT_DIAGNOSIS_PATH = "-d";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -76,15 +80,22 @@ public class Compiler {
 		ArrayList<CodePath> pathArgs = new ArrayList<>();
 		ArrayList<CodePath> codeToCompile = new ArrayList<>();
 		String currentRoot = directory;
+		String sourceRoot = null;
+		String diagnosisRoot = null;
 		Boolean toCompile = false;
 		Boolean useHelp = false;
+		Boolean toParse = false;
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
 			switch(args[i].toLowerCase()) {
-			case "-p" :
+			case INPUT_SOURCEPATH :
 				i++;
-				if(i < args.length) currentRoot = args[i];
+				if(i < args.length) sourceRoot = args[i];
+				break;
+			case INPUT_DIAGNOSIS_PATH :
+				i++;
+				if(i < args.length) diagnosisRoot = args[i];
 				break;
 			case INPUT_HELPER :
 				//help function
@@ -95,6 +106,10 @@ public class Compiler {
 				// Use The CWD
 				toCompile = true;
 				break;
+			case INPUT_PARSE:
+				toParse = true;
+				break;
+
 			default:
 				// This Must Be A File
 				pathArgs.add(new CodePath(currentRoot, args[i]));
@@ -102,71 +117,99 @@ public class Compiler {
 			}
 		}
 		if (toCompile && !useHelp){
-			if(pathArgs.size() < 1) {
-				// Attempt To Compile All the Codes
-				pathArgs.add(new CodePath(currentRoot, "."));
-
-				// Display What's Going To Go Down
-				System.out.println("\nAttempting To Compile All Files");
-			}
-			// Expand All The Possible Codes
-			for(CodePath p : pathArgs) {
-				// Add All The Files In The
-				File f = p.file.toFile();
-				if(f.isDirectory()) {
-					for(File _f : f.listFiles()) {
-						// We Only Want XML Files
-						if(!_f.getPath().endsWith(".xi")) continue;
-						codeToCompile.add(new CodePath(p.getRoot(), _f.toPath().toAbsolutePath().toString()));
-					}
-				}
-				else {
-					// We Only Want XML Files
-					if(!f.getPath().endsWith(".xi")) continue;
-					// Just A Single Scene
-					codeToCompile.add(p);
-				}
-			}
-			System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
-
-			for (CodePath p: codeToCompile){
-				Reader fr = new FileReader(p.getFile());
-				Lexer lexer = new Lexer(fr);
-				Token tok = lexer.yylex();
-				String path = p.file.toAbsolutePath().toString();
-				System.out.println(path);
-				String fileName = path.substring(0,path.length()-2)+"lexed";
-				while (tok != null){
-					int _line = tok.getLine() + 1 ;
-					int _col = tok.getCol() + 1; 
-					//System.out.println(lexer.yytext() +" "+ tok.getType());
-					String lineVal = new String ();
-					if (tok.getType() == TokenType.ERROR){
-						lineVal = tok.getValue();
-						String line = _line + ":" + _col + " " + lineVal ;
-						generateFile(fileName,line);
-						break;
-					}
-					else if (tok.getType() == TokenType.SYMBOL ||tok.getType() == TokenType.KEYWORD){
-						lineVal = "" + lexer.yytext();
-					}
-					else if (tok.getType() == TokenType.INTEGER) {
-						lineVal = tok.getType().toString().toLowerCase()+" "+ lexer.yytext();
-					}
-					else {
-						lineVal = tok.getType().toString().toLowerCase()+" "+ tok.getValue();
-					}
-				
-					String line = _line + ":" + _col + " " + lineVal ; 
-					//System.out.println(line);
-					generateFile(fileName,line);
-					tok = lexer.yylex();
-				}
-			}
+			lex(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
+		}
+		if (toParse && !useHelp){
+			parse(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
 		}
 
 
 	}
+	public static void lex(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
+			String sourceRoot,String diagnosisRoot) throws IOException{
+		if(pathArgs.size() < 1) {
+			// Attempt To Compile All the Codes
+			pathArgs.add(new CodePath(sourceRoot, "."));
+
+			// Display What's Going To Go Down
+			System.out.println("\nAttempting To Compile All Files");
+		}
+		// Expand All The Possible Codes
+		for(CodePath p : pathArgs) {
+			// Add All The Files In The List
+			
+			File f = p.file.toFile();
+			if(f.isDirectory()) {
+				for(File _f : f.listFiles()) {
+					// We Only Want XML Files
+					if(!_f.getPath().endsWith(".xi")) continue;
+					codeToCompile.add(new CodePath(p.getRoot(), _f.toPath().toAbsolutePath().toString()));
+				}
+			}
+			else {
+				// We Only Want XML Files
+				if(!f.getPath().endsWith(".xi")) continue;
+				// Just A Single Scene
+				if (sourceRoot == null){
+					codeToCompile.add(p);
+				}
+				else {
+					codeToCompile.add(new CodePath(sourceRoot, f.toString()));
+				}
+			}
+
+		}
+		
+		
+		System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
+
+		for (CodePath p: codeToCompile){
+			Reader fr = new FileReader(p.getFile());
+			Lexer lexer = new Lexer(fr);
+			Token tok = lexer.yylex();
+			String path = p.file.toAbsolutePath().toString();;
+			String fileName;
+			if (diagnosisRoot == null){
+				fileName = path.substring(0,path.length()-2)+"lexed";
+			}
+			else{
+				String[] patharray = path.split("/");
+				String file = patharray[(patharray.length)-1];
+				fileName = diagnosisRoot +file.substring(0, file.length()-2)+"lexed";
+			}
+			while (tok != null){
+				int _line = tok.getLine() + 1 ;
+				int _col = tok.getCol() + 1; 
+				String lineVal = new String ();
+				if (tok.getType() == TokenType.ERROR){
+					lineVal = tok.getValue();
+					String line = _line + ":" + _col + " " + lineVal ;
+					generateFile(fileName,line);
+					break;
+				}
+				else if (tok.getType() == TokenType.SYMBOL ||tok.getType() == TokenType.KEYWORD){
+					lineVal = "" + lexer.yytext();
+				}
+				else if (tok.getType() == TokenType.INTEGER) {
+					lineVal = tok.getType().toString().toLowerCase()+" "+ lexer.yytext();
+				}
+				else {
+					lineVal = tok.getType().toString().toLowerCase()+" "+ tok.getValue();
+				}
+
+				String line = _line + ":" + _col + " " + lineVal ; 
+				//System.out.println(line);
+				generateFile(fileName,line);
+				tok = lexer.yylex();
+			}
+		}
+	}
+
+	public static void parse(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,String currentRoot,String diagnosisRoot){
+
+	}
+
+
 	public static void generateFile(String fileName , String line){
 		try
 		{
