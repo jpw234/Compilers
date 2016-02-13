@@ -17,7 +17,7 @@ public class Compiler {
 	public static final String INPUT_LEX = "--lex";
 	public static final String INPUT_PARSE = "--parse";
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
-	public static final String INPUT_DIAGNOSIS_PATH = "-d";
+	public static final String INPUT_DIAGNOSIS_PATH = "-D";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -34,6 +34,7 @@ public class Compiler {
 		 * The Root Workspace Path
 		 */
 		public Path root;
+		public String OriginFileName;
 		public CodePath(String r, String f) {
 			if(r == null) {
 				root = null;
@@ -44,6 +45,7 @@ public class Compiler {
 				file = root.resolve(f);
 			}
 			codeRoot = file.getParent();
+			OriginFileName = f;
 		}
 
 		public String getRoot() {
@@ -51,6 +53,10 @@ public class Compiler {
 		}
 		public String getFile() {
 			return file.toAbsolutePath().toString();
+		}
+		
+		public String getFileName() {
+			return file.getFileName().toString();
 		}
 
 		/**
@@ -88,7 +94,7 @@ public class Compiler {
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
-			switch(args[i].toLowerCase()) {
+			switch(args[i]) {
 			case INPUT_SOURCEPATH :
 				i++;
 				if(i < args.length) sourceRoot = args[i];
@@ -117,7 +123,7 @@ public class Compiler {
 			}
 		}
 		if (toCompile && !useHelp){
-			lex(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
+			lex(pathArgs,codeToCompile,sourceRoot,currentRoot,diagnosisRoot);
 		}
 		if (toParse && !useHelp){
 			parse(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
@@ -126,24 +132,33 @@ public class Compiler {
 
 	}
 	public static void lex(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-			String sourceRoot,String diagnosisRoot) throws IOException{
+			String sourceRoot,String currentRoot, String diagnosisRoot) throws IOException{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
-			pathArgs.add(new CodePath(sourceRoot, "."));
-
+			if (sourceRoot != null){
+				pathArgs.add(new CodePath(".", sourceRoot));
+			}
+			else {
+				pathArgs.add(new CodePath(currentRoot, "."));
+			}
 			// Display What's Going To Go Down
 			System.out.println("\nAttempting To Compile All Files");
 		}
 		// Expand All The Possible Codes
 		for(CodePath p : pathArgs) {
 			// Add All The Files In The List
-			
+
 			File f = p.file.toFile();
 			if(f.isDirectory()) {
 				for(File _f : f.listFiles()) {
 					// We Only Want XML Files
 					if(!_f.getPath().endsWith(".xi")) continue;
-					codeToCompile.add(new CodePath(p.getRoot(), _f.toPath().toAbsolutePath().toString()));
+					if (sourceRoot == null){
+						codeToCompile.add(new CodePath(p.getRoot(), _f.getName().toString()));;
+					}
+					else {
+						codeToCompile.add(new CodePath(sourceRoot, _f.getName().toString()));
+					}
 				}
 			}
 			else {
@@ -159,23 +174,26 @@ public class Compiler {
 			}
 
 		}
-		
-		
+
+
 		System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
 
 		for (CodePath p: codeToCompile){
+			try {
+				Reader abc = new FileReader(p.getFile());
+				abc.close();
+			}
+			catch(IOException ioe){
+				System.err.println("No such File in Directory");
+				return;
+			}
 			Reader fr = new FileReader(p.getFile());
 			Lexer lexer = new Lexer(fr);
 			Token tok = lexer.yylex();
-			String path = p.file.toAbsolutePath().toString();;
-			String fileName;
-			if (diagnosisRoot == null){
-				fileName = path.substring(0,path.length()-2)+"lexed";
-			}
-			else{
-				String[] patharray = path.split("/");
-				String file = patharray[(patharray.length)-1];
-				fileName = diagnosisRoot +file.substring(0, file.length()-2)+"lexed";
+			String path = p.file.toAbsolutePath().toString();
+			String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
+			if(diagnosisRoot != null){
+				fileName = diagnosisRoot + "/" +fileName;
 			}
 			while (tok != null){
 				int _line = tok.getLine() + 1 ;
