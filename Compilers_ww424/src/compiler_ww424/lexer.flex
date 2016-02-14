@@ -22,27 +22,24 @@ public class Token extends Symbol{
       column  = col;
       line    = lin;
   }
+  public Token(int symbol,String val,int lin,int col) {
+      super(symbol);
+      column  = col;
+      line    = lin;
+      value   = val;
+  }
+  public Token(int symbol,int val,int lin,int col) {
+      super(symbol);
+      column  = col;
+      line    = lin;
+      value   = new Integer(val);
+  }
 	public int getCol() {
 		return column;
 	}
 	public int getLine() {
 		return line;
 	}
-}
-public class NumberToken extends Token{
-  public int value;
-  public NumberToken(int symbol,int val,int lin,int col) {
-      super(symbol,lin,col);
-      value = val;
-      
-  }
-}
-public class StringToken extends Token{
-  public String value;
-  public StringToken(int symbol,String val,int lin,int col) {
-      super(symbol,lin,col);
-      value = val;
-  }
 }
 	StringBuffer string = new StringBuffer();
 	int line = 0;
@@ -52,7 +49,7 @@ public class StringToken extends Token{
 	}
 	private Token token(int type, String value) {
 		if(type == sym.STRING || type == sym.CHARACTER) {
-			return new StringToken(type, value, line, col);
+			return new Token(type, value, line, col);
 		}
 		else {
       throw new IOException("INVALID STRING TOKEN GENERATION. THIS SHOULD NEVER FIRE.");
@@ -60,7 +57,7 @@ public class StringToken extends Token{
 	}
 	private Token token(int type, int value) {
     if(type == sym.INTEGER) {
-			return new NumberToken(type, value, yyline, yycolumn);
+			return new Token(type, value, yyline, yycolumn);
 		}
     else {
         throw new IOException("INVALID INTEGER TOKEN GENERATION. THIS SHOULD NEVER FIRE.");

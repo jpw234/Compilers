@@ -10,8 +10,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import compiler_ww424.Lexer.Token;
-import compiler_ww424.Lexer.NumberToken;
-import compiler_ww424.Lexer.StringToken;
 import java_cup.runtime.*;
 
 public class Compiler {
