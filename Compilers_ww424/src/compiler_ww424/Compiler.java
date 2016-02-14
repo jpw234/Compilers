@@ -10,7 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import compiler_ww424.Lexer.Token;
-import compiler_ww424.Lexer.TokenType;
+import compiler_ww424.Lexer.NumberToken;
+import compiler_ww424.Lexer.StringToken;
+import java_cup.runtime.*;
 
 public class Compiler {
 	public static final String INPUT_HELPER = "--help";
@@ -166,7 +168,7 @@ public class Compiler {
 		for (CodePath p: codeToCompile){
 			Reader fr = new FileReader(p.getFile());
 			Lexer lexer = new Lexer(fr);
-			Token tok = lexer.yylex();
+			Token tok = lexer.next_token();
 			String path = p.file.toAbsolutePath().toString();;
 			String fileName;
 			if (diagnosisRoot == null){
@@ -181,26 +183,31 @@ public class Compiler {
 				int _line = tok.getLine() + 1 ;
 				int _col = tok.getCol() + 1; 
 				String lineVal = new String ();
-				if (tok.getType() == TokenType.ERROR){
-					lineVal = tok.getValue();
-					String line = _line + ":" + _col + " " + lineVal ;
-					generateFile(fileName,line);
-					break;
+				
+				if (tok.sym == sym.INTEGER) {
+					lineVal = "integer"+" "+ lexer.yytext();
 				}
-				else if (tok.getType() == TokenType.SYMBOL ||tok.getType() == TokenType.KEYWORD){
+				else if (tok.sym == sym.STRING)
+					lineVal = "string"+" "+ tok.value;
+				}
+        else if (tok.sym == sym.CHARACTER)
+					lineVal = "character"+" "+ tok.value;
+				}
+        else if (tok.sym == sym.ID)
+					lineVal = "id"+" "+ tok.value;
+				}
+        else{
 					lineVal = "" + lexer.yytext();
 				}
-				else if (tok.getType() == TokenType.INTEGER) {
-					lineVal = tok.getType().toString().toLowerCase()+" "+ lexer.yytext();
-				}
-				else {
-					lineVal = tok.getType().toString().toLowerCase()+" "+ tok.getValue();
-				}
-
 				String line = _line + ":" + _col + " " + lineVal ; 
 				//System.out.println(line);
 				generateFile(fileName,line);
-				tok = lexer.yylex();
+        try {
+          tok = lexer.next_token();
+        }
+        catch (IOException e) {
+          generateFile(fileName,e.getMessage());
+        } 
 			}
 		}
 	}
