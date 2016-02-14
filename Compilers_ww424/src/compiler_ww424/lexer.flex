@@ -37,7 +37,7 @@ public class NumberToken extends Token{
       
   }
 }
-public class StringToken extends Symbol{
+public class StringToken extends Token{
   public String value;
   public StringToken(int symbol,String val,int lin,int col) {
       super(symbol,lin,col);
