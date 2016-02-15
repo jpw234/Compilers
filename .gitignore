@@ -7,7 +7,9 @@ Compilers_www424/test1.lexed
 Compilers_www424/useio
 Compilers_www424/bin
 .DS_Store
-Compilers_ww424/src/compiler_ww424/Lexer.java
+Compilers_ww424/src/compiler_ww424/Lexer.java*
+Compilers_ww424/src/compiler_ww424/Parser.java*
+Compilers_ww424/src/compiler_ww424/sym.java*
 # Package Files #
 *.jar
 *.war

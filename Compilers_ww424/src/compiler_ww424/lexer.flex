@@ -1,5 +1,6 @@
 package compiler_ww424;
 import java_cup.runtime.*;
+import java.io.IOException; 
 %%
 %class Lexer
 %unicode
@@ -47,7 +48,7 @@ public class Token extends Symbol{
 	private Token token(int type) {
 		return new Token(type, yyline, yycolumn);
 	}
-	private Token token(int type, String value) {
+	private Token token(int type, String value) throws IOException{
 		if(type == sym.STRING || type == sym.CHARACTER) {
 			return new Token(type, value, line, col);
 		}
@@ -55,7 +56,7 @@ public class Token extends Symbol{
       throw new IOException("INVALID STRING TOKEN GENERATION. THIS SHOULD NEVER FIRE.");
       }
 	}
-	private Token token(int type, int value) {
+	private Token token(int type, int value) throws IOException{
     if(type == sym.INTEGER) {
 			return new Token(type, value, yyline, yycolumn);
 		}
@@ -156,8 +157,11 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 
 <CHAR> {
 	\'								{ yybegin(YYINITIAL);
-									  if(string.length() == 0) throw IOException(line.toString() + ":" + col.toString() + " error:empty character literal");
-									  return token(sym.CHARACTER, string.toString()); }
+									  if(string.length() == 0) {
+                      throw new IOException(Integer.toString(line) + 
+                      ":" + Integer.toString(col) + " error:empty character literal");
+									  }
+                    return token(sym.CHARACTER, string.toString()); }
 	
 	[^\n\r\'\\]+					{ string.append(yytext()); }
 	\\t								{ string.append("\\t"); }
@@ -174,5 +178,6 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 }
 
 /* error fallback */
-[^] 								{ throw IOException(yyline.toString() + ":" + yycolumn.toString() + " " + "INVALID INTEGER TOKEN GENERATION. "Illegal character <"+yytext()+">");}
+[^] 								{ throw new IOException(Integer.toString(yyline) + ":" + Integer.toString(yycolumn) + " " + "Illegal character <"+yytext()+">");}
+
 

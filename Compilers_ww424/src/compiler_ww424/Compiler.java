@@ -166,7 +166,7 @@ public class Compiler {
 		for (CodePath p: codeToCompile){
 			Reader fr = new FileReader(p.getFile());
 			Lexer lexer = new Lexer(fr);
-			Token tok = lexer.next_token();
+			Token tok = (Token)lexer.next_token();
 			String path = p.file.toAbsolutePath().toString();;
 			String fileName;
 			if (diagnosisRoot == null){
@@ -185,23 +185,23 @@ public class Compiler {
 				if (tok.sym == sym.INTEGER) {
 					lineVal = "integer"+" "+ lexer.yytext();
 				}
-				else if (tok.sym == sym.STRING)
+				else if (tok.sym == sym.STRING) {
 					lineVal = "string"+" "+ tok.value;
 				}
-        else if (tok.sym == sym.CHARACTER)
+        else if (tok.sym == sym.CHARACTER) {
 					lineVal = "character"+" "+ tok.value;
 				}
-        else if (tok.sym == sym.ID)
+        else if (tok.sym == sym.ID) {
 					lineVal = "id"+" "+ tok.value;
 				}
-        else{
+        else {
 					lineVal = "" + lexer.yytext();
 				}
 				String line = _line + ":" + _col + " " + lineVal ; 
 				//System.out.println(line);
 				generateFile(fileName,line);
         try {
-          tok = lexer.next_token();
+          tok = (Token)lexer.next_token();
         }
         catch (IOException e) {
           generateFile(fileName,e.getMessage());
