@@ -103,12 +103,12 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	">="							{ return token(sym.GEQ); }
 	"=="							{ return token(sym.EQEQ); }
 	"!="							{ return token(sym.NEQ); }
-	"["								{ return token(sym.LBRACE); }
-	"]"								{ return token(sym.RBRACE); }
+	"["								{ return token(sym.LBRACKET); }
+	"]"								{ return token(sym.RBRACKET); }
 	"("								{ return token(sym.LPAREN); }
 	")"								{ return token(sym.RPAREN); }
-	"{"								{ return token(sym.LBRACKET); }
-	"}"								{ return token(sym.RBRACKET); }
+	"{"								{ return token(sym.LBRACE); }
+	"}"								{ return token(sym.RBRACE); }
 	":"								{ return token(sym.COLON); }
 	";"								{ return token(sym.SEMI); }
 	"+"								{ return token(sym.PLUS); }
