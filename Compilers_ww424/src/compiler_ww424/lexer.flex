@@ -158,8 +158,8 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 <CHAR> {
 	\'								{ yybegin(YYINITIAL);
 									  if(string.length() == 0) {
-                      throw new IOException(Integer.toString(line) + 
-                      ":" + Integer.toString(col) + " error:empty character literal");
+                      throw new IOException(Integer.toString(line+1) + 
+                      ":" + Integer.toString(col+1) + " " + "error:empty character literal");
 									  }
                     return token(sym.CHARACTER, string.toString()); }
 	
@@ -178,6 +178,6 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 }
 
 /* error fallback */
-[^] 								{ throw new IOException(Integer.toString(yyline) + ":" + Integer.toString(yycolumn) + " " + "Illegal character <"+yytext()+">");}
+[^] 								{ throw new IOException(Integer.toString(yyline+1) + ":" + Integer.toString(yycolumn+1) + " " + "Illegal character <"+yytext()+">");}
 
 

@@ -166,7 +166,6 @@ public class Compiler {
 		for (CodePath p: codeToCompile){
 			Reader fr = new FileReader(p.getFile());
 			Lexer lexer = new Lexer(fr);
-			Token tok = (Token)lexer.next_token();
 			String path = p.file.toAbsolutePath().toString();;
 			String fileName;
 			if (diagnosisRoot == null){
@@ -177,6 +176,13 @@ public class Compiler {
 				String file = patharray[(patharray.length)-1];
 				fileName = diagnosisRoot +file.substring(0, file.length()-2)+"lexed";
 			}
+      Token tok = null;
+      try {
+        tok = (Token)lexer.next_token();
+      }
+      catch (IOException e) {
+        generateFile(fileName,e.getMessage());
+      } 
 			while (tok != null){
 				int _line = tok.getLine() + 1 ;
 				int _col = tok.getCol() + 1; 
