@@ -10,14 +10,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import compiler_ww424.Lexer.Token;
-import compiler_ww424.Lexer.TokenType;
+import java_cup.runtime.*;
 
 public class Compiler {
 	public static final String INPUT_HELPER = "--help";
 	public static final String INPUT_LEX = "--lex";
 	public static final String INPUT_PARSE = "--parse";
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
-	public static final String INPUT_DIAGNOSIS_PATH = "-D";
+	public static final String INPUT_DIAGNOSIS_PATH = "-d";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -94,7 +94,7 @@ public class Compiler {
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
-			switch(args[i]) {
+			switch(args[i].toLowerCase()) {
 			case INPUT_SOURCEPATH :
 				i++;
 				if(i < args.length) sourceRoot = args[i];
@@ -123,7 +123,7 @@ public class Compiler {
 			}
 		}
 		if (toCompile && !useHelp){
-			lex(pathArgs,codeToCompile,sourceRoot,currentRoot,diagnosisRoot);
+			lex(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
 		}
 		if (toParse && !useHelp){
 			parse(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
@@ -132,15 +132,11 @@ public class Compiler {
 
 	}
 	public static void lex(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-			String sourceRoot,String currentRoot, String diagnosisRoot) throws IOException{
+			String sourceRoot,String diagnosisRoot) throws IOException{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
-			if (sourceRoot != null){
-				pathArgs.add(new CodePath(".", sourceRoot));
-			}
-			else {
-				pathArgs.add(new CodePath(currentRoot, "."));
-			}
+			pathArgs.add(new CodePath(sourceRoot, "."));
+
 			// Display What's Going To Go Down
 			System.out.println("\nAttempting To Compile All Files");
 		}
@@ -175,10 +171,10 @@ public class Compiler {
 
 		}
 
-
 		System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
 
 		for (CodePath p: codeToCompile){
+			//DETECT IF THIS EXISTS 
 			try {
 				Reader abc = new FileReader(p.getFile());
 				abc.close();
@@ -187,59 +183,65 @@ public class Compiler {
 				System.err.println("No such File in Directory");
 				return;
 			}
+			
 			Reader fr = new FileReader(p.getFile());
-			Lexer lexer = new Lexer(fr);
-			Token tok = lexer.yylex();
-			String path = p.file.toAbsolutePath().toString();
 			String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
 			if(diagnosisRoot != null){
 				fileName = diagnosisRoot + "/" +fileName;
 			}
-			while (tok != null){
-				int _line = tok.getLine() + 1 ;
-				int _col = tok.getCol() + 1; 
-				String lineVal = new String ();
-				if (tok.getType() == TokenType.ERROR){
-					lineVal = tok.getValue();
-					String line = _line + ":" + _col + " " + lineVal ;
-					generateFile(fileName,line);
-					break;
-				}
-				else if (tok.getType() == TokenType.SYMBOL ||tok.getType() == TokenType.KEYWORD){
-					lineVal = "" + lexer.yytext();
-				}
-				else if (tok.getType() == TokenType.INTEGER) {
-					lineVal = tok.getType().toString().toLowerCase()+" "+ lexer.yytext();
-				}
-				else {
-					lineVal = tok.getType().toString().toLowerCase()+" "+ tok.getValue();
-				}
-
-				String line = _line + ":" + _col + " " + lineVal ; 
-				//System.out.println(line);
-				generateFile(fileName,line);
-				tok = lexer.yylex();
+			FileWriter fw = new FileWriter(fileName);
+			
+			// START TO LEX FILES
+			Lexer lexer = new Lexer(fr);
+			Token tok = null;
+			try{
+				tok = (Token) lexer.next_token();
 			}
-		}
-	}
+			catch(IOException e){
+				fw.write(e.getMessage());
+			}
 
+			while (((Symbol)tok).sym != 0){
+				int numLine = tok.getLine() + 1 ;
+				int numCol = tok.getCol() + 1; 
+				String lineVal = new String ();
+				if (tok.sym == sym.INTEGER){
+					lineVal = "integer"+" "+ lexer.yytext();
+				}
+				else if (tok.sym == sym.STRING){
+					lineVal = "string"+" "+ tok.value;
+				}
+				else if (tok.sym == sym.CHARACTER) {
+					lineVal = "character"+" "+ tok.value;
+				}
+				else if (tok.sym == sym.ID) {
+					lineVal = "id"+" "+ tok.value;
+				}
+				else{
+					lineVal = lexer.yytext();
+				}
+				//WRITE IN THE FILES
+				String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
+				fw.write(s); 
+				System.out.print(s);
+				if (lexer.next_token().sym==0){
+					fw.close();
+					return;
+				}
+				tok = (Token)lexer.next_token();
+			}
+			fw.close();
+		}
+		
+	}
+	
+	
 	public static void parse(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,String currentRoot,String diagnosisRoot){
 
 	}
 
 
-	public static void generateFile(String fileName , String line){
-		try
-		{
-			FileWriter fw = new FileWriter(fileName,true); //the true will append the new data
-			fw.write(line+"\n");//appends the string to the file
-			fw.close();
-		}
-		catch(IOException ioe)
-		{
-			System.err.println("IOException: " + ioe.getMessage());
-		}
-	}
+
 	public static void printUsage() {
 		System.out.println("xic");
 		System.out.println("SYNOPSIS");
