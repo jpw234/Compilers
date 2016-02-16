@@ -82,7 +82,7 @@ public class Compiler {
 	public static final String directory = "";
 
 
-	public static final void main(String[] args) throws IOException {
+	public static final void main(String[] args) throws Exception {
 		ArrayList<CodePath> pathArgs = new ArrayList<>();
 		ArrayList<CodePath> codeToCompile = new ArrayList<>();
 		String currentRoot = directory;
@@ -132,7 +132,7 @@ public class Compiler {
 
 	}
 	public static void lex(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-			String sourceRoot,String diagnosisRoot) throws IOException{
+			String sourceRoot,String diagnosisRoot) throws Exception{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
 			pathArgs.add(new CodePath(sourceRoot, "."));
@@ -183,28 +183,23 @@ public class Compiler {
 				System.err.println("No such File in Directory");
 				return;
 			}
-			
-			Reader fr = new FileReader(p.getFile());
 			String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
 			if(diagnosisRoot != null){
 				fileName = diagnosisRoot + "/" +fileName;
 			}
-			FileWriter fw = new FileWriter(fileName);
 			
-			// START TO LEX FILES
+			Reader fr = new FileReader(p.getFile());
+			FileWriter fw = new FileWriter(fileName);
 			Lexer lexer = new Lexer(fr);
-			Token tok = null;
-			try{
-				tok = (Token) lexer.next_token();
-			}
-			catch(IOException e){
-				fw.write(e.getMessage());
-			}
-
-			while (((Symbol)tok).sym != 0){
+	
+			parser par = new parser(lexer);
+			System.out.println(par.parse().value);
+			
+			for(Token tok = (Token) lexer.next_token(); tok.sym!=0; tok = (Token)lexer.next_token()){
 				int numLine = tok.getLine() + 1 ;
 				int numCol = tok.getCol() + 1; 
 				String lineVal = new String ();
+				
 				if (tok.sym == sym.INTEGER){
 					lineVal = "integer"+" "+ lexer.yytext();
 				}
@@ -224,11 +219,7 @@ public class Compiler {
 				String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
 				fw.write(s); 
 				System.out.print(s);
-				if (lexer.next_token().sym==0){
-					fw.close();
-					return;
-				}
-				tok = (Token)lexer.next_token();
+				
 			}
 			fw.close();
 		}
