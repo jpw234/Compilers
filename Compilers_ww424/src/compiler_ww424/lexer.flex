@@ -66,8 +66,12 @@ public class Token extends Symbol{
 	}
 	
 %}
-
-
+//%eofval{
+//	return new Token(0, 0, line, col); 
+//%eofval}
+%eofval{
+	return new Token(sym.EOF, 0, 0); 
+%eofval}
 
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
