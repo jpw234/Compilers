@@ -25,7 +25,6 @@ public class Token {
 	private Subtype stype;
 	
 	
-	
 	public Token(TokenType type, Subtype s, int l, int c){
 		ttype = type;
 		stype = s;
