@@ -21,6 +21,16 @@ nonterminal program, uselist, funclist, useprod, func, arglist, arg, argtype,
 
 // Add more nonterminals here...
 
+precedence left OR;
+precedence left AND;
+precedence left EQEQ, NOT_EQUAL;
+precedence left LT, LEQ, GEQ, GT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MODULO;
+precedence left NOT;
+precedence nonassoc IF;
+precedence nonassoc ELSE;
+
 start with program;
 
 // Recognizes "Hello World!", but not much else.
