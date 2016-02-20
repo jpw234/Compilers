@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 package compiler_ww424;
 
 %%
@@ -195,6 +196,8 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 [^] 								{ return token(TokenType.ERROR, "Illegal character <"+yytext()+">"); }
 
 =======
+=======
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 package compiler_ww424;
 import java_cup.runtime.*;
 import java.io.IOException; 
@@ -246,9 +249,18 @@ public class Token extends Symbol{
 		return new Token(type, yyline, yycolumn);
 	}
 	private Token token(int type, String value) throws IOException{
+<<<<<<< HEAD
 		if(type == sym.STRING || type == sym.CHARACTER ||type == sym.ID) {
 			return new Token(type, value, line, col);
 		}
+=======
+		if(type == sym.STRING || type == sym.CHARACTER) {
+			return new Token(type, value, line, col);
+		}
+		else if (type == sym.ID) {
+			return new Token(type, value, yyline, yycolumn);
+		}
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 		else {
       throw new IOException("INVALID STRING TOKEN GENERATION. THIS SHOULD NEVER FIRE.");
       }
@@ -382,4 +394,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 /* error fallback */
 [^] 								{ throw new IOException(Integer.toString(yyline+1) + ":" + Integer.toString(yycolumn+1) + " " + "Illegal character <"+yytext()+">");}
 
+<<<<<<< HEAD
 >>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
+=======
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed

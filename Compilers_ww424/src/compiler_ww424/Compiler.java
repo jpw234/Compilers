@@ -124,8 +124,11 @@ public class Compiler {
 		}
 		if (toCompile && !useHelp){
 <<<<<<< HEAD
+<<<<<<< HEAD
 			lex_parse(toParse,pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
 =======
+=======
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 			lex(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
 		}
 		if (toParse && !useHelp){
@@ -140,7 +143,10 @@ public class Compiler {
 	public static void lex_parse(Boolean toParse,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
 =======
 	public static void lex(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
+<<<<<<< HEAD
 >>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
+=======
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 			String sourceRoot,String diagnosisRoot) throws Exception{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
@@ -197,6 +203,7 @@ public class Compiler {
 				fileName = diagnosisRoot + "/" +fileName;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			Reader fr = new FileReader(p.getFile());
 			FileWriter fw = new FileWriter(fileName);
@@ -204,6 +211,8 @@ public class Compiler {
 
 
 =======
+=======
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 			
 			Reader fr = new FileReader(p.getFile());
 			FileWriter fw = new FileWriter(fileName);
@@ -212,16 +221,23 @@ public class Compiler {
 			parser par = new parser(lexer);
 			System.out.println(par.parse().value);
 			
+<<<<<<< HEAD
 >>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
+=======
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 			for(Token tok = (Token) lexer.next_token(); tok.sym!=0; tok = (Token)lexer.next_token()){
 				int numLine = tok.getLine() + 1 ;
 				int numCol = tok.getCol() + 1; 
 				String lineVal = new String ();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 				
 >>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
+=======
+				
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 				if (tok.sym == sym.INTEGER){
 					lineVal = "integer"+" "+ lexer.yytext();
 				}
@@ -239,6 +255,7 @@ public class Compiler {
 				}
 				//WRITE IN THE FILES
 				String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
+<<<<<<< HEAD
 <<<<<<< HEAD
 				fw.write(s);
 				System.out.print(s);
@@ -281,6 +298,22 @@ public class Compiler {
 >>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
 
 
+=======
+				fw.write(s); 
+				System.out.print(s);
+				
+			}
+			fw.close();
+		}
+		
+	}
+	
+	
+	public static void parse(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,String currentRoot,String diagnosisRoot){
+
+	}
+
+>>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 
 
 	public static void printUsage() {
