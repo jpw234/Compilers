@@ -1,0 +1,20 @@
+*.class
+*.DS_Store
+Compilers_www424/.settings
+Compilers_www424/.classpath
+Compilers_www424/.DS_Store
+Compilers_www424/.project
+Compilers_www424/test1.lexed
+Compilers_www424/useio
+Compilers_www424/bin
+.DS_Store
+Compilers_ww424/src/compiler_ww424/Lexer.java*
+Compilers_ww424/src/compiler_ww424/Parser.java*
+Compilers_ww424/src/compiler_ww424/sym.java*
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
