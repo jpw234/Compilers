@@ -49,8 +49,11 @@ public class Token extends Symbol{
 		return new Token(type, yyline, yycolumn);
 	}
 	private Token token(int type, String value) throws IOException{
-		if(type == sym.STRING || type == sym.CHARACTER ||type == sym.ID) {
+		if(type == sym.STRING || type == sym.CHARACTER) {
 			return new Token(type, value, line, col);
+		}
+		else if (type == sym.ID) {
+			return new Token(type, value, yyline, yycolumn);
 		}
 		else {
       throw new IOException("INVALID STRING TOKEN GENERATION. THIS SHOULD NEVER FIRE.");
