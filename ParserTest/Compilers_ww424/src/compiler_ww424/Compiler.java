@@ -1,5 +1,6 @@
 package compiler_ww424;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,15 +9,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import compiler_ww424.Lexer.Token;
-import java_cup.runtime.*;
+//import compiler_ww424.Lexer.Token;
+//import compiler_ww424.Lexer.TokenType;
+import java_cup.runtime.Scanner;
 
 public class Compiler {
 	public static final String INPUT_HELPER = "--help";
 	public static final String INPUT_LEX = "--lex";
 	public static final String INPUT_PARSE = "--parse";
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
-	public static final String INPUT_DIAGNOSIS_PATH = "-d";
+	public static final String INPUT_DIAGNOSIS_PATH = "-D";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -53,7 +55,7 @@ public class Compiler {
 		public String getFile() {
 			return file.toAbsolutePath().toString();
 		}
-
+		
 		public String getFileName() {
 			return file.getFileName().toString();
 		}
@@ -81,7 +83,7 @@ public class Compiler {
 	public static final String directory = "";
 
 
-	public static final void main(String[] args) throws Exception {
+	public static final void main(String[] args) throws IOException {
 		ArrayList<CodePath> pathArgs = new ArrayList<>();
 		ArrayList<CodePath> codeToCompile = new ArrayList<>();
 		String currentRoot = directory;
@@ -93,7 +95,7 @@ public class Compiler {
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
-			switch(args[i].toLowerCase()) {
+			switch(args[i]) {
 			case INPUT_SOURCEPATH :
 				i++;
 				if(i < args.length) sourceRoot = args[i];
@@ -112,7 +114,6 @@ public class Compiler {
 				toCompile = true;
 				break;
 			case INPUT_PARSE:
-				toCompile = true;
 				toParse = true;
 				break;
 
@@ -123,29 +124,24 @@ public class Compiler {
 			}
 		}
 		if (toCompile && !useHelp){
-<<<<<<< HEAD
-			lex_parse(toParse,pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
-=======
-			lex(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
+			lex(pathArgs,codeToCompile,sourceRoot,currentRoot,diagnosisRoot);
 		}
 		if (toParse && !useHelp){
 			parse(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
 		}
 
 
-
 	}
-<<<<<<< HEAD
-	public static void lex_parse(Boolean toParse,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-=======
 	public static void lex(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
-			String sourceRoot,String diagnosisRoot) throws Exception{
+			String sourceRoot,String currentRoot, String diagnosisRoot) throws IOException{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
-			pathArgs.add(new CodePath(sourceRoot, "."));
-
+			if (sourceRoot != null){
+				pathArgs.add(new CodePath(".", sourceRoot));
+			}
+			else {
+				pathArgs.add(new CodePath(currentRoot, "."));
+			}
 			// Display What's Going To Go Down
 			System.out.println("\nAttempting To Compile All Files");
 		}
@@ -180,7 +176,11 @@ public class Compiler {
 
 		}
 
+
 		System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
+		
+		
+		
 
 		for (CodePath p: codeToCompile){
 			//DETECT IF THIS EXISTS 
@@ -192,95 +192,82 @@ public class Compiler {
 				System.err.println("No such File in Directory");
 				return;
 			}
+			
+			//FILE NAME
+			Reader fr = new FileReader(p.getFile());
 			String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
-			if(diagnosisRoot != null){
-				fileName = diagnosisRoot + "/" +fileName;
-			}
-<<<<<<< HEAD
-
-			Reader fr = new FileReader(p.getFile());
-			FileWriter fw = new FileWriter(fileName);
 			Lexer lexer = new Lexer(fr);
+			System.out.print(String.format("Compiling: %s\n", p.getFile()));
+			try {
+
+				parser pr = new parser(lexer);
+	            System.out.println(pr.parse().value);								
 
 
-=======
-			
-			Reader fr = new FileReader(p.getFile());
-			FileWriter fw = new FileWriter(fileName);
-			Lexer lexer = new Lexer(fr);
-	
-			parser par = new parser(lexer);
-			System.out.println(par.parse().value);
-			
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
-			for(Token tok = (Token) lexer.next_token(); tok.sym!=0; tok = (Token)lexer.next_token()){
-				int numLine = tok.getLine() + 1 ;
-				int numCol = tok.getCol() + 1; 
-				String lineVal = new String ();
-<<<<<<< HEAD
-
-=======
-				
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
-				if (tok.sym == sym.INTEGER){
-					lineVal = "integer"+" "+ lexer.yytext();
-				}
-				else if (tok.sym == sym.STRING){
-					lineVal = "string"+" "+ tok.value;
-				}
-				else if (tok.sym == sym.CHARACTER) {
-					lineVal = "character"+" "+ tok.value;
-				}
-				else if (tok.sym == sym.ID) {
-					lineVal = "id"+" "+ tok.value;
-				}
-				else{
-					lineVal = lexer.yytext();
-				}
-				//WRITE IN THE FILES
-				String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
-<<<<<<< HEAD
-				fw.write(s);
-				System.out.print(s);
-
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-//			if(toParse){
-//				fr = new FileReader(p.getFile());
-//				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
-//				FileWriter fwp = new FileWriter(fN);
-//				lexer = new Lexer(fr);
-//
-//				try{
-//					parser par = new parser(lexer);
-//					System.out.println(par.parse().value);
-//					fwp.write(par.parse().value.toString());
-//				}catch(Error e ){		
-//					System.out.println(e.getMessage());
-//					fwp.write(e.getMessage());
-//				}
-//				fwp.close();
-//			}
-			fw.close();
-			
-		}
-
-	}
-
-=======
-				fw.write(s); 
-				System.out.print(s);
-				
-			}
-			fw.close();
+		
 		}
 		
+//
+//		for (CodePath p: codeToCompile){
+//			//DETECT IF THIS EXISTS 
+//			try {
+//				Reader abc = new FileReader(p.getFile());
+//				abc.close();
+//			}
+//			catch(IOException ioe){
+//				System.err.println("No such File in Directory");
+//				return;
+//			}
+//			
+//			//FILE NAME
+//			Reader fr = new FileReader(p.getFile());
+//			String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
+//			if(diagnosisRoot != null){
+//				fileName = diagnosisRoot + "/" +fileName;
+//			}
+//			FileWriter fw = new FileWriter(fileName);
+//			
+//			// START TO LEX FILES
+//			Lexer lexer = new Lexer(fr);
+//
+//			Token tok = lexer.yylex();
+//
+//			while (tok != null){
+//				int numLine = tok.getLine() + 1 ;
+//				int numCol = tok.getCol() + 1; 
+//				String lineVal = new String ();
+//				if (tok.getType() == TokenType.ERROR){
+//					lineVal = tok.getValue();
+//					String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
+//					fw.write(s);
+//					break;
+//				}
+//				else if (tok.getType() == TokenType.SYMBOL ||tok.getType() == TokenType.KEYWORD){
+//					lineVal = lexer.yytext();
+//				}
+//				else if (tok.getType() == TokenType.INTEGER) {
+//					lineVal = tok.getType().toString().toLowerCase()+" "+ lexer.yytext();
+//				}
+//				else {
+//					lineVal = tok.getType().toString().toLowerCase()+" "+ tok.getValue();
+//				}
+//				//WRITE IN THE FILES
+//				String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
+//				fw.write(s); 
+//
+//				tok = lexer.yylex();
+//			}
+//			fw.close();
+//		}
+//		
 	}
-	
-	
+
 	public static void parse(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,String currentRoot,String diagnosisRoot){
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
 
-
+	}
 
 
 	public static void printUsage() {

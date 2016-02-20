@@ -1,0 +1,149 @@
+package compilers_ww424;
+
+terminal String IDENTIFIER;
+terminal String STRING_LITERAL;
+terminal String CHARACTER_LITERAL;
+terminal Integer INTEGER_LITERAL;
+terminal TRUE, FALSE;
+terminal INT, BOOL;
+
+terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES,
+  DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, EQEQ, AND, OR, EQUAL, NOT_EQUAL,
+  OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
+  COLON, COMMA, SEMICOLON, UNDERSCORE;
+  
+// You might want to add types to these declarations.
+nonterminal program, uselist, funclist, useprod, func, arglist, arg, argtype,
+  arrset, funtype, argtypelist, block, stmtlist, stmt, decl, vartype,
+  filledarrset, optassign, assignment, uid, uidlist, decllist, retop,
+  expr, binaryexpr, bop, unaryexpr, uop, funcall, exprlist, tuple,
+  ifblock, ifelseblock, idlist;
+
+// Add more nonterminals here...
+
+precedence left OR;
+precedence left AND;
+precedence left EQEQ, NOT_EQUAL;
+precedence left LT, LEQ, GEQ, GT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MODULO;
+precedence left NOT;
+precedence nonassoc IF;
+precedence nonassoc ELSE;
+
+start with program;
+
+// Recognizes "Hello World!", but not much else.
+program        ::=   uselist funclist;
+uselist        ::=   uselist useprod
+                   | //empty
+                   ;
+useprod        ::=   USE IDENTIFIER;
+funclist       ::=   func
+                   | funclist func
+                   ;
+func           ::=   IDENTIFIER OPEN_PAREN arglist CLOSE_PAREN funtype 
+                     OPEN_BRACE stmtlist retop CLOSE_BRACE;
+arglist        ::=   arg
+                   | arg COMMA arglist
+                   | //empty
+                   ;
+argtype        ::=   INT arrset
+                   | BOOL arrset
+                   ;
+arrset         ::=   OPEN_BRACKET CLOSE_BRACKET arrset
+                   | //empty
+                   ;
+argtypelist    ::=   argtype
+                   | argtype COMMA argtypelist
+                   ;
+funtype        ::=   COLON argtype
+                   | COLON OPEN_PAREN argtypelist CLOSE_PAREN
+                   | //empty
+                   ;
+block          ::=   OPEN_BRACE stmtlist retop CLOSE_BRACE
+                   | stmt
+                   ;
+stmtlist       ::=   stmt stmtlist
+                   | stmt SEMICOLON stmtlist
+                   | //empty
+                   ;
+stmt           ::=   ifblock
+                   | ifelseblock
+                   | WHILE OPEN_PAREN expr CLOSE_PAREN block
+                   | IDENTIFIER OPEN_PAREN idlist CLOSE_PAREN
+                   | block
+                   | decl
+                   | assignment
+                   ;
+ifblock        ::=   IF OPEN_PAREN expr CLOSE_PAREN block;
+ifelseblock    ::=   IF OPEN_PAREN expr CLOSE_PAREN block ELSE block;
+decl           ::=   IDENTIFIER COLON vartype optassign
+                   | OPEN_PAREN decllist CLOSE_PAREN EQUAL expr
+                   ;
+decllist       ::=   UNDERSCORE
+                   | IDENTIFIER COLON vartype
+                   | UNDERSCORE COMMA decllist
+                   | IDENTIFIER COLON vartype COMMA decllist
+                   ;
+vartype        ::=   INT filledarrset arrset
+                   | BOOL filledarrset arrset
+                   ;
+filledarrset   ::=   OPEN_BRACKET expr CLOSE_BRACKET filledarrset
+                   | //empty
+                   ;
+optassign      ::=   EQUAL expr
+                   | //empty
+                   ;
+assignment     ::=   uid EQUAL expr
+                   | OPEN_PAREN uidlist CLOSE_PAREN EQUAL expr
+                   ;
+uid            ::=   UNDERSCORE
+                   | IDENTIFIER
+                   | IDENTIFIER OPEN_BRACKET expr CLOSE_BRACKET
+                   ;
+uidlist        ::=   uid
+                   | uid COMMA uidlist
+                   ;
+retop          ::=   RETURN
+                   | RETURN OPEN_PAREN exprlist CLOSE_PAREN
+                   | //empty
+                   ;
+expr           ::=   INTEGER_LITERAL
+                   | IDENTIFIER
+                   | funcall
+                   | tuple
+                   | STRING_LITERAL
+                   | CHARACTER_LITERAL
+                   | binaryexpr
+                   | unaryexpr
+                   | IDENTIFIER filledarrset
+                   | TRUE
+                   | FALSE
+                   | LENGTH OPEN_PAREN expr CLOSE_PAREN
+                   ;
+binaryexpr     ::=   expr bop expr;
+bop            ::=   PLUS
+                   | MINUS
+                   | TIMES
+                   | DIVIDE
+                   | MODULO
+                   | LT
+                   | LEQ
+                   | GT
+                   | GEQ
+                   | EQEQ
+                   | NOT_EQUAL
+                   | AND
+                   | OR
+                   ;
+unaryexpr      ::=   uop expr;
+uop            ::=   MINUS
+                   | NOT
+                   ;
+funcall        ::=   IDENTIFIER TUPLE;
+exprlist       ::=   expr
+                   | expr COMMA exprlist
+                   | //empty
+                   ;
+tuple          ::=   OPEN_PAREN exprlist CLOSE_PAREN;
