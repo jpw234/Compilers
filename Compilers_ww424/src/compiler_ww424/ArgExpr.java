@@ -9,18 +9,18 @@ public class ArgExpr extends Expr {
 		exps = new ArrayList<Expr>();
 	}
 	
-	public ArgExpr(Expr e1){
+	public ArgExpr(Object ... args){
 		exps = new ArrayList<Expr>();
-		exps.add(e1);
+		for (Object a: args){
+			if (a == null){
+				continue;
+			} else if (a instanceof String){
+				exps.add(new AtomExpr((String) a));
+			} else {
+				exps.add((Expr) a);
+			}
+		}
 	}
-
-	
-	public ArgExpr(Expr type, Expr exp1){
-		exps = new ArrayList<Expr>();
-		exps.add(type);
-		exps.add(exp1);
-	}
-	
 	public void add(Expr exp){
 		exps.add(exp);
 	}
@@ -31,6 +31,10 @@ public class ArgExpr extends Expr {
 	
 	@Override
 	public String toString(){
-		return String.format("%s", exps);
+		String s = "";
+		for (Expr e : exps){
+			s += (e+" ");
+		}
+		return s ;
 	}
 }

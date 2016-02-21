@@ -8,66 +8,46 @@ public class ListExpr extends Expr {
 	public ListExpr(){
 		exps = new ArrayList<Expr>();
 	}
-	
-	public ListExpr(Expr e1){
+	public ListExpr(Object ... args){
 		exps = new ArrayList<Expr>();
-		exps.add(e1);
+		for (Object a: args){
+			if (a == null){
+				continue;
+			} else if (a instanceof String){
+				exps.add(new AtomExpr((String) a));
+			} else {
+				exps.add((Expr) a);
+			}
+		}
 	}
 	
-	public ListExpr(String op, Expr exp1){
-		exps = new ArrayList<Expr>();
-		exps.add(new AtomExpr(op));
-		exps.add(exp1);
+	public Boolean isEmpty(){
+		return exps.isEmpty();
 	}
 	
-	public ListExpr(String op, Expr exp1,Expr exp2){
-		exps = new ArrayList<Expr>();
-		exps.add(new AtomExpr(op));
-		exps.add(exp1);
-		exps.add(exp2);
-	}
-	
-	public ListExpr(String op, Expr exp1,Expr exp2,Expr exp3){
-		exps = new ArrayList<Expr>();
-		exps.add(new AtomExpr(op));
-		exps.add(exp1);
-		exps.add(exp2);
-		exps.add(exp3);
-	}
-	
-	public ListExpr(Expr exp1, Expr exp2){
-		exps = new ArrayList<Expr>();
-		exps.add(exp1);
-		exps.add(exp2);
-	}
-	
-	public ListExpr(Expr exp1, Expr exp2, Expr exp3){
-		exps = new ArrayList<Expr>();
-		exps.add(exp1);
-		exps.add(exp2);
-		exps.add(exp3);
+	public int size(){
+		return exps.size();
 	}
 
-	public ListExpr(Expr exp1, Expr exp2, Expr exp3,Expr exp4){
-		exps = new ArrayList<Expr>();
-		exps.add(exp1);
-		exps.add(exp2);
-		exps.add(exp3);
-		exps.add(exp4);
+	public void add(Expr ex){
+		exps.add(ex);
 	}
-
-
 	
-	public void add(Expr exp){
-		exps.add(exp);
-	}
-	public void add(int i , Expr exp){
-		exps.add(i, exp);
+	public void insert(Expr ex){
+		exps.add(0, ex);
 	}
 
 	
 	@Override
 	public String toString(){
-		return String.format("( %s )", exps);
+		ArrayList<String> strings = new ArrayList<String>();
+		for (Expr exp : exps) {
+		    strings.add(exp.toString());
+		}
+		
+		if (exps.size() ==1 && exps.get(0).toString() == "_"){
+			return "_";
+		}
+		return String.format("(%s)", String.join(" ", strings));
 	}
 }

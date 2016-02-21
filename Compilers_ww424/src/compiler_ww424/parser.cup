@@ -1,149 +1,230 @@
-package compilers_ww424;
+package compiler_ww424;
+import java_cup.runtime.*;
+import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+import compiler_ww424.Lexer.Token;
+   
+/* Parser code to change the way the parser reports errors (include
+   line and column number of the error). */
+parser code {:
+    
+    /* Change the method report_error so it will display the line and
+       column of where the error occurred in the input as well as the
+       reason for the error which is passed into the method in the
+       String 'message'. */
 
-terminal String IDENTIFIER;
-terminal String STRING_LITERAL;
-terminal String CHARACTER_LITERAL;
-terminal Integer INTEGER_LITERAL;
+    public void syntax_error(Symbol cur_token) {
+        Token tok = (Token) cur_token;
+        String line = String.format("%d:%d error:Unexpected token %s", tok.getLine() + 1, tok.getCol() + 1, tok.value);
+        throw new Error(line);
+    }
+    public void report_error(String message, Object info) {
+   
+        /* Create a StringBuilder called 'm' with the string 'Error' in it. */
+        StringBuilder m = new StringBuilder("Error");
+   
+        /* Check if the information passed to the method is the same
+           type as the type java_cup.runtime.Symbol. */
+        if (info instanceof java_cup.runtime.Symbol) {
+            /* Declare a java_cup.runtime.Symbol object 's' with the
+               information in the object info that is being typecasted
+               as a java_cup.runtime.Symbol object. */
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+   
+            /* Check if the line number in the input is greater or
+               equal to zero. */
+            if (s.left >= 0) {                
+                /* Add to the end of the StringBuilder error message
+                   the line number of the error in the input. */
+                m.append(" in line "+(s.left+1));   
+                /* Check if the column number in the input is greater
+                   or equal to zero. */
+                if (s.right >= 0)                    
+                    /* Add to the end of the StringBuilder error message
+                       the column number of the error in the input. */
+                    m.append(", column "+(s.right+1));
+            }
+        }
+   
+        /* Add to the end of the StringBuilder error message created in
+           this method the message that was passed into this method. */
+        m.append(" : "+message);
+   
+        /* Print the contents of the StringBuilder 'm', which contains
+           an error message, out on a line. */
+        /*System.out.println(m);*/
+    }
+   
+    /* Change the method report_fatal_error so when it reports a fatal
+       error it will display the line and column number of where the
+       fatal error occurred in the input as well as the reason for the
+       fatal error which is passed into the method in the object
+       'message' and then exit.*/
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        return;
+        /*System.exit(1);*/
+    }
+:};
+
+   
+/* ------------Declaration of Terminals and Non Terminals Section----------- */
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+terminal String ID;
+terminal String STRING;
+terminal String CHARACTER;
+terminal Integer INTEGER;
 terminal TRUE, FALSE;
 terminal INT, BOOL;
 
 terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES,
-  DIVIDE, MODULO, NOT, LT, LEQ, GT, GEQ, EQEQ, AND, OR, EQUAL, NOT_EQUAL,
-  OPEN_BRACKET, CLOSE_BRACKET, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACE, CLOSE_BRACE,
-  COLON, COMMA, SEMICOLON, UNDERSCORE;
+  DIV, MOD, NOT, LANGLE, LEQ, RANGLE, GEQ, EQEQ, AND, OR, EQ, NEQ,
+  LBRACKET, RBRACKET, LPAREN, RPAREN, LBRACE, RBRACE,
+  COLON, COMMA, SEMI, UNDERSCORE,HIGHMUL,UMINUS;
+  
   
 // You might want to add types to these declarations.
-nonterminal program, uselist, funclist, useprod, func, arglist, arg, argtype,
-  arrset, funtype, argtypelist, block, stmtlist, stmt, decl, vartype,
-  filledarrset, optassign, assignment, uid, uidlist, decllist, retop,
-  expr, binaryexpr, bop, unaryexpr, uop, funcall, exprlist, tuple,
-  ifblock, ifelseblock, idlist;
-
-// Add more nonterminals here...
+nonterminal ListExpr program, uselist, funclist;
+nonterminal ArrayExpr vartype, var;
+nonterminal Expr useprod, func,arg;
+nonterminal Expr arglist, funtype ;
+nonterminal Expr block, stmtlist, stmt, decl;
+nonterminal Expr assignment,  decllist, retop;
+nonterminal Expr expr, binaryexpr,  unaryexpr, funcall, exprlist; 
+nonterminal Expr tuple, ifblock, ifelseblock, idlist;
 
 precedence left OR;
 precedence left AND;
-precedence left EQEQ, NOT_EQUAL;
-precedence left LT, LEQ, GEQ, GT;
+precedence left EQ, LANGLE, RANGLE, LEQ, GEQ,EQEQ,NEQ;
 precedence left PLUS, MINUS;
-precedence left TIMES, DIVIDE, MODULO;
-precedence left NOT;
+precedence left HIGHMUL;
+precedence left TIMES, DIV, MOD; 
+precedence left NOT,UMINUS;
 precedence nonassoc IF;
 precedence nonassoc ELSE;
 
+// Add more nonterminals here...
+
 start with program;
 
-// Recognizes "Hello World!", but not much else.
-program        ::=   uselist funclist;
-uselist        ::=   uselist useprod
-                   | //empty
+program        ::= uselist:us funclist:fl							  {: RESULT = new ListExpr(us, fl); :};
+
+uselist        ::= uselist:ul useprod:up							  {: ul.add(up); RESULT = ul; :}	
+				  | 											  	  {: RESULT = new ListExpr(); :}
+                  ;
+useprod        ::=   USE ID:id										  {: RESULT = new ListExpr("use" , new AtomExpr(id)); :};
+/////////////////////////////////////////////////////////////////////////////////////////
+
+funclist       ::= funclist: fl func:f						          {: fl.add(f); RESULT = fl; :}
+                   |												  {: RESULT = new ListExpr(); :}
                    ;
-useprod        ::=   USE IDENTIFIER;
-funclist       ::=   func
-                   | funclist func
+func           ::= ID:id LPAREN arglist:al RPAREN funtype:ft block:bl {: RESULT = new ListExpr(new AtomExpr(id),al, ft,bl); :};
+
+arglist        ::= arglist:argl COMMA arg: a						  {: ((ListExpr) argl).add(a); RESULT=argl; :} 
+				  | arg:a 											  {: RESULT =new ListExpr(a);:}
+				  | 												  {: RESULT = new ListExpr();:}					
+				  ;
+arg 		   ::= ID: id COLON vartype: vt  						  {: RESULT = new ListExpr(new AtomExpr(id), vt); :}
+				  ;
+funtype        ::=   COLON vartype:vt								  {: RESULT = new ListExpr(vt); :}
+                   | funtype:ft COMMA vartype:vt					  {: ((ListExpr) ft).add(vt); RESULT = ft ;:}
+                   | 												  {: RESULT = new ListExpr(); :}
                    ;
-func           ::=   IDENTIFIER OPEN_PAREN arglist CLOSE_PAREN funtype 
-                     OPEN_BRACE stmtlist retop CLOSE_BRACE;
-arglist        ::=   arg
-                   | arg COMMA arglist
-                   | //empty
+                   
+block     	   ::=  LBRACE stmtlist:sl retop:ret RBRACE		          {: RESULT = new ListExpr(sl, ret); :}
+				   | stmt:s											  {: RESULT = s; :}
                    ;
-argtype        ::=   INT arrset
-                   | BOOL arrset
+stmtlist       ::=   stmtlist:stml stmt:stm	  						  {: ((ArgExpr) stml).add(new ArgExpr(stm)); RESULT = stml ; :}
+                   | stmtlist:stml stmt:stm SEMI					  {: ((ArgExpr) stml).add(new ArgExpr(stm)); RESULT = stml ; :}
+                   | 										  		  {: RESULT = new ArgExpr(); :}
                    ;
-arrset         ::=   OPEN_BRACKET CLOSE_BRACKET arrset
-                   | //empty
+stmt           ::=   ifblock:s										  {: RESULT = s; :}
+                   | ifelseblock:s									  {: RESULT = s; :}
+                   | WHILE LPAREN expr:condition RPAREN block:stm	  {: RESULT = new ListExpr("while", condition, stm); :}
+                   | ID:x LPAREN idlist:idl RPAREN 					  {: RESULT = new ListExpr(x, idl); :}
+                   | decl:s											  {: RESULT = s; :}
                    ;
-argtypelist    ::=   argtype
-                   | argtype COMMA argtypelist
+idlist         ::= 	 expr :exp1										  {:RESULT = new ArgExpr(exp1); :}
+				   |idlist:idl COMMA expr:exp1						  {: ((ArgExpr) idl).add(exp1); RESULT = idl ; :}
+				   |												  {:RESULT = new ArgExpr(); :};
+					
+ifblock        ::=  IF LPAREN expr:predicate RPAREN block:consequent  {:RESULT = new ListExpr("if", predicate, consequent); :}
+					;
+
+ifelseblock    ::=  IF LPAREN expr:predicate RPAREN block:consequent ELSE block:alternative
+                   {:RESULT = new ListExpr("if", predicate, consequent, alternative); :}
                    ;
-funtype        ::=   COLON argtype
-                   | COLON OPEN_PAREN argtypelist CLOSE_PAREN
-                   | //empty
+                   
+decl           ::=   decllist: dl 						        	  {: RESULT = dl;:}
+                   | decllist:dcl EQ expr:exp1             	    	  {: RESULT = new BinaryExpr("=", dcl, exp1) ; :}
                    ;
-block          ::=   OPEN_BRACE stmtlist retop CLOSE_BRACE
-                   | stmt
+// can be used for assignment and declaration!!!
+decllist       ::=   UNDERSCORE 							    	  {: RESULT = new ListExpr("_"); :}
+                   | ID:x COLON vartype:vt					    	  {: RESULT = new ListExpr(x,vt); :}
+                   | decllist:dcl COMMA UNDERSCORE                    
+                   {: ListExpr ret = new ListExpr();
+					  ret.add(dcl); ret.add(new ListExpr("_"));  
+					  RESULT = ret;:}
+                   | decllist:dcl COMMA ID:x COLON vartype :vt        
+                   {: ListExpr ret = new ListExpr();
+					  ret.add(dcl); ret.add(new ListExpr(x,vt));  
+					  RESULT = ret;:}
+                   | var:x 									          {: RESULT = x; :}
+                   | decllist: dcl COMMA var:x						  
+                   {: ListExpr ret = new ListExpr();
+					ret.add(dcl); ret.add(x);  
+					RESULT = ret;:}
+				;
+vartype        ::=   INT 										      {:RESULT = new ArrayExpr("int"); :}
+                   | BOOL									          {:RESULT = new ArrayExpr("bool"); :}
+                   | vartype:vt LBRACKET expr:exp RBRACKET            {:vt.push(exp); RESULT = vt;:}
+                   | vartype:vt LBRACKET RBRACKET				      {:vt.push(new AtomExpr("")); RESULT = vt;:}
                    ;
-stmtlist       ::=   stmt stmtlist
-                   | stmt SEMICOLON stmtlist
-                   | //empty
+var        		::=  ID:x 										      {:RESULT = new ArrayExpr(x); :}
+                   | var:vt LBRACKET expr:exp RBRACKET            	  {:(vt).push(exp); RESULT = vt;:}
+                   | var:vt LBRACKET RBRACKET				      	  {:(vt).push(new AtomExpr("")); RESULT = vt;:}
                    ;
-stmt           ::=   ifblock
-                   | ifelseblock
-                   | WHILE OPEN_PAREN expr CLOSE_PAREN block
-                   | IDENTIFIER OPEN_PAREN idlist CLOSE_PAREN
-                   | block
-                   | decl
-                   | assignment
+                   
+retop          ::=  RETURN idlist:el								  {: RESULT = new ListExpr("return",el);:}
+				   |RETURN idlist:el SEMI							  {: RESULT = new ListExpr("return",el);:}			
+                   | 												  {: RESULT = new ArgExpr(); :}
                    ;
-ifblock        ::=   IF OPEN_PAREN expr CLOSE_PAREN block;
-ifelseblock    ::=   IF OPEN_PAREN expr CLOSE_PAREN block ELSE block;
-decl           ::=   IDENTIFIER COLON vartype optassign
-                   | OPEN_PAREN decllist CLOSE_PAREN EQUAL expr
+expr           ::=   INTEGER:i										  {: RESULT = new AtomExpr(i); :}
+                   | STRING:s										  {: RESULT = new AtomExpr(s,true); :}
+                   | CHARACTER:c									  {: RESULT = new AtomExpr(c.charAt(0)); :}
+                   | TRUE											  {: RESULT = new AtomExpr("true"); :}
+                   | FALSE											  {: RESULT = new AtomExpr("false"); :}
+                   | LENGTH LPAREN expr:e1 RPAREN					  {: RESULT = new ListExpr("length",e1 ); :}
+                   | LPAREN expr:ex RPAREN 							  {: RESULT = ex;:}
+                   | var:vt    				  					  	  {: RESULT = vt ;:}
+                   | binaryexpr:be									  {: RESULT = be; :}				  
+                   | unaryexpr:ne									  {: RESULT = ne; :}
+                   | funcall:fc 									  {: RESULT = new ArgExpr(fc); :}
+                   | tuple:tl										  {: RESULT = new ArgExpr(tl); :}									  
+					;
+funcall        ::=   ID:x LPAREN idlist:el RPAREN 				  	  {: RESULT = new ListExpr( x, el); :};
+
+tuple          ::=   LBRACE idlist:el RBRACE						  {: RESULT = new ListExpr(el); :};
+                
+binaryexpr     ::=   expr:e1 PLUS expr:e2						{: RESULT = new BinaryExpr("+", e1, e2); :}
+                   | expr:e1 MINUS expr:e2						{: RESULT = new BinaryExpr("-", e1, e2); :}
+                   | expr:e1 TIMES expr:e2						{: RESULT = new BinaryExpr("*", e1, e2); :}
+                   | expr:e1 DIV expr:e2						{: RESULT = new BinaryExpr("/", e1, e2); :}
+                   | expr:e1 MOD expr:e2						{: RESULT = new BinaryExpr("%", e1, e2); :}
+                   | expr:e1 LANGLE	expr:e2						{: RESULT = new BinaryExpr("<", e1, e2); :}
+                   | expr:e1 RANGLE	expr:e2						{: RESULT = new BinaryExpr(">", e1, e2); :}
+                   | expr:e1 LEQ expr:e2						{: RESULT = new BinaryExpr("<=", e1, e2); :}
+                   | expr:e1 GEQ expr:e2						{: RESULT = new BinaryExpr(">=", e1, e2); :}
+                   | expr:e1 EQEQ expr:e2						{: RESULT = new BinaryExpr("==", e1, e2); :}
+                   | expr:e1 NEQ expr:e2 					    {: RESULT = new BinaryExpr("!=", e1, e2); :}
+                   | expr:e1 AND expr:e2						{: RESULT = new BinaryExpr("&", e1, e2); :}
+                   | expr:e1 OR expr:e2							{: RESULT = new BinaryExpr("|", e1, e2); :}
+                   | expr:e1 HIGHMUL expr:e2					{: RESULT = new BinaryExpr("*>>", e1,e2); :}
                    ;
-decllist       ::=   UNDERSCORE
-                   | IDENTIFIER COLON vartype
-                   | UNDERSCORE COMMA decllist
-                   | IDENTIFIER COLON vartype COMMA decllist
+unaryexpr      ::=   MINUS expr:e1								{: RESULT = new ListExpr("-", e1); :}
+					 %prec UMINUS
+                   | NOT expr:e1								{: RESULT = new ListExpr("!", e1); :}
                    ;
-vartype        ::=   INT filledarrset arrset
-                   | BOOL filledarrset arrset
-                   ;
-filledarrset   ::=   OPEN_BRACKET expr CLOSE_BRACKET filledarrset
-                   | //empty
-                   ;
-optassign      ::=   EQUAL expr
-                   | //empty
-                   ;
-assignment     ::=   uid EQUAL expr
-                   | OPEN_PAREN uidlist CLOSE_PAREN EQUAL expr
-                   ;
-uid            ::=   UNDERSCORE
-                   | IDENTIFIER
-                   | IDENTIFIER OPEN_BRACKET expr CLOSE_BRACKET
-                   ;
-uidlist        ::=   uid
-                   | uid COMMA uidlist
-                   ;
-retop          ::=   RETURN
-                   | RETURN OPEN_PAREN exprlist CLOSE_PAREN
-                   | //empty
-                   ;
-expr           ::=   INTEGER_LITERAL
-                   | IDENTIFIER
-                   | funcall
-                   | tuple
-                   | STRING_LITERAL
-                   | CHARACTER_LITERAL
-                   | binaryexpr
-                   | unaryexpr
-                   | IDENTIFIER filledarrset
-                   | TRUE
-                   | FALSE
-                   | LENGTH OPEN_PAREN expr CLOSE_PAREN
-                   ;
-binaryexpr     ::=   expr bop expr;
-bop            ::=   PLUS
-                   | MINUS
-                   | TIMES
-                   | DIVIDE
-                   | MODULO
-                   | LT
-                   | LEQ
-                   | GT
-                   | GEQ
-                   | EQEQ
-                   | NOT_EQUAL
-                   | AND
-                   | OR
-                   ;
-unaryexpr      ::=   uop expr;
-uop            ::=   MINUS
-                   | NOT
-                   ;
-funcall        ::=   IDENTIFIER TUPLE;
-exprlist       ::=   expr
-                   | expr COMMA exprlist
-                   | //empty
-                   ;
-tuple          ::=   OPEN_PAREN exprlist CLOSE_PAREN;

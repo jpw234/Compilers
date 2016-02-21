@@ -1,5 +1,6 @@
 package compiler_ww424;
 import java.io.File;
+import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -123,30 +124,13 @@ public class Compiler {
 			}
 		}
 		if (toCompile && !useHelp){
-<<<<<<< HEAD
-<<<<<<< HEAD
 			lex_parse(toParse,pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
-=======
-=======
->>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
-			lex(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
-		}
-		if (toParse && !useHelp){
-			parse(pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
 		}
 
 
 
 	}
-<<<<<<< HEAD
 	public static void lex_parse(Boolean toParse,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-=======
-	public static void lex(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-<<<<<<< HEAD
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
-=======
->>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 			String sourceRoot,String diagnosisRoot) throws Exception{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
@@ -202,42 +186,17 @@ public class Compiler {
 			if(diagnosisRoot != null){
 				fileName = diagnosisRoot + "/" +fileName;
 			}
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 			Reader fr = new FileReader(p.getFile());
 			FileWriter fw = new FileWriter(fileName);
 			Lexer lexer = new Lexer(fr);
 
 
-=======
-=======
->>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
-			
-			Reader fr = new FileReader(p.getFile());
-			FileWriter fw = new FileWriter(fileName);
-			Lexer lexer = new Lexer(fr);
-	
-			parser par = new parser(lexer);
-			System.out.println(par.parse().value);
-			
-<<<<<<< HEAD
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
-=======
->>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 			for(Token tok = (Token) lexer.next_token(); tok.sym!=0; tok = (Token)lexer.next_token()){
 				int numLine = tok.getLine() + 1 ;
 				int numCol = tok.getCol() + 1; 
 				String lineVal = new String ();
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-				
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
-=======
-				
->>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 				if (tok.sym == sym.INTEGER){
 					lineVal = "integer"+" "+ lexer.yytext();
 				}
@@ -250,70 +209,46 @@ public class Compiler {
 				else if (tok.sym == sym.ID) {
 					lineVal = "id"+" "+ tok.value;
 				}
+				else if (tok.sym == sym.error){
+					lineVal = (String) tok.value;
+					fw.write(String.format("%d:%d %s\n", numLine, numCol, lineVal));
+					break;
+				}
 				else{
 					lineVal = lexer.yytext();
 				}
 				//WRITE IN THE FILES
+
 				String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
-<<<<<<< HEAD
-<<<<<<< HEAD
+				//System.out.println(s);
 				fw.write(s);
-				System.out.print(s);
+
 
 			}
-//			if(toParse){
-//				fr = new FileReader(p.getFile());
-//				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
-//				FileWriter fwp = new FileWriter(fN);
-//				lexer = new Lexer(fr);
-//
-//				try{
-//					parser par = new parser(lexer);
-//					System.out.println(par.parse().value);
-//					fwp.write(par.parse().value.toString());
-//				}catch(Error e ){		
-//					System.out.println(e.getMessage());
-//					fwp.write(e.getMessage());
-//				}
-//				fwp.close();
-//			}
+			if(toParse){
+				fr = new FileReader(p.getFile());
+				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
+				FileWriter fwp = new FileWriter(fN);
+				lexer = new Lexer(fr);
+
+				try{
+					parser par = new parser(lexer);
+					//System.out.println(par.parse().value);
+					fwp.write(par.parse().value.toString());
+				}catch(Error e ){		
+					//System.out.println(e.getMessage());
+					fwp.write(e.getMessage());
+				}
+				fwp.close();
+			}
 			fw.close();
-			
+
 		}
 
 	}
 
-=======
-				fw.write(s); 
-				System.out.print(s);
-				
-			}
-			fw.close();
-		}
-		
-	}
-	
-	
-	public static void parse(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,String currentRoot,String diagnosisRoot){
->>>>>>> 2dc7cedc50198d761366675eb36819cb7ed19d4a
 
 
-=======
-				fw.write(s); 
-				System.out.print(s);
-				
-			}
-			fw.close();
-		}
-		
-	}
-	
-	
-	public static void parse(ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,String currentRoot,String diagnosisRoot){
-
-	}
-
->>>>>>> dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
 
 
 	public static void printUsage() {

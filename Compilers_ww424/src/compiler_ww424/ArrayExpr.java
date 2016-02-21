@@ -12,7 +12,7 @@ public class ArrayExpr extends Expr{
 	}
 	
 	public void push(Expr exp){
-		s.add(exp);
+		s.push(exp);
 	}
 	
 	@Override
@@ -24,7 +24,7 @@ public class ArrayExpr extends Expr{
 		String ret = type;
 		while (!s.empty()){
 			Expr e = s.pop();
-			ret = "( "+"[]" + ret + e.toString() + " )";
+			ret = "("+"[] " + ret +" "+ e + ")";
 		}
 		return ret;
 	}
