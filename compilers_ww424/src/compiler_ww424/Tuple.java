@@ -9,6 +9,10 @@ public class Tuple extends Type {
 		args = l;
 	}
 	
+	public void add(Type t) {
+		args.add(t);
+	}
+	
 	public List<Type> getArgs() {
 		return args;
 	}
