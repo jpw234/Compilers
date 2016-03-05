@@ -5,8 +5,10 @@ public class FunCall extends Expr {
 	private IDExpr name;
 	private List<Expr> args;
 	
-	public FunCall(IDExpr n, List<Expr> a) {
+	public FunCall(IDExpr n, List<Expr> a,int linNum,int colNum) {
 		name = n; args = a;
+		line = linNum;
+		column = colNum;
 	}
 	
 	public IDExpr getName() {

@@ -4,9 +4,11 @@ public class Decl extends Stmt {
 	private IDExpr name;
 	private Type type;
 	
-	public Decl(IDExpr n, Type t) {
+	public Decl(IDExpr n, Type t,int lineNum,int colNum) {
 		name = n;
 		type = t;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public IDExpr getName() {

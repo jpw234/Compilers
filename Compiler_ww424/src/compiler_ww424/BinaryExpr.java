@@ -5,10 +5,12 @@ public class BinaryExpr extends Expr {
 	private Expr right;
 	private BinaryOp op;
 	
-	public BinaryExpr(Expr l, Expr r, BinaryOp o) {
+	public BinaryExpr(Expr l, Expr r, BinaryOp o,int lineNum,int colNum) {
 		left = l;
 		right = r;
 		op = o;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public Expr getLeft() {

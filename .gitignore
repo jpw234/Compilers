@@ -1,16 +1,16 @@
 *.class
 *.DS_Store
-Compilers_www424/.settings
-Compilers_www424/.classpath
-Compilers_www424/.DS_Store
-Compilers_www424/.project
-Compilers_www424/test1.lexed
-Compilers_www424/useio
-Compilers_www424/bin
+Compiler_www424/.settings
+Compiler_www424/.classpath
+Compiler_www424/.DS_Store
+Compiler_www424/.project
+Compiler_www424/test1.lexed
+Compiler_www424/useio
+Compiler_www424/bin
 .DS_Store
-Compilers_ww424/src/compiler_ww424/Lexer.java*
-Compilers_ww424/src/compiler_ww424/Parser.java*
-Compilers_ww424/src/compiler_ww424/sym.java*
+Compiler_ww424/src/compiler_ww424/Lexer.java*
+Compiler_ww424/src/compiler_ww424/Parser.java*
+Compiler_ww424/src/compiler_ww424/sym.java*
 # Package Files #
 *.jar
 *.war

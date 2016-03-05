@@ -4,9 +4,11 @@ public class Assign extends Stmt {
 	private ArrExpr left;
 	private Expr right;
 	
-	public Assign(ArrExpr l, Expr r) {
+	public Assign(ArrExpr l, Expr r,int lineNum,int colNum) {
 		left = l;
 		right = r;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public ArrExpr getLeft() {
