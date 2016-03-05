@@ -18,6 +18,7 @@ public class Compiler {
 	public static final String INPUT_PARSE = "--parse";
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
 	public static final String INPUT_DIAGNOSIS_PATH = "-d";
+	public static final String INPUT_TYPECHECKER = "--typecheck";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -88,9 +89,10 @@ public class Compiler {
 		String currentRoot = directory;
 		String sourceRoot = null;
 		String diagnosisRoot = null;
-		Boolean toCompile = false;
+		Boolean toLex = false;
 		Boolean useHelp = false;
 		Boolean toParse = false;
+		Boolean toTypeCheck = false;
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
@@ -110,12 +112,13 @@ public class Compiler {
 				break;
 			case INPUT_LEX:
 				// Use The CWD
-				toCompile = true;
+				toLex = true;
 				break;
 			case INPUT_PARSE:
-				toCompile = true;
 				toParse = true;
 				break;
+			case INPUT_TYPECHECKER:
+				toTypeCheck = true;
 
 			default:
 				// This Must Be A File
@@ -123,14 +126,14 @@ public class Compiler {
 				break;
 			}
 		}
-		if (toCompile && !useHelp){
-			lex_parse(toParse,pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
+		if (toLex || toParse || toTypeCheck&& !useHelp){
+			lex_parse(toParse,toLex,toTypeCheck,pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
 		}
 
 
 
 	}
-	public static void lex_parse(Boolean toParse,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
+	public static void lex_parse(Boolean toParse,Boolean toLex, Boolean toTypeCheck,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
 			String sourceRoot,String diagnosisRoot) throws Exception{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
@@ -164,13 +167,11 @@ public class Compiler {
 					codeToCompile.add(p);
 				}
 				else {
-					codeToCompile.add(new CodePath(sourceRoot, f.toString()));
-				}
+					codeToCompile.add(new CodePath(sourceRoot, f.toString()));}
 			}
-
 		}
-
 		System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
+
 
 		for (CodePath p: codeToCompile){
 			//DETECT IF THIS EXISTS 
@@ -186,51 +187,49 @@ public class Compiler {
 			if(diagnosisRoot != null){
 				fileName = diagnosisRoot + "/" +fileName;
 			}
-
 			Reader fr = new FileReader(p.getFile());
-			FileWriter fw = new FileWriter(fileName);
 			Lexer lexer = new Lexer(fr);
 
+			if (toLex){
+				FileWriter fw = new FileWriter(fileName);
+				for(Token tok = (Token) lexer.next_token(); tok.sym!=0; tok = (Token)lexer.next_token()){
+					int numLine = tok.getLine() + 1 ;
+					int numCol = tok.getCol() + 1; 
+					String lineVal = new String ();
 
-			for(Token tok = (Token) lexer.next_token(); tok.sym!=0; tok = (Token)lexer.next_token()){
-				int numLine = tok.getLine() + 1 ;
-				int numCol = tok.getCol() + 1; 
-				String lineVal = new String ();
+					if (tok.sym == sym.INTEGER){
+						lineVal = "integer"+" "+ lexer.yytext();
+					}
+					else if (tok.sym == sym.STRING){
+						lineVal = "string"+" "+ tok.value;
+					}
+					else if (tok.sym == sym.CHARACTER) {
+						lineVal = "character"+" "+ tok.value;
+					}
+					else if (tok.sym == sym.ID) {
+						lineVal = "id"+" "+ tok.value;
+					}
+					else if (tok.sym == sym.error){
+						lineVal = (String) tok.value;
+						fw.write(String.format("%d:%d %s\n", numLine, numCol, lineVal));
+						break;
+					}
+					else{
+						lineVal = lexer.yytext();
+					}
+					//WRITE IN THE FILES
 
-				if (tok.sym == sym.INTEGER){
-					lineVal = "integer"+" "+ lexer.yytext();
+					String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
+					//System.out.println(s);
+					fw.write(s);
 				}
-				else if (tok.sym == sym.STRING){
-					lineVal = "string"+" "+ tok.value;
-				}
-				else if (tok.sym == sym.CHARACTER) {
-					lineVal = "character"+" "+ tok.value;
-				}
-				else if (tok.sym == sym.ID) {
-					lineVal = "id"+" "+ tok.value;
-				}
-				else if (tok.sym == sym.error){
-					lineVal = (String) tok.value;
-					fw.write(String.format("%d:%d %s\n", numLine, numCol, lineVal));
-					break;
-				}
-				else{
-					lineVal = lexer.yytext();
-				}
-				//WRITE IN THE FILES
-
-				String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
-				//System.out.println(s);
-				fw.write(s);
-
-
+				fw.close();
 			}
 			if(toParse){
 				fr = new FileReader(p.getFile());
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
 				FileWriter fwp = new FileWriter(fN);
 				lexer = new Lexer(fr);
-
 				try{
 					parser par = new parser(lexer);
 					//System.out.println(par.parse().value);
@@ -241,15 +240,14 @@ public class Compiler {
 				}
 				fwp.close();
 			}
-			fw.close();
+			
+			if (toTypeCheck){
+				
+			}
 
 		}
 
 	}
-
-
-
-
 
 	public static void printUsage() {
 		System.out.println("xic");
