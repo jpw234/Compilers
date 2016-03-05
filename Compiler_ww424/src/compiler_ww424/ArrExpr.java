@@ -1,16 +1,16 @@
 package compiler_ww424;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class ArrExpr extends Expr {
 	private IDExpr name;
-	private List<Expr> accesses;
+	private ArrayList<Expr> accesses = new ArrayList<Expr>();
 	
 	public ArrExpr(IDExpr n) {
 		name = n;
 	}
 	
-	public ArrExpr(IDExpr n, List<Expr> c) {
+	public ArrExpr(IDExpr n, ArrayList<Expr> c) {
 		name = n; accesses = c;
 	}
 	
@@ -22,7 +22,7 @@ public class ArrExpr extends Expr {
 		return name;
 	}
 	
-	public List<Expr> getAccesses() {
+	public ArrayList<Expr> getAccesses() {
 		return accesses;
 	}
 	

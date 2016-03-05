@@ -13,6 +13,10 @@ public class Type {
 		arrDepth = d;
 	}
 	
+	public void addDepth() {
+		arrDepth++;
+	}
+	
 	public String getType() {
 		return type;
 	}
