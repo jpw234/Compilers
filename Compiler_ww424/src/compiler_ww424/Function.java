@@ -35,16 +35,25 @@ public class Function {
 		return body;
 	}
 	
-	public Type typecheck(SymTab s) {
+	public void firstPass(SymTab s) {
 		if(s.lookup(name.getName()) != null) throw new Error("function redeclared error");
 		
-		SymTab newScope = new SymTab(s);
-				
 		Tuple inputs = new Tuple(new ArrayList<Type>());
 		
 		for(int a = 0; a < args.size(); a++) {
-			args.get(a).typecheck(newScope);
 			inputs.add(args.get(a).getType());
+		}
+		
+		FunType ret = new FunType(inputs, retType);
+		
+		s.add(name.getName(), ret);
+	}
+
+	public Type typecheck(SymTab s) {
+		SymTab newScope = new SymTab(s);
+		
+		for(int a = 0; a < args.size(); a++) {
+			args.get(a).typecheck(newScope);
 		}
 		
 		for(int a = 0; a < body.size(); a++) {
@@ -57,10 +66,6 @@ public class Function {
 			}
 			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error("stmt should be unit type");
 		}
-		
-		FunType ret = new FunType(inputs, retType);
-		
-		s.add(name.getName(), ret);
 		
 		return null;		
 	}
