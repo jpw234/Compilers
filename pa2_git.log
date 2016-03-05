@@ -1,0 +1,261 @@
+commit bee5a4f371638b52275f5aa245623b59ba92e0c6
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 20 21:35:44 2016 -0500
+
+    .project files
+
+commit 908d6ce9514bbc53b2e69100d5155726b26fc540
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 20 21:19:54 2016 -0500
+
+    PA2 Finished / pass 15 cases
+
+commit 2b21bc8c49a21f1f98e9d2cfde00663eb2e81c76
+Merge: 69dc049 dc23a04
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 20 18:25:35 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    Conflicts:
+    	Compilers_ww424/src/compiler_ww424/Compiler.java
+    	Compilers_ww424/src/compiler_ww424/lexer.flex
+    	ParserTest/Compilers_ww424/src/compiler_ww424/Lexer.java
+
+commit 69dc049b2a8c8472c695d2cd9042974b7f37007a
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 20 18:23:10 2016 -0500
+
+    pass 12 tests / fix lecture.flex; Construct AST
+
+commit dc23a04b6161fb9fa3f6f45d2fd22979456d13ed
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Fri Feb 19 23:11:09 2016 -0500
+
+    Actually pushing the fix this time.
+
+commit afdd063a6bbc17dc96e4310ba722e4353a9dca97
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Fri Feb 19 23:08:43 2016 -0500
+
+    Modified JFlex file. Added a gitignore.
+
+commit 77c7fe31a35390fbf3ea52a24c5e9b11723cff37
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Fri Feb 19 22:33:07 2016 -0500
+
+    no message
+
+commit 2dc7cedc50198d761366675eb36819cb7ed19d4a
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Wed Feb 17 23:20:18 2016 -0500
+
+    added precedences to cup file
+
+commit 339347ac86b506a653eaa238735b12df4bd5c302
+Author: JausAP <ajaus93@hotmail.com>
+Date:   Wed Feb 17 12:31:26 2016 -0500
+
+    Housekeeping.
+
+commit 3bee24104d2497acbf5a46d211d68b58defc52d5
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Wed Feb 17 12:07:12 2016 -0500
+
+    fixed EOF issue
+
+commit 79f3517a1c12119f0d05ebaf6f5283c47496bbbb
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Wed Feb 17 12:05:31 2016 -0500
+
+    no message
+
+commit f466127d14e54a5c3a26206a78a5a7bc6af0b4c8
+Merge: af2c3ef fea0439
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Wed Feb 17 12:05:15 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers into Parser_WenYu
+
+commit fea0439750c94f805cc8f6f2bf9f581336d07ede
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Wed Feb 17 00:18:03 2016 -0500
+
+    added initial draft of cup file
+
+commit af2c3ef93290d2a10c402f40366792726254bc9a
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Tue Feb 16 11:16:46 2016 -0500
+
+    Testing parser / cup/ lexer
+
+commit 7dd1c9518c8a9201a839efdf6ecc5df26f41ca95
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Mon Feb 15 20:33:37 2016 -0500
+
+    compatible with jFlex & cup
+
+commit 66eb31d5e7b495e7317ba28c5179bb52f3cb5d3d
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Mon Feb 15 17:18:19 2016 -0500
+
+    no message
+
+commit 3e4fdb7791f0415bc5e8caa68452344360026bf8
+Author: 昱絜傅 <frostorb8000@dhcp-hol-1190.eduroam.cornell.edu>
+Date:   Sat Feb 13 17:19:08 2016 -0500
+
+    parser command line interface v2
+
+commit c957851971639870c687c140c1d4130fa9747329
+Author: 昱絜傅 <frostorb8000@dhcp-hol-1190.eduroam.cornell.edu>
+Date:   Sat Feb 13 17:17:26 2016 -0500
+
+    parser command line interface
+
+commit 732df7eb91a0284405740ffd69f2dae6db824a92
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 13 14:39:49 2016 -0500
+
+    no message
+
+commit 9213f9be3174fc4508533da8c287e31d0efb4655
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 13 14:14:34 2016 -0500
+
+    version which can compiled on eclipse
+
+commit e52442c7f75be456adc79e70d5ab187ae43ef616
+Merge: d593a99 0f35aa7
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Wed Feb 10 13:17:36 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit d593a99e180875aa8235fbbbe60c4231e2c79ace
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Wed Feb 10 13:17:17 2016 -0500
+
+    cleanup
+
+commit 0f35aa73584203057eb609936504f8926ddb4264
+Merge: c2a61e7 389d842
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Mon Feb 8 13:20:44 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit c2a61e755948355100aacfb13e502c0af31169e7
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Mon Feb 8 13:20:28 2016 -0500
+
+    Combine latest Lexer and latest Compile.java
+
+commit 389d842a63e81410d9003bc9cc4e556205b4db59
+Author: 昱絜傅 <frostorb8000@akiras-MacBook-Pro-2.local>
+Date:   Sun Feb 7 22:14:10 2016 -0500
+
+    Test Harness Environment- add xic.jar
+
+commit eacc72023eb8b6246eec42067d952a844675e1c6
+Author: 昱絜傅 <frostorb8000@akiras-MacBook-Pro-2.local>
+Date:   Sun Feb 7 21:31:51 2016 -0500
+
+    Test Harness Environment
+
+commit 1e13a73713d7db8f9128a1e6a8105387adb9f720
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 15:02:46 2016 -0500
+
+    ensured error messages are correctly aligned
+
+commit cbb841f37051f93d99ce764e0db3bd4f50b59d7a
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 14:52:05 2016 -0500
+
+    Added ERROR tokens
+
+commit d692a7a90d92a214655be3bfbc4bf47884ce069f
+Merge: 33fdcdd 4a39e5b
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 14:16:38 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit 33fdcdd5ed1e3ca0074af0daedd9d70b88b5b401
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 14:16:05 2016 -0500
+
+    fix error where String col value is at end of string
+
+commit 4a39e5b081198c0b73114724aedaa6532829bc50
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Feb 7 13:59:17 2016 -0500
+
+    no message
+
+commit 2d46ef5c23c6b13b1e95866a3a0909f6cddccd78
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 13:33:42 2016 -0500
+
+    made change to support \x and \0x hex values
+
+commit 190f774fcc96f29b8073c5550746150fb1f9ed3f
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 13:33:27 2016 -0500
+
+    made change to support \x and \0x hex values
+
+commit 264257c6e3a2ddd879cf780d819eb541b28a81a6
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 13:24:14 2016 -0500
+
+    working lexer.java file
+
+commit 57976cdca55cfab13cbf3ded6495c9d6f7c8b979
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 13:23:10 2016 -0500
+
+    adding working .flex and .java files
+
+commit 437acaf40d0be34a21c78d8a3300f5b5eb184267
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 12:55:52 2016 -0500
+
+    added changes to char as well as string
+
+commit eb58701bf70f60c4d6fdba2f4e3102dfc01cf8cb
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Feb 7 12:54:01 2016 -0500
+
+    bugfixes to lexer.flex
+
+commit 78834185a250975e184b0f7f0487ecf18bcb40c1
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Feb 7 00:13:14 2016 -0500
+
+    no message
+
+commit b88556f9f652d9cf64e112c774151478cf921a6f
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 6 23:54:56 2016 -0500
+
+    no message
+
+commit 51d8467f43d6f2d4f1e9113bcf6324214a0bfcc0
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Feb 6 23:19:32 2016 -0500
+
+    no message
+
+commit 2772eb403fea44fcc302781b279f14ce37c55ba9
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Feb 6 16:12:00 2016 -0500
+
+    initial version of flex file and jflex output
+
+commit 4aa23c19f2dfad06b9a005fb89c17a29a4a6ead0
+Author: jpw234 <jpw234@cornell.edu>
+Date:   Wed Feb 3 11:17:57 2016 -0500
+
+    Initial commit
