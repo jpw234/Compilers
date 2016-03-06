@@ -252,10 +252,14 @@ vartype_init  ::=  INT:x                      {: RESULT = new Decl(new IDExpr("i
                  | BOOL:x                         {: RESULT = new Decl(new IDExpr("bool",xleft+1,xright+1), new Type("bool"), new ArrayList<Expr>(), xleft+1, xright+1);:}
                  | vartype_init:vt LBRACKET RBRACKET                {: vt.getType().addDepth(); RESULT = vt; :}
                  | vartype_init:vt LBRACKET expr:exp RBRACKET     
-                 {:  
-                    if(vt.getType().getDepth() != vt.getAccesses().size()){
-                        Error e  = new Error();
-                        parser.report_error("Syntax error",e);
+                 {: 
+                    try{
+                        if(vt.getType().getDepth() != vt.getAccesses().size()){
+                          throw new ArrayInitException("Array Initialization Error");
+                        }
+                    }
+                    catch(ArrayInitException ex){
+                      System.out.println(ex.toString());
                     }
                     vt.getType().addDepth();
                     vt.addAccess(exp);  
@@ -265,10 +269,14 @@ vartype_init  ::=  INT:x                      {: RESULT = new Decl(new IDExpr("i
 var         ::=  ID:x                         {: RESULT = new ArrExpr(new IDExpr(x,xleft+1,xright+1), xleft+1, xright+1); :}
                  | var:vt LBRACKET RBRACKET               {: vt.addDepth(); RESULT = vt;  :}
                  | var:vt LBRACKET expr:exp RBRACKET            
-                 {:  
-                    if(vt.getDepth() != vt.getAccesses().size()){
-                        Error e  = new Error();
-                        parser.report_error("syntax error", e);
+                 {:
+                    try{
+                        if(vt.getDepth() != vt.getAccesses().size()){
+                          throw new ArrayInitException("Array Initialization Error");
+                        }
+                    }
+                    catch(ArrayInitException ex){
+                      System.out.println(ex.toString());
                     }
                     vt.addDepth();
                     vt.add(exp);
