@@ -122,7 +122,7 @@ public class Compiler {
 				break;
 			}
 		}
-		if (toLex || toParse && !useHelp){
+		if ((toLex || toParse) && !useHelp){
 			lex_parse(toLex, toParse,pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
 		}
 
@@ -175,77 +175,62 @@ public class Compiler {
 			//DETECT IF THIS EXISTS 
 			try {
 				Reader abc = new FileReader(p.getFile());
-				abc.close();
-			}
+				abc.close();}
 			catch(IOException ioe){
 				System.err.println("No such File in Directory");
-				return;
-			}
-			Reader fr = new FileReader(p.getFile());
-			Lexer lexer = new Lexer(fr);
+				return;}
+			
 			if (toLex){
 				String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
 				if(diagnosisRoot != null){
-					fileName = diagnosisRoot + "/" +fileName;
-				}
-				
+					fileName = diagnosisRoot + "/" +fileName;}
+				Reader fr = new FileReader(p.getFile());
+				Lexer lexer = new Lexer(fr);
 				FileWriter fw = new FileWriter(fileName);
 				for(Token tok = (Token) lexer.next_token(); tok.sym!=0; tok = (Token)lexer.next_token()){
 					int numLine = tok.getLine() + 1 ;
 					int numCol = tok.getCol() + 1; 
 					String lineVal = new String ();
-
-					if (tok.sym == sym.INTEGER){
-						lineVal = "integer"+" "+ lexer.yytext();
-					}
-					else if (tok.sym == sym.STRING){
-						lineVal = "string"+" "+ tok.value;
-					}
-					else if (tok.sym == sym.CHARACTER) {
-						lineVal = "character"+" "+ tok.value;
-					}
-					else if (tok.sym == sym.ID) {
-						lineVal = "id"+" "+ tok.value;
-					}
-					else if (tok.sym == sym.error){
-						lineVal = (String) tok.value;
+					if (tok.sym == sym.INTEGER){ lineVal = "integer"+" "+ lexer.yytext();}
+					else if (tok.sym == sym.STRING){lineVal = "string"+" "+ tok.value;}
+					else if (tok.sym == sym.CHARACTER) { lineVal = "character"+" "+ tok.value;}
+					else if (tok.sym == sym.ID) {lineVal = "id"+" "+ tok.value;}
+					else if (tok.sym == sym.error){lineVal = (String) tok.value;
 						fw.write(String.format("%d:%d %s\n", numLine, numCol, lineVal));
-						break;
-					}
-					else{
-						lineVal = lexer.yytext();
-					}
+						break;}
+					else{lineVal = lexer.yytext();}
 					//WRITE IN THE FILES
-
 					String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
-					//System.out.println(s);
 					fw.write(s);
+					
 				}
+				
+				System.out.println("Lexed file(s) generated!");
 				fw.close();
 			}
 			if(toParse){
-				fr = new FileReader(p.getFile());
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
-				FileWriter fwp = new FileWriter(fN);
-				lexer = new Lexer(fr);
-
+				Reader fr = new FileReader(p.getFile());
+				Lexer lexer = new Lexer(fr);
+				FileWriter fw = new FileWriter(fN);
+				@SuppressWarnings("deprecation")
+				parser par = new parser(lexer);
 				try{
-					parser par = new parser(lexer);
-					//System.out.println(par.parse().value);
-					fwp.write(par.parse().value.toString());
+					Program program = (Program) par.parse().value;
+					System.out.println(program.toString());
+					fw.write(program.toString());
 				}catch(Error e ){		
-					//System.out.println(e.getMessage());
-					fwp.write(e.getMessage());
+					System.out.println(e.getMessage());
+					fw.write(e.getMessage());
 				}
-				fwp.close();
+				System.out.println("Parsed file(s) generated!");
+				fw.close();
 			}
+			
 
 		}
 
 	}
-
-
-
 
 
 	public static void printUsage() {
