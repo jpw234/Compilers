@@ -29,8 +29,6 @@ public class Program {
 	}
 
 	public void firstPass(SymTab s) {
-		//TODO: Insert use logic
-
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).firstPass(s);
 		}

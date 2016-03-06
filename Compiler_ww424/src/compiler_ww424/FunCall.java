@@ -20,7 +20,14 @@ public class FunCall extends Expr {
 	}
 	
 	public Type typecheck(SymTab s) {
-		FunType ft = (FunType) s.lookup(name.getName());
+		try {
+			FunType ft = (FunType) s.lookup(name.getName());
+		}
+		catch(Error e) {
+			if(e.getMessage() == "Semantic Error: var does not exist") {
+				FunType ft = (FunType) s.lookup("*" + name.getName());
+			}
+		}
 		
 		if(args.size() != ft.getInputs().getArgs().size()) throw new Error("incorrect # of args to fun");
 		

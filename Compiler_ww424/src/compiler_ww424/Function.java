@@ -19,6 +19,13 @@ public class Function {
 		column = colNum;
 	}
 	
+	public Function(IDExpr n, List<Decl> a, Tuple r, int lineNum, int colNum) {
+		name = n; args = a; retType = r;
+		body = null;
+		line = lineNum;
+		column = colNum;
+	}
+	
 	public IDExpr getName() {
 		return name;
 	}
@@ -55,6 +62,8 @@ public class Function {
 		for(int a = 0; a < args.size(); a++) {
 			args.get(a).typecheck(newScope);
 		}
+		
+		if(body == null) return null;
 		
 		for(int a = 0; a < body.size(); a++) {
 			if(a == body.size() - 1) {
