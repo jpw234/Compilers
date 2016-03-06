@@ -6,8 +6,10 @@ public class ArrExpr extends Expr {
 	private IDExpr name;
 	private ArrayList<Expr> accesses = new ArrayList<Expr>();
 	
-	public ArrExpr(IDExpr n) {
+	public ArrExpr(IDExpr n,int l,int c) {
 		name = n;
+		line = l;
+		column = c;
 	}
 	
 	public ArrExpr(IDExpr n, ArrayList<Expr> c) {

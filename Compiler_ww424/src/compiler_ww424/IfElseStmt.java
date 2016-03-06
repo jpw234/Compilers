@@ -2,15 +2,17 @@ package compiler_ww424;
 import java.util.List;
 
 public class IfElseStmt extends Stmt {
-	private BinaryExpr condition;
+	private Expr condition;
 	private List<Stmt> ifbody;
 	private List<Stmt> elsebody;
 	
-	public IfElseStmt(BinaryExpr cond, List<Stmt> ib, List<Stmt> eb) {
+	public IfElseStmt(BinaryExpr cond, List<Stmt> ib, List<Stmt> eb,int lineNum,int colNum) {
 		condition = cond; ifbody = ib; elsebody = eb;
+		line   = lineNum;
+		column = colNum;
 	}
 	
-	public BinaryExpr getCond() {
+	public Expr getCond() {
 		return condition;
 	}
 	

@@ -1,10 +1,12 @@
 package compiler_ww424;
 
-public class ReturnStmt {
+public class ReturnStmt extends Stmt{
 	private Expr val;
 	
-	public ReturnStmt(Expr v) {
+	public ReturnStmt(Expr v ,int lineNum,int colNum) {
 		val = v;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public Expr getExpr() {

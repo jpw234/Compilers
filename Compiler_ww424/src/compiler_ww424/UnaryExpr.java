@@ -4,8 +4,10 @@ public class UnaryExpr extends Expr {
 	private UnaryOp op;
 	private Expr expr;
 	
-	public UnaryExpr(UnaryOp o, Expr e) {
+	public UnaryExpr(UnaryOp o, Expr e,int lineNum,int colNum) {
 		op = o; expr = e;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public UnaryOp getOp() {

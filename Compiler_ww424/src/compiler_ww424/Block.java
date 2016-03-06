@@ -4,8 +4,10 @@ import java.util.List;
 public class Block extends Stmt {
 	private List<Stmt> body;
 	
-	public Block(List<Stmt> b) {
+	public Block(List<Stmt> b,int lineNum,int colNum) {
 		body = b;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public List<Stmt> getBody() {

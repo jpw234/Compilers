@@ -3,8 +3,10 @@ package compiler_ww424;
 public class IDExpr extends Expr {
 	private String name;
 	
-	public IDExpr(String s) {
+	public IDExpr(String s,int lineNum, int colNum) {
 		name = s;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public Type typecheck(SymTab s) {

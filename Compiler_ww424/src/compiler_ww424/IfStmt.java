@@ -2,14 +2,16 @@ package compiler_ww424;
 import java.util.List;
 
 public class IfStmt extends Stmt {
-	private BinaryExpr condition; 
+	private Expr condition; 
 	private List<Stmt> body;
 	
-	public IfStmt(BinaryExpr cond, List<Stmt> b) {
+	public IfStmt(Expr cond, List<Stmt> b,int lineNum,int colNum) {
 		condition = cond; body = b;
+		line = lineNum;
+		column = colNum;
 	}
 	
-	public BinaryExpr getCond() {
+	public Expr getCond() {
 		return condition;
 	}
 	

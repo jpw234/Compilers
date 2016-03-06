@@ -6,8 +6,10 @@ public class ProcCall extends Stmt {
 	private IDExpr name;
 	private List<Expr> args;
 	
-	public ProcCall(IDExpr n, List<Expr> a) {
+	public ProcCall(IDExpr n, List<Expr> a,int lineNum,int colNum) {
 		name = n; args = a;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public IDExpr getName() {

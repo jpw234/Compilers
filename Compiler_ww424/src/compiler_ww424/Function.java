@@ -9,10 +9,14 @@ public class Function {
 	private Tuple retType;
 	private List<Stmt> body;
 	
+	private int line;
+	private int column;
 	//these Tuples must be created in the .cup file
 	
-	public Function(IDExpr n, List<Decl> a, Tuple r, List<Stmt> b) {
+	public Function(IDExpr n, List<Decl> a, Tuple r, List<Stmt> b,int lineNum,int colNum) {
 		name = n; args = a; retType = r; body = b;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public IDExpr getName() {
@@ -64,5 +68,12 @@ public class Function {
 		}
 		
 		return null;		
+	}
+	public int getLine() {
+		return line;
+	}
+	public int getColumn()
+	{
+		return column;
 	}
 }

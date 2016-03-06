@@ -3,8 +3,10 @@ package compiler_ww424;
 public class BoolExpr extends Expr {
 	private boolean val;
 	
-	public BoolExpr(boolean v) {
+	public BoolExpr(boolean v,int linNum, int colNum) {
 		val = v;
+		line = linNum;
+		column = colNum;
 	}
 	
 	public boolean getVal() {

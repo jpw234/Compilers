@@ -6,9 +6,11 @@ public class DeclAssign extends Stmt {
 	private List<Decl> left;
 	private Expr right;
 	
-	public DeclAssign(List<Decl> l, Expr r) {
+	public DeclAssign(List<Decl> l, Expr r,int lineNum,int colNum) {
 		left = l;
 		right = r;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public List<Decl> getLeft() {

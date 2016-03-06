@@ -7,9 +7,11 @@ public class Decl extends Stmt {
 	private Type type;
 	private List<Expr> accesses = null;
 	
-	public Decl(IDExpr n, Type t) {
+	public Decl(IDExpr n, Type t,int lineNum,int colNum) {
 		name = n;
 		type = t;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public Decl(IDExpr n, Type t, List<Expr> a) {
