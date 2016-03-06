@@ -33,11 +33,14 @@ public class Tuple extends Type {
 	}
 	@Override 
 	public String toString(){
-		ArrayList<String> stms = new ArrayList<String> ();
-		for (Type t : args){
-			stms.add(t.toString());
+		if (args == null){
+			return "";
 		}
-		return String.format("%s", String.join(" ", stms));
+		String s = "";
+		for (int i =0 ; i <args.size();i++){
+			s += (args.get(i).toString() +" ");
+		}
+		return s.trim();
 		
 	}
 }
