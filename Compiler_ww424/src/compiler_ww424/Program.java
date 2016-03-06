@@ -16,7 +16,7 @@ public class Program {
 	}
 	
 	public List<Function> getFunctions() {
-		return functions
+		return funcs;
 	}
 	
 	public void addImport(Use u) {
