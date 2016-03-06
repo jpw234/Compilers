@@ -60,7 +60,7 @@ public class ArrLiteralExpr extends Expr {
 		if(accesses.size() > (t.getDepth() + 1)) throw new Error("tried to access something that isn't an array");
 		
 		Type dummyInt = new Type("int");
-		for(int a = 0; a < accesses.size(), a++) {
+		for(int a = 0; a < accesses.size(); a++) {
 			if(!dummyInt.equals(accesses.get(a).typecheck(s))) throw new Error("non-integer expr in array access");
 		}
 		
