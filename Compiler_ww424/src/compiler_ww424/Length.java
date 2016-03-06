@@ -1,4 +1,4 @@
-package compiler_ww424
+package compiler_ww424;
 
 public class Length extends Expr {
 	private Expr arg;
