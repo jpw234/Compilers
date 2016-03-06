@@ -209,12 +209,27 @@ idlist              ::= expr :exp1                      {: ArrayList<Expr> retli
             |                             {: RESULT = new ArrayList<Expr>(); :}
                     ;
 
-ifblock             ::=  IF LPAREN expr:cond RPAREN block:b         
-          {: RESULT = new IfStmt(cond, b.getBody(), condleft+1,condright+1);:}
+ifblock             ::=  IF LPAREN expr:cond RPAREN stmt:s         
+          {:
+            if(s instanceof Block) {RESULT = new IfStmt(cond, s.getBody(), condleft+1,condright+1);}
+            else {
+                List<Stmt> ret = new ArrayList<Stmt>();
+                ret.add(s);
+                RESULT = new IfStmt(cond, ret, condleft+1,condright+1);
+            }
+          :}
           ;
   
-ifelseblock    ::=  IF LPAREN expr:cond RPAREN block:ib ELSE block:eb 
-          {: RESULT = new IfElseStmt( cond, ib.getBody(), eb.getBody(),condleft+1,condright+1); :}
+ifelseblock    ::=  IF LPAREN expr:cond RPAREN stmt:is ELSE stmt:es 
+            {:
+                List<Stmt> iret;
+                List<Stmt> eret;
+                if(is instanceof Block) {iret = is.getBody();}
+                else {iret = new ArrayList<Stmt>(); iret.add(is)}
+                if(es instanceof Block) {eret = es.getBody();}
+                else {eret = new ArrayList<Stmt>(); eret.add(es);}
+                RESULT = new IfElseStmt( cond, iret, eret,condleft+1,condright+1); 
+            :}
                    ;
 //declaration
 decl           ::=   decllist: dl                       
