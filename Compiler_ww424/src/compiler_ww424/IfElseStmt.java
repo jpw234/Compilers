@@ -57,16 +57,18 @@ public class IfElseStmt extends Stmt {
 		throw new Error("shouldn't get here in ifelseblock typecheck");
 	}
 	public String toString(){
-		ArrayList<String> iflist = new ArrayList<String> ();
-		ArrayList<String> elselist=new ArrayList<String>();
-		for (Stmt s : ifbody){
-			iflist.add(s.toString());
+		String ifString = "";
+		String elseString = "";
+		if (ifbody != null){
+			for (int i = 0 ; i <ifbody.size(); i++){
+				ifString += (ifbody.get(i).toString()+" ");
+			}
 		}
-		for (Stmt s : elsebody){
-			elselist.add(s.toString());
+		if (elsebody!= null){
+			for (int i = 0 ; i <elsebody.size(); i++){
+				ifString += (elsebody.get(i).toString()+" ");
+			}
 		}
-		String ifString = String.format("%s", String.join(" ", iflist));
-		String elseString = String.format("%s", String.join(" ", elselist));
 		return String.format("(%s %s (%s) (%s))", "if", condition.toString(),ifString, elseString);
 	}
 }

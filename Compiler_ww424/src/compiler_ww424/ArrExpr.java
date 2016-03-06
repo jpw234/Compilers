@@ -49,7 +49,7 @@ public class ArrExpr extends Expr {
 		String s = name.toString();
 		if(depth > 0) {//array type variable
 			for(int i = 0; i < depth; i++){
-				if(i < accesses.size()) { s = "( [] " + s + accesses.get(i).toString() + " )";}
+				if(i < accesses.size()) { s = "( [] " + s + " " + accesses.get(i).toString() + " )";}
 				else {s = "( [] " + s + " )";}
 			}
 		}

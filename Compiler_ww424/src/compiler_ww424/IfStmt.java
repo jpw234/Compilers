@@ -40,11 +40,12 @@ public class IfStmt extends Stmt {
 	}
 	
 	public String toString(){
-		ArrayList<String> bodylist = new ArrayList<String> ();
-		for (Stmt s : body){
-			bodylist.add(s.toString());
+		String bodylist = "";
+		if (body != null){
+			for (int i = 0 ; i < body.size() ; i++){
+				bodylist += (body.get(i).toString()+" ");
+			}
 		}
-		String useString = String.format("%s", String.join(" ", bodylist));
-		return String.format("(%s %s (%s))", "if", condition.toString(),bodylist);
+		return String.format("(%s %s (%s))", "if", condition.toString(),bodylist.trim());
 	}
 }

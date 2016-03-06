@@ -43,14 +43,21 @@ public class Program {
 	}
 
 	public String toString(){
+
 		String useString = "";
 		String funString = "";
-		for (int i = 0 ; i < imports.size(); i++){
-			useString += imports.get(i).toString()+" ";
+		if (imports == null && funcs == null){
+			return String.format("((%s) (%s))", useString,funString);
 		}
-		
-		for (int i = 0 ; i < funcs.size(); i++){
-			funString += funcs.get(i).toString()+" ";
+		if (imports != null){
+			for (int i = 0 ; i < imports.size(); i++){
+				useString += imports.get(i).toString()+" ";
+			}
+		}
+		if (funcs != null){
+			for (int i = 0 ; i < funcs.size(); i++){
+				funString += funcs.get(i).toString()+" ";
+			}
 		}
 		return String.format("((%s) (%s))", useString,funString);
 	}

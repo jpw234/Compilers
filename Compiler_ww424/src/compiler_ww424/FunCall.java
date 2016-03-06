@@ -35,6 +35,9 @@ public class FunCall extends Expr {
 	@Override
 	public String toString(){
 		String s = "";
+		if (args == null) {
+			return "( " + name.toString() +  " )";
+		}
 		for(int i = 0; i < args.size(); i++){
 			s = s + " " + args.get(i).toString();
 		}
