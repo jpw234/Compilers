@@ -2,9 +2,12 @@ package compiler_ww424;
 
 public class Length extends Expr {
 	private Expr arg;
+
 	
-	public Length(Expr e) {
+	public Length(Expr e, int lineNum, int columnNum) {
 		arg = e;
+        line = lineNum;
+        column = columnNum;
 	}
 	
 	public Expr getArg() {
