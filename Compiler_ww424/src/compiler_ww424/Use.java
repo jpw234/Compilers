@@ -1,5 +1,7 @@
 package compiler_ww424;
 
+import java.util.ArrayList;
+
 public class Use {
 	private String name;
 	
@@ -19,5 +21,11 @@ public class Use {
 	public int getColumn()
 	{
 		return column;
+	}
+	
+	
+	public String toString(){
+		
+		return String.format("(%s %s)", "use", name);
 	}
 }

@@ -2,7 +2,9 @@ package compiler_ww424;
 import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import compiler_ww424.Lexer.Token;
-   
+import java.util.ArrayList;
+import java.util.List;
+
 /* Parser code to change the way the parser reports errors (include
    line and column number of the error). */
 parser code {:
@@ -77,24 +79,41 @@ terminal String ID;
 terminal String STRING;
 terminal String CHARACTER;
 terminal Integer INTEGER;
-terminal TRUE, FALSE;
 terminal INT, BOOL;
-
+terminal Boolean TRUE, FALSE;
 terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES,
   DIV, MOD, NOT, LANGLE, LEQ, RANGLE, GEQ, EQEQ, AND, OR, EQ, NEQ,
   LBRACKET, RBRACKET, LPAREN, RPAREN, LBRACE, RBRACE,
   COLON, COMMA, SEMI, UNDERSCORE,HIGHMUL,UMINUS;
   
-  
-// You might want to add types to these declarations.
-nonterminal ListExpr program, uselist, funclist;
-nonterminal ArrayExpr vartype, var;
-nonterminal Expr useprod, func,arg;
-nonterminal Expr arglist, funtype ;
-nonterminal Expr block, stmtlist, stmt, decl;
-nonterminal Expr assignment,  decllist, retop;
-nonterminal Expr expr, binaryexpr,  unaryexpr, funcall, exprlist; 
-nonterminal Expr tuple, ifblock, ifelseblock, idlist;
+
+nonterminal Program program;
+nonterminal List<Use> uselist;
+nonterminal List<Function> funclist;
+nonterminal Use useprod;
+nonterminal List<Decl> arglist,decllist;
+nonterminal Decl arg,decl;
+nonterminal Tuple funtype ;
+nonterminal Decl vartype_init_tmp,vartype_init;
+nonterminal Block block;
+nonterminal Type vartype;
+nonterminal Expr expr;
+nonterminal ArrExpr var,var_tmp;
+nonterminal Function func;
+nonterminal BinaryExpr binaryexpr;  
+nonterminal UnaryExpr unaryexpr;
+nonterminal FunCall funcall;
+nonterminal List<Expr> exprlist; 
+nonterminal ArrLiteralExpr tuple; 
+nonterminal Assign assignment;
+nonterminal Stmt ass;
+nonterminal List<Stmt> stmtlist;
+nonterminal ArrayList<Expr> idlist;
+nonterminal Stmt stmt;
+nonterminal DeclAssign declassign;
+nonterminal IfStmt ifblock;
+nonterminal IfElseStmt ifelseblock;
+nonterminal ReturnStmt retop;
 
 precedence left OR;
 precedence left AND;
@@ -110,121 +129,178 @@ precedence nonassoc ELSE;
 
 start with program;
 
-program        ::= uselist:us funclist:fl							  {: RESULT = new ListExpr(us, fl); :};
+program             ::= uselist:us funclist:fl 								{:RESULT = new Program(us,fl); :}			 			    
+				     ;
+uselist             ::= uselist:ul useprod:up							    {:ul.add(up); RESULT = ul;:}
+				     | 											  			{:RESULT = new ArrayList<Use>(); :}
+                    ;
+useprod             ::= USE ID:id										    
+					{:
+					 RESULT = new Use( id, idleft+1 ,idright+1); :}
+				     | USE ID:id SEMI									    
+                     {:RESULT = new Use( id, idleft+1 ,idright+1 ); :};
+funclist            ::= funclist: fl func:f						          	{: fl.add(f); RESULT = fl;:}
+				     | func:f
+				     {: List<Function> ret = new ArrayList<Function>(); ret.add(f);
+				        RESULT = ret; :}
+                    ;
+func                ::= ID:id LPAREN arglist:al RPAREN funtype:ft block:bl 	
+					{:  RESULT = new Function(new IDExpr(id,idleft+1,idright+1), al, ft, bl.getBody(), idleft+1, idright+1); :};
+//argument list
+arglist             ::= arglist:argl COMMA arg: a						    {: argl.add(a); RESULT = argl; :} 
+				     | arg:a 											    
+				     {: List<Decl> ret = new ArrayList<Decl>();
+						ret.add(a); RESULT = ret ;:}
+				     | 												        
+				     {: RESULT = new ArrayList<Decl>();:}					
+				     ;
+//argument
+arg 		        ::= ID: id COLON vartype: vt  						  
+					{: RESULT = new Decl(new IDExpr(id,idleft+1,idright+1), vt, idleft+1, idright+1);:}
+				    ;
+funtype             ::= COLON vartype:vt								  
+					{: Tuple ret = new Tuple(new ArrayList<Type>()); ret.add(vt); RESULT = ret; :}
+                    | funtype:ft COMMA vartype:vt					      {: ft.add(vt); RESULT = ft; :}
+                    | 												      
+                    {: List<Type> ret = new ArrayList<Type>();
+					 	RESULT = new Tuple(ret); :}
+                    ;
+//function declaration variable type
+vartype        ::=   INT											{: RESULT = new Type("int"); :}
+                   | BOOL									        {: RESULT = new Type("bool"); :}
+                   | vartype:vt LBRACKET RBRACKET				    {: vt.addDepth(); RESULT = vt; :}
+                   ;
+block     	        ::=  LBRACE:x stmtlist:sl retop:ret RBRACE		      
+					{: List<Stmt> retlist = new ArrayList<Stmt>();
+					   for (Stmt s : sl){ retlist.add(s);}
+					   retlist.add(ret); 
+					   RESULT = new Block(retlist, xleft+1,xright+1);  :}
+                    ;
+stmtlist            ::=  stmtlist:stml stmt:stm	  					      
+					{: stml.add(stm); RESULT = stml; :}
+                    | stmtlist:stml stmt:stm SEMI					      
+                    {: stml.add(stm); RESULT = stml; :}
+                    | 										  		      
+                    {: RESULT = new ArrayList<Stmt>(); :}
+                    ;
+stmt                ::=   ifblock:s										  {: RESULT = s; :}
+                    | ifelseblock:s									      {: RESULT = s; :}
+                    | WHILE LPAREN expr:cond RPAREN block:blk	          {: RESULT = new WhileStmt(cond,blk.getBody(), condleft+1, condright+1);:}
+                    | ID:x LPAREN idlist:idl RPAREN 					  {: RESULT = new ProcCall(new IDExpr(x, xleft+1, xright+1), idl, xleft+1, xright+1); :}
+                    | decl:s											  {: RESULT = s; :}
+                    | declassign:s										  {: RESULT = s; :}
+                    | ass:a												  {: RESULT = a; :}
+                    | block:bl										      {: RESULT = bl; :}
+                    ;
+idlist              ::= expr :exp1										  {: ArrayList<Expr> retlist = new ArrayList<Expr>(); retlist.add(exp1); RESULT = retlist; :}
+				    | expr:exp1 COMMA idlist:idl						  {: idl.add(0, exp1); RESULT = idl; :}
+				    |												      {: RESULT = new ArrayList<Expr>(); :}
+                    ;
 
-uselist        ::= uselist:ul useprod:up							  {: ul.add(up); RESULT = ul; :}	
-				  | 											  	  {: RESULT = new ListExpr(); :}
-                  ;
-useprod        ::=   USE ID:id										  {: RESULT = new ListExpr("use" , new AtomExpr(id)); :};
-/////////////////////////////////////////////////////////////////////////////////////////
-
-funclist       ::= funclist: fl func:f						          {: fl.add(f); RESULT = fl; :}
-                   |												  {: RESULT = new ListExpr(); :}
-                   ;
-func           ::= ID:id LPAREN arglist:al RPAREN funtype:ft block:bl {: RESULT = new ListExpr(new AtomExpr(id),al, ft,bl); :};
-
-arglist        ::= arglist:argl COMMA arg: a						  {: ((ListExpr) argl).add(a); RESULT=argl; :} 
-				  | arg:a 											  {: RESULT =new ListExpr(a);:}
-				  | 												  {: RESULT = new ListExpr();:}					
-				  ;
-arg 		   ::= ID: id COLON vartype: vt  						  {: RESULT = new ListExpr(new AtomExpr(id), vt); :}
-				  ;
-funtype        ::=   COLON vartype:vt								  {: RESULT = new ListExpr(vt); :}
-                   | funtype:ft COMMA vartype:vt					  {: ((ListExpr) ft).add(vt); RESULT = ft ;:}
-                   | 												  {: RESULT = new ListExpr(); :}
-                   ;
-                   
-block     	   ::=  LBRACE stmtlist:sl retop:ret RBRACE		          {: RESULT = new ListExpr(sl, ret); :}
-				   | stmt:s											  {: RESULT = s; :}
-                   ;
-stmtlist       ::=   stmtlist:stml stmt:stm	  						  {: ((ArgExpr) stml).add(new ArgExpr(stm)); RESULT = stml ; :}
-                   | stmtlist:stml stmt:stm SEMI					  {: ((ArgExpr) stml).add(new ArgExpr(stm)); RESULT = stml ; :}
-                   | 										  		  {: RESULT = new ArgExpr(); :}
-                   ;
-stmt           ::=   ifblock:s										  {: RESULT = s; :}
-                   | ifelseblock:s									  {: RESULT = s; :}
-                   | WHILE LPAREN expr:condition RPAREN block:stm	  {: RESULT = new ListExpr("while", condition, stm); :}
-                   | ID:x LPAREN idlist:idl RPAREN 					  {: RESULT = new ListExpr(x, idl); :}
-                   | decl:s											  {: RESULT = s; :}
-                   ;
-idlist         ::= 	 expr :exp1										  {:RESULT = new ArgExpr(exp1); :}
-				   |idlist:idl COMMA expr:exp1						  {: ((ArgExpr) idl).add(exp1); RESULT = idl ; :}
-				   |												  {:RESULT = new ArgExpr(); :};
-					
-ifblock        ::=  IF LPAREN expr:predicate RPAREN block:consequent  {:RESULT = new ListExpr("if", predicate, consequent); :}
+ifblock             ::=  IF LPAREN expr:cond RPAREN block:b  			  
+					{: RESULT = new IfStmt(cond, b.getBody(), condleft+1,condright+1);:}
 					;
-
-ifelseblock    ::=  IF LPAREN expr:predicate RPAREN block:consequent ELSE block:alternative
-                   {:RESULT = new ListExpr("if", predicate, consequent, alternative); :}
+	
+ifelseblock    ::=  IF LPAREN expr:cond RPAREN block:ib ELSE block:eb 
+					{: RESULT = new IfElseStmt( cond, ib.getBody(), eb.getBody(),condleft+1,condright+1); :}
                    ;
+//declaration
+decl           ::=   decllist: dl 						        	
+					{: RESULT = dl.get(0); :};
+declassign     ::=  decllist:dcl EQ expr:exp1             	    	
+					{: RESULT = new DeclAssign( dcl , exp1 ,dclleft+1,dclright+1); :}
+                   ;
+//declaration list
+decllist       ::=   UNDERSCORE:u 							    	
+					{: List<Decl> ret = new ArrayList<Decl>();
+					   ret.add(new Decl(new IDExpr("_", uleft+1, uright+1), new Type("underscore"),uleft,uright ));
+					   RESULT = ret; :}
+                   | ID:x COLON vartype_init:vt					    	
+                   {: List<Decl> ret = new ArrayList<Decl>();
+					  IDExpr newID = new IDExpr(x,xleft+1,xright+1);
+					  vt.setID(newID);
+					  ret.add(vt);
+					  RESULT = ret;  :}
+                   | decllist:dcl COMMA UNDERSCORE:u                  
+                   {: dcl.add(new Decl(new IDExpr("_", uleft+1, uright+1), new Type("underscore"),dclleft+1,dclright+1));
+					  RESULT = dcl; :}
+                   | decllist:dcl COMMA ID:x COLON vartype_init :vt     
+                   {: List<Decl> ret = new ArrayList<Decl>();
+					  IDExpr newID = new IDExpr(x,xleft+1,xright+1);
+					  vt.setID(newID);
+					  for (Decl v : dcl){
+					    ret.add(v);}
+					  ret.add(vt);
+					  RESULT = ret;:};
+//assignment
+ass            ::= var:x EQ expr:exp1 {: RESULT = new Assign(x, exp1, xleft+1, xright+1); :}
+                   ;
+//variable type w/o initialization
+vartype_init  ::=  INT:x											{: RESULT = new Decl(new IDExpr("int",xleft+1,xright+1), new Type("int"), new ArrayList<Expr>(), xleft+1, xright+1);:}
+                 | BOOL:x									        {: RESULT = new Decl(new IDExpr("bool",xleft+1,xright+1), new Type("bool"), new ArrayList<Expr>(), xleft+1, xright+1);:}
+                 | vartype_init:vt LBRACKET RBRACKET                {: vt.getType().addDepth(); RESULT = vt; :}
+                 | vartype_init:vt LBRACKET expr:exp RBRACKET	    
+                 {: vt.getType().addDepth(); 
+                    if(vt.getType().getDepth() > vt.getAccesses().size()){
+                        Error e  = new Error();
+                        parser.report_error("Syntax error",e);
+                    } else{
+                      vt.addAccess(exp);  
+                    }  RESULT = vt; :}
+                 ;
+//variable
+var         ::=  ID:x 										    {: RESULT = new ArrExpr(new IDExpr(x,xleft+1,xright+1), xleft+1, xright+1); :}
+                 | var:vt LBRACKET RBRACKET				      	{: vt.addDepth(); RESULT = vt;  :}
+                 | var:vt LBRACKET expr:exp RBRACKET            
+                 {: vt.addDepth(); 
+                    if(vt.getDepth() > vt.getAccesses().size()){
+                        Error e  = new Error();
+                        parser.report_error("syntax error", e);
+                    }
+                    else{ vt.add(exp); RESULT = vt; }
+                 :}
+                 ;
                    
-decl           ::=   decllist: dl 						        	  {: RESULT = dl;:}
-                   | decllist:dcl EQ expr:exp1             	    	  {: RESULT = new BinaryExpr("=", dcl, exp1) ; :}
+retop          ::=  RETURN idlist:el								
+					{: RESULT = new ReturnStmt(el,elleft+1,elright+1);:}
+				   |RETURN idlist:el SEMI							
+				   {: RESULT = new ReturnStmt(el,elleft+1,elright+1); :}
+                   | 												{: RESULT = new ReturnStmt(null, 0,0);  :}
                    ;
-// can be used for assignment and declaration!!!
-decllist       ::=   UNDERSCORE 							    	  {: RESULT = new ListExpr("_"); :}
-                   | ID:x COLON vartype:vt					    	  {: RESULT = new ListExpr(x,vt); :}
-                   | decllist:dcl COMMA UNDERSCORE                    
-                   {: ListExpr ret = new ListExpr();
-					  ret.add(dcl); ret.add(new ListExpr("_"));  
-					  RESULT = ret;:}
-                   | decllist:dcl COMMA ID:x COLON vartype :vt        
-                   {: ListExpr ret = new ListExpr();
-					  ret.add(dcl); ret.add(new ListExpr(x,vt));  
-					  RESULT = ret;:}
-                   | var:x 									          {: RESULT = x; :}
-                   | decllist: dcl COMMA var:x						  
-                   {: ListExpr ret = new ListExpr();
-					ret.add(dcl); ret.add(x);  
-					RESULT = ret;:}
-				;
-vartype        ::=   INT 										      {:RESULT = new ArrayExpr("int"); :}
-                   | BOOL									          {:RESULT = new ArrayExpr("bool"); :}
-                   | vartype:vt LBRACKET expr:exp RBRACKET            {:vt.push(exp); RESULT = vt;:}
-                   | vartype:vt LBRACKET RBRACKET				      {:vt.push(new AtomExpr("")); RESULT = vt;:}
-                   ;
-var        		::=  ID:x 										      {:RESULT = new ArrayExpr(x); :}
-                   | var:vt LBRACKET expr:exp RBRACKET            	  {:(vt).push(exp); RESULT = vt;:}
-                   | var:vt LBRACKET RBRACKET				      	  {:(vt).push(new AtomExpr("")); RESULT = vt;:}
-                   ;
-                   
-retop          ::=  RETURN idlist:el								  {: RESULT = new ListExpr("return",el);:}
-				   |RETURN idlist:el SEMI							  {: RESULT = new ListExpr("return",el);:}			
-                   | 												  {: RESULT = new ArgExpr(); :}
-                   ;
-expr           ::=   INTEGER:i										  {: RESULT = new AtomExpr(i); :}
-                   | STRING:s										  {: RESULT = new AtomExpr(s,true); :}
-                   | CHARACTER:c									  {: RESULT = new AtomExpr(c.charAt(0)); :}
-                   | TRUE											  {: RESULT = new AtomExpr("true"); :}
-                   | FALSE											  {: RESULT = new AtomExpr("false"); :}
-                   | LENGTH LPAREN expr:e1 RPAREN					  {: RESULT = new ListExpr("length",e1 ); :}
-                   | LPAREN expr:ex RPAREN 							  {: RESULT = ex;:}
-                   | var:vt    				  					  	  {: RESULT = vt ;:}
-                   | binaryexpr:be									  {: RESULT = be; :}				  
-                   | unaryexpr:ne									  {: RESULT = ne; :}
-                   | funcall:fc 									  {: RESULT = new ArgExpr(fc); :}
-                   | tuple:tl										  {: RESULT = new ArgExpr(tl); :}									  
+expr           ::=   INTEGER:i									{: RESULT = new NumExpr(i,ileft+1,iright+1); :}
+                   | CHARACTER:c								{: RESULT = new NumExpr(c.charAt(0), cleft+1, cright+1); :}
+                   | TRUE:v										{: RESULT = new BoolExpr(v,vleft+1,vright+1); :}
+                   | FALSE:v									{: RESULT = new BoolExpr(v,vleft+1,vright+1); :}
+                   | LENGTH LPAREN expr:e1 RPAREN				{: RESULT = new Length(e1,e1left+1,e1right+1); :}
+                   | LPAREN expr:ex RPAREN 						{: RESULT = ex;:}
+                   | var:vt    				  					{: RESULT = vt ;:}
+                   | binaryexpr:be								{: RESULT = be; :}				  
+                   | unaryexpr:ne								{: RESULT = ne; :}
+                   | funcall:fc 								{: RESULT = fc; :}
+                   | tuple:tl									{: RESULT = tl;:}									  
 					;
-funcall        ::=   ID:x LPAREN idlist:el RPAREN 				  	  {: RESULT = new ListExpr( x, el); :};
-
-tuple          ::=   LBRACE idlist:el RBRACE						  {: RESULT = new ListExpr(el); :};
-                
-binaryexpr     ::=   expr:e1 PLUS expr:e2						{: RESULT = new BinaryExpr("+", e1, e2); :}
-                   | expr:e1 MINUS expr:e2						{: RESULT = new BinaryExpr("-", e1, e2); :}
-                   | expr:e1 TIMES expr:e2						{: RESULT = new BinaryExpr("*", e1, e2); :}
-                   | expr:e1 DIV expr:e2						{: RESULT = new BinaryExpr("/", e1, e2); :}
-                   | expr:e1 MOD expr:e2						{: RESULT = new BinaryExpr("%", e1, e2); :}
-                   | expr:e1 LANGLE	expr:e2						{: RESULT = new BinaryExpr("<", e1, e2); :}
-                   | expr:e1 RANGLE	expr:e2						{: RESULT = new BinaryExpr(">", e1, e2); :}
-                   | expr:e1 LEQ expr:e2						{: RESULT = new BinaryExpr("<=", e1, e2); :}
-                   | expr:e1 GEQ expr:e2						{: RESULT = new BinaryExpr(">=", e1, e2); :}
-                   | expr:e1 EQEQ expr:e2						{: RESULT = new BinaryExpr("==", e1, e2); :}
-                   | expr:e1 NEQ expr:e2 					    {: RESULT = new BinaryExpr("!=", e1, e2); :}
-                   | expr:e1 AND expr:e2						{: RESULT = new BinaryExpr("&", e1, e2); :}
-                   | expr:e1 OR expr:e2							{: RESULT = new BinaryExpr("|", e1, e2); :}
-                   | expr:e1 HIGHMUL expr:e2					{: RESULT = new BinaryExpr("*>>", e1,e2); :}
+funcall        ::=   ID:x LPAREN idlist:el RPAREN 				{: RESULT = new FunCall( new IDExpr(x,xleft+1,xright+1), el,xleft+1,xright+1); :};
+//could be tuple or string (e.g. {1,2,3} or "Hello")
+tuple          ::=   LBRACE idlist:vt RBRACE					{: RESULT = new ArrLiteralExpr(vt, vtleft+1, vtright+1); :}
+                   | STRING:s                                   {: RESULT = new ArrLiteralExpr(s, sleft+1, sright+1); :}
+                   | tuple:tp LBRACKET expr:exp RBRACKET        {: tp.addAccess(exp); RESULT = tp; :}
                    ;
-unaryexpr      ::=   MINUS expr:e1								{: RESULT = new ListExpr("-", e1); :}
-					 %prec UMINUS
-                   | NOT expr:e1								{: RESULT = new ListExpr("!", e1); :}
+binaryexpr     ::=   expr:e1 PLUS expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.PLUS,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 MINUS expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.MINUS,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 TIMES expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.TIMES,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 DIV expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.DIV,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 MOD expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.MOD,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 LANGLE	expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.LT,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 RANGLE	expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.GT,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 LEQ expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.LEQ,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 GEQ expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.GEQ,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 EQEQ expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.EQEQ,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 NEQ expr:e2 					    {: RESULT = new BinaryExpr(e1, e2,BinaryOp.NEQ,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 AND expr:e2						{: RESULT = new BinaryExpr(e1, e2,BinaryOp.AND,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 OR expr:e2							{: RESULT = new BinaryExpr(e1, e2,BinaryOp.OR,e1left+1,e1right+1,e2left+1,e2right+1); :}
+                   | expr:e1 HIGHMUL expr:e2					{: RESULT = new BinaryExpr(e1, e2,BinaryOp.HIGHMUL,e1left+1,e1right+1,e2left+1,e2right+1); :}
                    ;
+unaryexpr      ::=  MINUS expr:e1								{: RESULT = new UnaryExpr(UnaryOp.ARITHNEG, e1,e1left+1,e1right+1); :}
+				%prec UMINUS									
+                | NOT expr:e1								    {: RESULT = new UnaryExpr(UnaryOp.BOOLNEG, e1,e1left+1,e1right+1); :}
+                ;                  

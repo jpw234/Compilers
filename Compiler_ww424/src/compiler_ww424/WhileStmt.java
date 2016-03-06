@@ -1,4 +1,5 @@
 package compiler_ww424;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WhileStmt extends Stmt {
@@ -34,5 +35,15 @@ public class WhileStmt extends Stmt {
 		}
 		
 		throw new Error("shouldn't get here in ifblock typecheck");
+	}
+	
+	public String toString(){
+		ArrayList<String> stms = new ArrayList<String> ();
+		for (Stmt s : body){
+			stms.add(s.toString());
+		}
+		String bodyString = String.format("%s", String.join(" ", stms));
+		
+		return String.format("(%s) (%s) (%s)", "while", condition.toString(),bodyString);
 	}
 }

@@ -16,4 +16,12 @@ public class BoolExpr extends Expr {
 	public Type typecheck(SymTab s) {
 		return new Type("bool");
 	}
+
+	@Override
+	public String toString(){
+		String s = "";
+		if(val) {s = "true";}
+		else {s = "false";}
+		return s ;
+	}
 }

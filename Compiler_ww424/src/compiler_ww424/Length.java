@@ -20,4 +20,7 @@ public class Length extends Expr {
 		
 		return new Type("int");
 	}
+	public String toString(){
+		return String.format("(%s %s)", "length", arg.toString());
+	}
 }

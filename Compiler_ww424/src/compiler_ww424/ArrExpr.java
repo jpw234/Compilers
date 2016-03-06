@@ -13,8 +13,9 @@ public class ArrExpr extends Expr {
 		column = c;
 	}
 	
-	public ArrExpr(IDExpr n, ArrayList<Expr> c, int l, int c) {
-		name = n; accesses = c;
+	public ArrExpr(IDExpr n, ArrayList<Expr> list, int l, int c) {
+		name = n; 
+		accesses = list;
 		line = l;
 		column = c;
 	}
@@ -40,5 +41,18 @@ public class ArrExpr extends Expr {
 		Type temp = s.lookup(name.getName());
 		if(temp.getDepth()-accesses.size() < 0) throw new Error("illegal access: that is not an array");
 		return new Type(temp.getType(), temp.getDepth()-accesses.size());
+	}
+	
+	@Override
+	public String toString(){
+		String s = name.toString();
+		if(depth > 0) {//array type variable
+			for(int i = 0; i < depth; i++){
+				if(i < accesses.size()) { s = "( [] " + s + accesses.get(i).toString() + " )";}
+				else {s = "( [] " + s + " )";}
+			}
+		}
+		
+		return s ;
 	}
 }

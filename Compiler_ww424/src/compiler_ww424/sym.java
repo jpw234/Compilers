@@ -13,7 +13,7 @@ public class sym {
   public static final int LENGTH = 15;
   public static final int SEMI = 39;
   public static final int error = 1;
-  public static final int INT = 8;
+  public static final int INT = 6;
   public static final int MINUS = 17;
   public static final int LANGLE = 22;
   public static final int RETURN = 13;
@@ -30,7 +30,7 @@ public class sym {
   public static final int TIMES = 18;
   public static final int USE = 14;
   public static final int LPAREN = 33;
-  public static final int TRUE = 6;
+  public static final int TRUE = 8;
   public static final int LBRACKET = 31;
   public static final int RBRACKET = 32;
   public static final int COLON = 37;
@@ -41,12 +41,12 @@ public class sym {
   public static final int NOT = 21;
   public static final int GEQ = 25;
   public static final int RBRACE = 36;
-  public static final int BOOL = 9;
+  public static final int BOOL = 7;
   public static final int AND = 27;
   public static final int EQEQ = 26;
   public static final int STRING = 3;
   public static final int LEQ = 23;
-  public static final int FALSE = 7;
+  public static final int FALSE = 9;
   public static final int WHILE = 12;
   public static final int NEQ = 30;
   public static final int PLUS = 16;
@@ -58,10 +58,10 @@ public class sym {
   "STRING",
   "CHARACTER",
   "INTEGER",
-  "TRUE",
-  "FALSE",
   "INT",
   "BOOL",
+  "TRUE",
+  "FALSE",
   "IF",
   "ELSE",
   "WHILE",

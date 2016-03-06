@@ -1,5 +1,7 @@
 package compiler_ww424;
 
+import java.util.ArrayList;
+
 public class NumExpr extends Expr {
     private int intvalue;
     private char charval;
@@ -26,4 +28,11 @@ public class NumExpr extends Expr {
     public char getCharVal(){
         return charval;
     }
+    
+	public String toString(){
+		if (!isChar){
+			return String.valueOf(intvalue);
+		}
+		return "\'"+charval+"\'";
+	}
 }

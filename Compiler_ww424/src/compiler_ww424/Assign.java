@@ -27,4 +27,11 @@ public class Assign extends Stmt {
 		
 		return new Type("unit");
 	}
+	
+	@Override
+	public String toString(){
+		String s = "";
+		s = "( = " + left.toString() + right.toString() + " )";
+		return s ;
+	}
 }

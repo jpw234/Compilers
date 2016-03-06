@@ -2,11 +2,11 @@ package compiler_ww424;
 
 import java.util.ArrayList;
 
-import sun.net.www.protocol.http.AuthCacheValue.Type;
-
 public class ArrLiteralExpr extends Expr {
 	private ArrayList<Expr> values;
 	private ArrayList<Expr> accesses = new ArrayList<Expr>();
+	private Boolean isString = false;
+	private String str;
 	
 	public ArrLiteralExpr(ArrayList<Expr> v, int l, int c) {
 		values = v;
@@ -16,6 +16,18 @@ public class ArrLiteralExpr extends Expr {
 	
 	public ArrLiteralExpr(ArrayList<Expr> v, ArrayList<Expr> a, int l, int c) {
 		values = v; accesses = a; line = l; column = c;
+	}
+
+	//for string
+	public ArrLiteralExpr(String s, int l, int c) {
+		line = l;
+		column = c;
+		isString = true;
+		str = s;
+		values = new ArrayList<Expr>();
+		for(int i = 0; i < s.length(); i++){
+			addValue(new NumExpr((int)s.charAt(i), l, c));
+		}
 	}
 	
 	public ArrayList<Expr> getValues() {
@@ -48,11 +60,25 @@ public class ArrLiteralExpr extends Expr {
 		if(accesses.size() > (t.getDepth() + 1)) throw new Error("tried to access something that isn't an array");
 		
 		Type dummyInt = new Type("int");
-		for(int a = 0; a < accesses.size(), a++) {
+		for(int a = 0; a < accesses.size(); a++) {
 			if(!dummyInt.equals(accesses.get(a).typecheck(s))) throw new Error("non-integer expr in array access");
 		}
 		
 		t.addDepth();
 		return t;
+	}
+	@Override
+	public String toString(){
+		String s = "";
+		if(isString){s = " \" " + str + " \" ";}
+		else{//tuple
+			for(int i = 0; i < values.size(); i++){s = s + " " + values.get(i).toString();}
+			s = "( " + s + " )";
+		}
+		for(int i = 0; i < accesses.size(); i++){
+			s = "( [] " + s + accesses.get(i).toString() + " )";
+		}
+		
+		return s ;
 	}
 }

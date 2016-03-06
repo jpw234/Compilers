@@ -1,5 +1,6 @@
 package compiler_ww424;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProcCall extends Stmt {
@@ -32,4 +33,14 @@ public class ProcCall extends Stmt {
 		
 		return new Type("unit");
 	}
+	public String toString(){
+		ArrayList<String> arglist = new ArrayList<String> ();
+		for (Expr e : args){
+			arglist.add(e.toString());
+		}
+		String argString = String.format("%s", String.join(" ", arglist));
+		
+		return String.format("(%s %s)", name,argString);
+	}
+	
 }

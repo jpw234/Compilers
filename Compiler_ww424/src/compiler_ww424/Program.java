@@ -1,5 +1,6 @@
 package compiler_ww424;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Program {
@@ -39,5 +40,20 @@ public class Program {
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).typecheck(s);
 		}
+	}
+	
+	public String toString(){
+		ArrayList<String> uselist = new ArrayList<String> ();
+		ArrayList<String> funlist = new ArrayList<String> ();
+		for (Use u : imports){
+			uselist.add(u.toString());
+		}
+		for (Function f : funcs){
+			funlist.add(f.toString());
+		}
+		String useString = String.format("%s", String.join(" ", uselist));
+		String funString = String.format("%s", String.join(" ", funlist));
+		
+		return String.format("((%s) (%s))", useString,funString);
 	}
 }

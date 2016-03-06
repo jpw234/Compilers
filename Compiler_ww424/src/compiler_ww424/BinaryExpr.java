@@ -4,13 +4,19 @@ public class BinaryExpr extends Expr {
 	private Expr left;
 	private Expr right;
 	private BinaryOp op;
+	private int leftLine;
+	private int leftCol;
+	private int rightLine;
+	private int rightCol;
 	
-	public BinaryExpr(Expr l, Expr r, BinaryOp o,int lineNum,int colNum) {
+	public BinaryExpr(Expr l, Expr r, BinaryOp o,int ellineNum,int elcolNum,int erlineNum,int ercolNum) {
 		left = l;
 		right = r;
 		op = o;
-		line = lineNum;
-		column = colNum;
+		leftLine = ellineNum;
+		leftCol = elcolNum;
+		rightLine = erlineNum;
+		rightCol = ercolNum;
 	}
 	
 	public Expr getLeft() {
@@ -54,5 +60,43 @@ public class BinaryExpr extends Expr {
 		}
 		
 		else throw new Error("this shouldn't happen but the BinaryExpr got messed up");
+	}
+	
+	@Override
+	public String toString(){
+		String s = "";
+		String operand = "";
+		switch(op){
+			case PLUS: operand = "+";
+				break;
+			case MINUS: operand = "-";
+				break;
+			case TIMES: operand = "*";
+				break;
+			case HIGHMUL: operand = "*>>";
+				break;
+			case DIV: operand = "/";
+				break;
+			case MOD: operand = "%";
+				break;
+			case LT: operand = "<";
+				break;
+			case LEQ: operand = "<=";
+				break;
+			case GEQ: operand = ">=";
+				break;
+			case GT: operand = ">";
+				break;
+			case EQEQ: operand = "==";
+				break;
+			case NEQ: operand = "!=";
+				break;
+			case AND: operand = "&";
+				break;
+			case OR: operand = "|";
+				break;
+		}
+		s = "( " + operand + " " + left.toString() + right.toString() + " )";
+		return s ;
 	}
 }
