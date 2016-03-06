@@ -4,13 +4,19 @@ public class BinaryExpr extends Expr {
 	private Expr left;
 	private Expr right;
 	private BinaryOp op;
+	private int leftLine;
+	private int leftCol;
+	private int rightLine;
+	private int rightCol;
 	
-	public BinaryExpr(Expr l, Expr r, BinaryOp o,int lineNum,int colNum) {
+	public BinaryExpr(Expr l, Expr r, BinaryOp o,int ellineNum,int elcolNum,int erlineNum,int ercolNum) {
 		left = l;
 		right = r;
 		op = o;
-		line = lineNum;
-		column = colNum;
+		leftLine = ellineNum;
+		leftCol = elcolNum;
+		rightLine = erlineNum;
+		rightCol = ercolNum;
 	}
 	
 	public Expr getLeft() {
