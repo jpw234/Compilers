@@ -6,7 +6,7 @@ public class IfElseStmt extends Stmt {
 	private List<Stmt> ifbody;
 	private List<Stmt> elsebody;
 	
-	public IfElseStmt(BinaryExpr cond, List<Stmt> ib, List<Stmt> eb,int lineNum,int colNum) {
+	public IfElseStmt(Expr cond, List<Stmt> ib, List<Stmt> eb,int lineNum,int colNum) {
 		condition = cond; ifbody = ib; elsebody = eb;
 		line   = lineNum;
 		column = colNum;
