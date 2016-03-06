@@ -86,15 +86,17 @@ public class Function {
 	public String toString(){
 		String s = "";
 		String s_arg = "";
-
-		for(int i = 0; i < args.size(); i++){
-			s_arg = s_arg + " " + args.get(i).toString();
-		}
-
-		s_arg = "( " + s_arg + " )";
 		String s_slist = "";
-		for(int i = 0; i < body.size(); i++){
-			s_slist = s_slist + " " + body.get(i).toString();
+		if (args != null){
+			for(int i = 0; i < args.size(); i++){
+				s_arg = s_arg + " " + args.get(i).toString();
+			}
+		}
+		s_arg = "( " + s_arg + " )";
+		if (body != null){
+			for(int i = 0; i < body.size(); i++){
+				s_slist = s_slist + " " + body.get(i).toString();
+			}
 		}
 		//add retType (from Tuple class) with "(" & ")" manually, because Tuple.toString() don't print parenthesis
 		s = "( " + name.toString() + " " + s_arg + " ( " + retType.toString() + " ) " + " ( " + s_slist + " ) " + " )";
