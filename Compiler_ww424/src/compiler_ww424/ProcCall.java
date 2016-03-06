@@ -34,13 +34,12 @@ public class ProcCall extends Stmt {
 		return new Type("unit");
 	}
 	public String toString(){
-		ArrayList<String> arglist = new ArrayList<String> ();
-		for (Expr e : args){
-			arglist.add(e.toString());
-		}
-		String argString = String.format("%s", String.join(" ", arglist));
-		
-		return String.format("(%s %s)", name,argString);
+		if (args == null) { return String.format("(%s %s)", name,""); }
+		String arglist = "";
+		for (int i =0 ; i <args.size(); i++){
+			arglist += (args.get(i).toString());
+		}		
+		return String.format("(%s %s)", name,arglist);
 	}
 	
 }
