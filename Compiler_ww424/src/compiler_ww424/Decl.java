@@ -22,6 +22,9 @@ public class Decl extends Stmt {
 		column = colNum;
 	}
 	
+	public void setID (IDExpr n){
+		name = n ;
+	}
 	public IDExpr getName() {
 		return name;
 	}
