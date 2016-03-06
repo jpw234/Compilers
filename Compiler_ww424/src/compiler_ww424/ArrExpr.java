@@ -13,8 +13,10 @@ public class ArrExpr extends Expr {
 		column = c;
 	}
 	
-	public ArrExpr(IDExpr n, ArrayList<Expr> c) {
+	public ArrExpr(IDExpr n, ArrayList<Expr> c, int l, int c) {
 		name = n; accesses = c;
+		line = l;
+		column = c;
 	}
 	
 	public void add(Expr e) {

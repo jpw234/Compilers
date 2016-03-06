@@ -22,6 +22,7 @@ public class Assign extends Stmt {
 	public Type typecheck(SymTab s) {
 		Type expected = s.lookup(left.getName().getName());
 		Type resType = right.typecheck(s);
+		if(expected.getDepth() > 0 && resType.getType() == "empty") return new Type("unit");
 		if(!expected.equals(resType)) throw new Error("mismatched types in assignment");
 		
 		return new Type("unit");
