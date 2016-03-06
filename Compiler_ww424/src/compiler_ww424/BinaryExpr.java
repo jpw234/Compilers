@@ -96,7 +96,7 @@ public class BinaryExpr extends Expr {
 			case OR: operand = "|";
 				break;
 		}
-		s = "( " + operand + " " + left.toString() + right.toString() + " )";
+		s = "( " + operand + " " + left.toString() + " " + right.toString() + " )";
 		return s ;
 	}
 }
