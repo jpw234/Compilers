@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class ArrExpr extends Expr {
 	private IDExpr name;
 	private ArrayList<Expr> accesses = new ArrayList<Expr>();
+	private int depth=0;
 	
 	public ArrExpr(IDExpr n,int l,int c) {
 		name = n;
@@ -19,7 +20,12 @@ public class ArrExpr extends Expr {
 	public void add(Expr e) {
 		accesses.add(e);
 	}
-	
+	public void addDepth(){
+		depth +=1 ;
+	}
+	public int getDepth(){
+		return depth;
+	}
 	public IDExpr getName() {
 		return name;
 	}
