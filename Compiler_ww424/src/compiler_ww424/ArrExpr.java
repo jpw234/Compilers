@@ -42,4 +42,17 @@ public class ArrExpr extends Expr {
 		if(temp.getDepth()-accesses.size() < 0) throw new Error("illegal access: that is not an array");
 		return new Type(temp.getType(), temp.getDepth()-accesses.size());
 	}
+	
+	@Override
+	public String toString(){
+		String s = name.toString();
+		if(depth > 0) {//array type variable
+			for(int i = 0; i < depth; i++){
+				if(i < accesses.size()) { s = "( [] " + s + accesses.get(i).toString() + " )";}
+				else {s = "( [] " + s + " )";}
+			}
+		}
+		
+		return s ;
+	}
 }

@@ -31,4 +31,14 @@ public class FunCall extends Expr {
 		
 		return ft.getOutputs();
 	}
+	
+	@Override
+	public String toString(){
+		String s = "";
+		for(int i = 0; i < args.size(); i++){
+			s = s + " " + args.get(i).toString();
+		}
+		s = "( " + name.toString() + " " + s + " )";
+		return s ;
+	}
 }

@@ -43,4 +43,15 @@ public class DeclAssign extends Stmt {
 		
 		return new Type("unit");
 	}
+	
+	@Override
+	public String toString(){
+		String s = "";
+		for(int i = 0; i < left.size(); i++){
+			s = s + " " + left.get(i).toString();
+		}
+		if(left.size() > 1) {s = "( " + s + " )";}
+		s = "(= " + s + " " + right.toString() + " )";
+		return s ;
+	}
 }

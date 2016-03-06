@@ -67,4 +67,18 @@ public class ArrLiteralExpr extends Expr {
 		t.addDepth();
 		return t;
 	}
+	@Override
+	public String toString(){
+		String s = "";
+		if(isString){s = " \" " + str + " \" ";}
+		else{//tuple
+			for(int i = 0; i < values.size(); i++){s = s + " " + values.get(i).toString();}
+			s = "( " + s + " )";
+		}
+		for(int i = 0; i < accesses.size(); i++){
+			s = "( [] " + s + accesses.get(i).toString() + " )";
+		}
+		
+		return s ;
+	}
 }

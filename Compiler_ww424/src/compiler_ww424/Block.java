@@ -30,4 +30,14 @@ public class Block extends Stmt {
 		
 		throw new Error("shouldn't get here in ifblock typecheck");
 	}
+
+	@Override
+	public String toString(){
+		String s = "";
+		for(int i = 0; i < body.size(); i++){
+			s = s + body.get(i).toString() + "\n";
+		}
+		s = "( " + s + " )";
+		return s ;
+	}
 }

@@ -58,4 +58,17 @@ public class Decl extends Stmt {
 		
 		return new Type("unit");
 	}
+	
+	@Override
+	public String toString(){
+		String s = type.getType();
+		if(type.getDepth() > 0) {//array type variable
+			for(int i = type.getDepth()-1; i >= 0; i--){
+				if(i < accesses.size()) { s = "( [] " + s + accesses.get(i).toString() + " )";}
+				else {s = "( [] " + s + " )";}
+			}
+		}
+		s = "( " + name.toString() + " " + s + " )";
+		return (type.getType()=="underscore")? "_" : s ;
+	}
 }
