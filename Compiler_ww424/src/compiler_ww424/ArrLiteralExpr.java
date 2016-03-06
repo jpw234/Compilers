@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class ArrLiteralExpr extends Expr {
 	private ArrayList<Expr> values;
 	private ArrayList<Expr> accesses = new ArrayList<Expr>();
-	private isString = false;
-	private String = str;
+	private Boolean isString = false;
+	private String str;
 	
 	public ArrLiteralExpr(ArrayList<Expr> v, int l, int c) {
 		values = v;
@@ -22,10 +22,10 @@ public class ArrLiteralExpr extends Expr {
 	public ArrLiteralExpr(String s, int l, int c) {
 		line = l;
 		column = c;
-		isString = True;
+		isString = true;
 		str = s;
 		values = new ArrayList<Expr>();
-		for(int i = 0; i < s.size(); i++){
+		for(int i = 0; i < s.length(); i++){
 			addValue(new NumExpr((int)s.charAt(i), l, c));
 		}
 	}

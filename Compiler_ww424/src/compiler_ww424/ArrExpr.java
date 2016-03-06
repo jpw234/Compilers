@@ -14,7 +14,8 @@ public class ArrExpr extends Expr {
 	}
 	
 	public ArrExpr(IDExpr n, ArrayList<Expr> list, int l, int c) {
-		name = n; accesses = list;
+		name = n; 
+		accesses = list;
 		line = l;
 		column = c;
 	}

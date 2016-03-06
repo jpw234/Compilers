@@ -28,11 +28,11 @@ public class ReturnStmt extends Stmt{
 			given = new Tuple(new ArrayList<Type>());
 			
 			for(int a = 0; a < val.size(); a++) {
-				((Tuple) given).add(val.get(a).typecheck(s));
+				((Tuple)given).add(val.get(a).typecheck(s));
 			}
 		}
 		else given = val.get(0).typecheck(s);
 		if(!given.equals(expected)) throw new Error("returned wrong type");
-		else return new Type("void");
+		else return val.get(0).typecheck(s);
 	}
 }
