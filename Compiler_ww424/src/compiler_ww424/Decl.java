@@ -1,6 +1,6 @@
 package compiler_ww424;
 
-import java.lang.reflect.Type;
+import java.util.List;
 
 public class Decl extends Stmt {
 	private IDExpr name;
