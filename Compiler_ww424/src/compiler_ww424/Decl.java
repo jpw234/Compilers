@@ -14,10 +14,12 @@ public class Decl extends Stmt {
 		column = colNum;
 	}
 	
-	public Decl(IDExpr n, Type t, List<Expr> a) {
+	public Decl(IDExpr n, Type t, List<Expr> a, int lineNum, int colNum) {
 		name = n;
 		type = t;
 		accesses = a;
+		line = lineNum;
+		column = colNum;
 	}
 	
 	public IDExpr getName() {
