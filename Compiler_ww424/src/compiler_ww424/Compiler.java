@@ -1,6 +1,8 @@
 package compiler_ww424;
 import java.io.File;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+import jdk.nashorn.internal.parser.Parser;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -91,6 +93,7 @@ public class Compiler {
 		Boolean toLex = false;
 		Boolean useHelp = false;
 		Boolean toParse = false;
+		Boolean toTypecheck = false;
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
@@ -227,7 +230,33 @@ public class Compiler {
 				fw.close();
 			}
 			
-
+			if(toTypecheck) {
+				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
+				Reader fr = new FileReader(p.getFile());
+				Lexer lexer = new Lexer(fr);
+				FileWriter fw = new FileWriter(fN);
+				Parser par = new parser(lexer);
+				
+				SymTab table = new SymTab(null);
+				
+				try{
+					Program program = (Program) par.parse().value;
+					for(int a = 0; a < program.getImports().size(); a++) {
+						//follow librarypath + itsname.ixi
+						//throw error if it isn't there
+						//parse it and firstpass() with table as SymTab
+					}
+					program.firstPass(table);
+					program.secondPass(table);
+					fw.write("Valid Xi Program");
+				}
+				catch(Error e) {
+					System.out.println(e.getMessage());
+					fw.write(e.getMessage());
+				}
+				System.out.println("Semantic analysis file(s) generated!");
+				fw.close();
+			}
 		}
 
 	}
