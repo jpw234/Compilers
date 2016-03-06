@@ -197,7 +197,13 @@ stmtlist            ::=  stmtlist:stml stmt:stm
                     ;
 stmt                ::=   ifblock:s                     {: RESULT = s; :}
                     | ifelseblock:s                       {: RESULT = s; :}
-                    | WHILE LPAREN expr:cond RPAREN block:blk           {: RESULT = new WhileStmt(cond,blk.getBody(), condleft+1, condright+1);:}
+                    | WHILE LPAREN expr:cond RPAREN stmt:s
+                    {:  if(s instanceof Block) {RESULT = new WhileStmt(cond,((Block)s).getBody(), condleft+1,condright+1);}
+            			else {
+                		List<Stmt> ret = new ArrayList<Stmt>();
+                		ret.add(s);
+                		RESULT = new WhileStmt(cond, ret, condleft+1,condright+1);}
+					:}           
                     | ID:x LPAREN idlist:idl RPAREN             {: RESULT = new ProcCall(new IDExpr(x, xleft+1, xright+1), idl, xleft+1, xright+1); :}
                     | decl:s                        {: RESULT = s; :}
                     | declassign:s                      {: RESULT = s; :}
@@ -211,22 +217,23 @@ idlist              ::= expr :exp1                      {: ArrayList<Expr> retli
 
 ifblock             ::=  IF LPAREN expr:cond RPAREN stmt:s         
           {:
-            if(s instanceof Block) {RESULT = new IfStmt(cond, s.getBody(), condleft+1,condright+1);}
-            else {
+
+               if(s instanceof Block) {RESULT = new IfStmt(cond,((Block)s).getBody(), condleft+1,condright+1);}
+            	else {
                 List<Stmt> ret = new ArrayList<Stmt>();
                 ret.add(s);
                 RESULT = new IfStmt(cond, ret, condleft+1,condright+1);
-            }
+            	}
           :}
           ;
   
 ifelseblock    ::=  IF LPAREN expr:cond RPAREN stmt:is ELSE stmt:es 
             {:
-                List<Stmt> iret;
+				List<Stmt> iret;
                 List<Stmt> eret;
-                if(is instanceof Block) {iret = is.getBody();}
-                else {iret = new ArrayList<Stmt>(); iret.add(is)}
-                if(es instanceof Block) {eret = es.getBody();}
+                if(is instanceof Block) {iret = ((Block)is).getBody();}
+                else {iret = new ArrayList<Stmt>(); iret.add(is);}
+                if(es instanceof Block) {eret = ((Block)es).getBody();}
                 else {eret = new ArrayList<Stmt>(); eret.add(es);}
                 RESULT = new IfElseStmt( cond, iret, eret,condleft+1,condright+1); 
             :}
