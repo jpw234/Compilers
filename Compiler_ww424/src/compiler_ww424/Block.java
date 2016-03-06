@@ -3,20 +3,20 @@ import java.util.List;
 
 public class Block extends Stmt {
 	private List<Stmt> body;
-	
+
 	public Block(List<Stmt> b,int lineNum,int colNum) {
 		body = b;
 		line = lineNum;
 		column = colNum;
 	}
-	
+
 	public List<Stmt> getBody() {
 		return body;
 	}
-	
+
 	public Type typecheck(SymTab s) {
 		SymTab newScope = new SymTab(s);
-		
+
 		for(int a = 0; a < body.size(); a++) {
 			if(a == body.size() - 1) {
 				if(body.get(a).typecheck(newScope).getType() != "unit" && 
@@ -27,15 +27,17 @@ public class Block extends Stmt {
 			}
 			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error("stmt should be unit type");
 		}
-		
+
 		throw new Error("shouldn't get here in ifblock typecheck");
 	}
 
 	@Override
 	public String toString(){
 		String s = "";
-		for(int i = 0; i < body.size(); i++){
-			s = s + body.get(i).toString() + "\n";
+		if (body != null){
+			for(int i = 0; i < body.size(); i++){
+				s = s + body.get(i).toString() + "\n";
+			}
 		}
 		s = "( " + s + " )";
 		return s ;
