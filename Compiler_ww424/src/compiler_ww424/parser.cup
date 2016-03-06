@@ -255,15 +255,12 @@ vartype_init  ::=  INT:x                      {: RESULT = new Decl(new IDExpr("i
                  {: 
                     try{
                         if(vt.getType().getDepth() != vt.getAccesses().size()){
-                          throw new ArrayInitException("Array Initialization Error");
+                          throw new ArrayInitException(String.valueOf(vtleft+1)+":"+String.valueOf(vtright+1)+" error:Array Initialization Error");
                         }
-                    }
-                    catch(ArrayInitException ex){
-                      System.out.println(ex.toString());
-                    }
+                    }finally{
                     vt.getType().addDepth();
                     vt.addAccess(exp);  
-                    RESULT = vt; :}
+                    RESULT = vt;} :}
                  ;
 //variable
 var         ::=  ID:x                         {: RESULT = new ArrExpr(new IDExpr(x,xleft+1,xright+1), xleft+1, xright+1); :}
@@ -272,15 +269,12 @@ var         ::=  ID:x                         {: RESULT = new ArrExpr(new IDExpr
                  {:
                     try{
                         if(vt.getDepth() != vt.getAccesses().size()){
-                          throw new ArrayInitException("Array Initialization Error");
+                          throw new ArrayInitException(String.valueOf(vtleft+1)+":"+String.valueOf(vtright+1)+" error:Array Initialization Error");
                         }
-                    }
-                    catch(ArrayInitException ex){
-                      System.out.println(ex.toString());
-                    }
+                    }finally{
                     vt.addDepth();
                     vt.add(exp);
-          RESULT = vt; 
+          			RESULT = vt; }
                  :}
                  ;
                    

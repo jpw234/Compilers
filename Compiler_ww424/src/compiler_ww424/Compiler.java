@@ -1,7 +1,6 @@
 package compiler_ww424;
 import java.io.File;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-import jdk.nashorn.internal.parser.Parser;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -226,11 +225,13 @@ public class Compiler {
 				parser par = new parser(lexer);
 				try{
 					Program program = (Program) par.parse().value;
-					System.out.println(program.toString());
+					//System.out.println(program.toString());
 					fw.write(program.toString());
 				}catch(Error e ){		
-					System.out.println(e.getMessage());
+					//System.out.println(e.getMessage());
 					fw.write(e.getMessage());
+				}catch(ArrayInitException ex) {
+					fw.write(ex.getMessage());
 				}
 				System.out.println("Parsed file(s) generated!");
 				fw.close();
