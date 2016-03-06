@@ -35,14 +35,14 @@ public class ReturnStmt extends Stmt{
 		if(!given.equals(expected)) throw new Error("returned wrong type");
 		else return val.get(0).typecheck(s);
 	}
-	
+	@Override
 	public String toString(){
-		ArrayList<String> stms = new ArrayList<String> ();
-		for (Expr s : val){
-			stms.add(s.toString());
+		String s = "";
+		if(val==null) return "";
+		for(int i = 0; i < val.size(); i++){
+			s = s + val.get(i).toString() + " ";
 		}
-		String bodyString = String.format("%s", String.join(" ", stms));
-		
-		return String.format("(%s %s)", "return",bodyString);
+		s = "(return " + s.trim() + " )";
+		return s;
 	}
 }

@@ -29,6 +29,8 @@ public class Program {
 	}
 
 	public void firstPass(SymTab s) {
+		//TODO: Insert use logic
+
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).firstPass(s);
 		}
@@ -41,20 +43,15 @@ public class Program {
 	}
 
 	public String toString(){
-		ArrayList<String> uselist = new ArrayList<String> ();
-		ArrayList<String> funlist = new ArrayList<String> ();
-		if (!uselist.isEmpty()){
-			for (Use u : imports){
-				uselist.add(u.toString());
-			}}
-		if (!funlist.isEmpty()){
-			for (Function f : funcs){
-				funlist.add(f.toString());
-			}
+		String useString = "";
+		String funString = "";
+		for (int i = 0 ; i < imports.size(); i++){
+			useString += imports.get(i).toString()+" ";
 		}
-		String useString = String.format("%s", String.join(" ", uselist));
-		String funString = String.format("%s", String.join(" ", funlist));
-
+		
+		for (int i = 0 ; i < funcs.size(); i++){
+			funString += funcs.get(i).toString()+" ";
+		}
 		return String.format("((%s) (%s))", useString,funString);
 	}
 }

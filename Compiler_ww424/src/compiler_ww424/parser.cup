@@ -11,7 +11,7 @@ parser code {:
 
 	private boolean is_interface = false;
 	
-	public void setState(bool b) { is_interface = b; }
+	public void setState(Boolean b) { is_interface = b; }
 	public boolean getState() { return is_interface; }
     
     /* Change the method report_error so it will display the line and
@@ -157,6 +157,7 @@ func                ::= ID:id LPAREN arglist:al RPAREN funtype:ft block:bl
 					{:  if(!parser.getState()) parser.report_error("Syntax error", new Error("function declarations shouldn't be empty"));
 					    RESULT = new Function(new IDExpr("*"+id,idleft+1,idright+1), al, ft, idleft+1, idright+1); :}
 					;
+					
 //argument list
 arglist             ::= arglist:argl COMMA arg: a						    {: argl.add(a); RESULT = argl; :} 
 				     | arg:a 											    
@@ -268,7 +269,8 @@ var         ::=  ID:x 										    {: RESULT = new ArrExpr(new IDExpr(x,xleft+1
                         Error e  = new Error();
                         parser.report_error("syntax error", e);
                     }
-                    else{ vt.add(exp); RESULT = vt; }
+                    else{ vt.add(exp); }
+					RESULT = vt; 
                  :}
                  ;
                    

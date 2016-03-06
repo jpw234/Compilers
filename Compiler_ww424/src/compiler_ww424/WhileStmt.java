@@ -38,12 +38,17 @@ public class WhileStmt extends Stmt {
 	}
 	
 	public String toString(){
-		ArrayList<String> stms = new ArrayList<String> ();
-		for (Stmt s : body){
-			stms.add(s.toString());
+		if (condition==null && body == null ){
+			return String.format("(%s) (%s) (%s)", "while", "","");
 		}
-		String bodyString = String.format("%s", String.join(" ", stms));
+		if (condition!=null && body == null ){
+			return String.format("(%s) (%s) (%s)", "while", condition.toString(),"");
+		}
+		String bodyString = "";
+		for (int i = 0 ; i < body.size(); i ++){
+			bodyString += body.get(i).toString()+" ";
+		}
 		
-		return String.format("(%s) (%s) (%s)", "while", condition.toString(),bodyString);
+		return String.format("(%s) (%s) (%s)", "while", condition.toString(),bodyString.trim());
 	}
 }
