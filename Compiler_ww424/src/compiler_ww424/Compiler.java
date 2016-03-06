@@ -17,6 +17,7 @@ public class Compiler {
 	public static final String INPUT_HELPER = "--help";
 	public static final String INPUT_LEX = "--lex";
 	public static final String INPUT_PARSE = "--parse";
+	public static final String INPUT_TYPECHECK = "--typecheck";
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
 	public static final String INPUT_DIAGNOSIS_PATH = "-d";
 	public static final String INPUT_LIBRARY_PATH = "-libpath";
@@ -123,7 +124,9 @@ public class Compiler {
 			case INPUT_PARSE:
 				toParse = true;
 				break;
-
+			case INPUT_TYPECHECK:
+				toTypecheck = true;
+				break;
 			default:
 				// This Must Be A File
 				pathArgs.add(new CodePath(currentRoot, args[i]));
