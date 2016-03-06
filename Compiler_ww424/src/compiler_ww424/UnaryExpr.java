@@ -1,5 +1,7 @@
 package compiler_ww424;
 
+import java.util.ArrayList;
+
 public class UnaryExpr extends Expr {
 	private UnaryOp op;
 	private Expr expr;
@@ -23,5 +25,13 @@ public class UnaryExpr extends Expr {
 		if(t.getType() == "bool" && t.getDepth() == 0 && op == UnaryOp.BOOLNEG) return new Type("bool");
 		else if(t.getType() == "int" && t.getDepth() == 0 && op == UnaryOp.ARITHNEG) return new Type("int");
 		else throw new Error("unaryexpr failed to typecheck");
+	}
+	
+	public String toString(){
+		String operator = "!";
+		if (op == UnaryOp.ARITHNEG){
+			operator ="-";
+		}
+		return String.format("(%s %s)", operator, expr.toString());
 	}
 }

@@ -1,4 +1,5 @@
 package compiler_ww424;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IfStmt extends Stmt {
@@ -36,5 +37,14 @@ public class IfStmt extends Stmt {
 		}
 		
 		throw new Error("shouldn't get here in ifblock typecheck");
+	}
+	
+	public String toString(){
+		ArrayList<String> bodylist = new ArrayList<String> ();
+		for (Stmt s : body){
+			bodylist.add(s.toString());
+		}
+		String useString = String.format("%s", String.join(" ", bodylist));
+		return String.format("(%s %s (%s))", "if", condition.toString(),bodylist);
 	}
 }

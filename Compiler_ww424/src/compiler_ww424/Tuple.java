@@ -1,4 +1,5 @@
 package compiler_ww424;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tuple extends Type {
@@ -29,5 +30,14 @@ public class Tuple extends Type {
 		}
 		
 		return true;
+	}
+	@Override 
+	public String toString(){
+		ArrayList<String> stms = new ArrayList<String> ();
+		for (Type t : args){
+			stms.add(t.toString());
+		}
+		return String.format("%s", String.join(" ", stms));
+		
 	}
 }
