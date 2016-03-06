@@ -20,6 +20,7 @@ public class Compiler {
 	public static final String INPUT_PARSE = "--parse";
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
 	public static final String INPUT_DIAGNOSIS_PATH = "-d";
+	public static final String INPUT_LIBRARY_PATH = "-libpath";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -89,6 +90,7 @@ public class Compiler {
 		ArrayList<CodePath> codeToCompile = new ArrayList<>();
 		String currentRoot = directory;
 		String sourceRoot = null;
+		String libRoot = null;
 		String diagnosisRoot = null;
 		Boolean toLex = false;
 		Boolean useHelp = false;
@@ -105,6 +107,10 @@ public class Compiler {
 			case INPUT_DIAGNOSIS_PATH :
 				i++;
 				if(i < args.length) diagnosisRoot = args[i];
+				break;
+			case INPUT_LIBRARY_PATH :
+				i++;
+				if(i < args.length) libRoot = args[i];
 				break;
 			case INPUT_HELPER :
 				//help function
@@ -125,15 +131,15 @@ public class Compiler {
 				break;
 			}
 		}
-		if ((toLex || toParse) && !useHelp){
-			lex_parse(toLex, toParse,pathArgs,codeToCompile,sourceRoot,diagnosisRoot);
+		if ((toLex || toParse || toTypecheck) && !useHelp){
+			lex_parse(toLex, toParse,toTypecheck,pathArgs,codeToCompile,sourceRoot,diagnosisRoot,libRoot);
 		}
 
 
 
 	}
-	public static void lex_parse(Boolean toLex, Boolean toParse,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-			String sourceRoot,String diagnosisRoot) throws Exception{
+	public static void lex_parse(Boolean toLex, Boolean toParse,Boolean toTypecheck,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
+			String sourceRoot,String diagnosisRoot,String libRoot) throws Exception{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
 			pathArgs.add(new CodePath(sourceRoot, "."));
@@ -235,16 +241,28 @@ public class Compiler {
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
 				FileWriter fw = new FileWriter(fN);
-				Parser par = new parser(lexer);
+				parser par = new parser(lexer);
 				
 				SymTab table = new SymTab(null);
-				
+				if(libRoot ==null)
+				{
+					libRoot = new String("");
+				}
 				try{
 					Program program = (Program) par.parse().value;
 					for(int a = 0; a < program.getImports().size(); a++) {
-						//follow librarypath + itsname.ixi
-						//throw error if it isn't there
-						//parse it and firstpass() with table as SymTab
+						Reader impReader = null;
+						try {
+							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
+						}
+						catch(Exception excp) {
+							throw new Error("Interface file " + libRoot + program.getImports().get(a).getString()+".ixi not found.");
+						}
+						Lexer impLexer = new Lexer(impReader);
+						parser impPar = new parser(impLexer);
+						Program impProgram = (Program) impPar.parse().value;
+						impProgram.firstPass(table);
+						impReader.close();
 					}
 					program.firstPass(table);
 					program.secondPass(table);
