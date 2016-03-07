@@ -1,0 +1,526 @@
+Testpath "xth/tests/pa3/" specified.
+Test script: xthScript
+  xic-build: Reading "src/compiler_ww424/lexer.flex"
+Constructing NFA : 259 states in NFA
+Converting NFA to DFA : 
+...............................................................................................................
+117 states before minimization, 97 states in minimized DFA
+Old file "src/compiler_ww424/Lexer.java" saved as "src/compiler_ww424/Lexer.java~"
+Writing code to "src/compiler_ww424/Lexer.java"
+added manifest
+adding: compiler_ww424/ArrExpr.class(in = 2251) (out= 1091)(deflated 51%)
+adding: compiler_ww424/ArrLiteralExpr.class(in = 3167) (out= 1564)(deflated 50%)
+adding: compiler_ww424/ArrayInitException.class(in = 310) (out= 223)(deflated 28%)
+adding: compiler_ww424/Assign.class(in = 1610) (out= 859)(deflated 46%)
+adding: compiler_ww424/BinaryExpr$1.class(in = 1182) (out= 665)(deflated 43%)
+adding: compiler_ww424/BinaryExpr.class(in = 2930) (out= 1609)(deflated 45%)
+adding: compiler_ww424/BinaryOp.class(in = 1430) (out= 755)(deflated 47%)
+adding: compiler_ww424/Block.class(in = 1729) (out= 948)(deflated 45%)
+adding: compiler_ww424/BoolExpr.class(in = 737) (out= 476)(deflated 35%)
+adding: compiler_ww424/Compiler$CodePath.class(in = 1378) (out= 704)(deflated 48%)
+adding: compiler_ww424/Compiler.class(in = 8062) (out= 4194)(deflated 47%)
+adding: compiler_ww424/Decl.class(in = 2782) (out= 1341)(deflated 51%)
+adding: compiler_ww424/DeclAssign.class(in = 2435) (out= 1239)(deflated 49%)
+adding: compiler_ww424/Expr.class(in = 564) (out= 317)(deflated 43%)
+adding: compiler_ww424/FunCall.class(in = 2066) (out= 1044)(deflated 49%)
+adding: compiler_ww424/FunType.class(in = 792) (out= 456)(deflated 42%)
+adding: compiler_ww424/Function.class(in = 3690) (out= 1647)(deflated 55%)
+adding: compiler_ww424/IDExpr.class(in = 675) (out= 379)(deflated 43%)
+adding: compiler_ww424/IfElseStmt.class(in = 2656) (out= 1276)(deflated 51%)
+adding: compiler_ww424/IfStmt.class(in = 2126) (out= 1103)(deflated 48%)
+adding: compiler_ww424/Length.class(in = 1035) (out= 613)(deflated 40%)
+adding: compiler_ww424/Lexer$Token.class(in = 888) (out= 512)(deflated 42%)
+adding: compiler_ww424/Lexer.class(in = 11615) (out= 6352)(deflated 45%)
+adding: compiler_ww424/NumExpr.class(in = 1280) (out= 689)(deflated 46%)
+adding: compiler_ww424/ProcCall.class(in = 2112) (out= 1067)(deflated 49%)
+adding: compiler_ww424/Program.class(in = 2111) (out= 985)(deflated 53%)
+adding: compiler_ww424/ReturnStmt.class(in = 2005) (out= 1055)(deflated 47%)
+adding: compiler_ww424/Stmt.class(in = 436) (out= 279)(deflated 36%)
+adding: compiler_ww424/SymTab.class(in = 1279) (out= 645)(deflated 49%)
+adding: compiler_ww424/Tuple.class(in = 1440) (out= 762)(deflated 47%)
+adding: compiler_ww424/Type.class(in = 1053) (out= 602)(deflated 42%)
+adding: compiler_ww424/UnaryExpr.class(in = 1400) (out= 769)(deflated 45%)
+adding: compiler_ww424/UnaryOp.class(in = 856) (out= 481)(deflated 43%)
+adding: compiler_ww424/Use.class(in = 740) (out= 423)(deflated 42%)
+adding: compiler_ww424/WhileStmt.class(in = 2140) (out= 1098)(deflated 48%)
+adding: compiler_ww424/parser$CUP$parser$actions.class(in = 21189) (out= 7501)(deflated 64%)
+adding: compiler_ww424/parser.class(in = 11745) (out= 5343)(deflated 54%)
+adding: compiler_ww424/sym.class(in = 1970) (out= 1031)(deflated 47%)
+OK
+  Test collection: xic (Test --help)
+    []: OK
+[Compiler's standard output:
+xic
+SYNOPSIS
+xic [--lex] [--help] [-p path] [file ...]
+DESCRIPTION
+Compile programming code. Transfer input string into a set of tokens.
+--help: A synopsis of options lists all possible options along with brief descriptions.
+--lex: Generate output from lexical analysis. For each source file named filename.xi,
+an output file named filename.lexed is generated to provide the result of lexing
+the source file.
+-p setting the file path of the xi files to be compiled
+]
+  xic (Test --help): 1 out of 1 tests succeeded.
+  Test collection: xic (Test --lex)
+    ex1.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    ex2.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    spec1.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    spec2.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    spec3.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    gcd.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    ratadd.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    ratadduse.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    insertionsort.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    arrayinit.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    arrayinit2.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    mdarrays.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    add.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+    beauty.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Lexed file(s) generated!
+]
+  xic (Test --lex): 14 out of 14 tests succeeded.
+  Test collection: xic (Test --parse)
+    ex1.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    ex2.xi: Mismatch detected at line 6 of file ex2.parsed.nml
+expected:     (= (pred bool) (| (& true true) false))
+found   :     (= (pred bool) (| (& true true) false)) (if (<= expr 47) (= pred (! pred)))
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    ex3.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    spec1.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    spec2.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    spec3.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    gcd.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    ratadd.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    ratadduse.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    insertionsort.xi: Mismatch detected at line 12 of file insertionsort.parsed.nml
+expected:        ((if
+found   :        ((if (> ([] a (- j 1)) ([] a j)) (= (swap int) ([] a j))
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    arrayinit.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    arrayinit2.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    mdarrays.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    add.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+    beauty.xi: OK
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Parsed file(s) generated!
+]
+  xic (Test --parse): 13 out of 15 tests succeeded.
+  Test collection: xic (Test --typecheck)
+    ex01.xi: File ex01.typed does not exist in directory ./.
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+Interface file io.ixi not found.
+Semantic analysis file(s) generated!
+]
+    ex02.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex03.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex04.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex05.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex06.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex07.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex08.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex09.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex10.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex11.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ex12.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    spec1-full.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    spec1.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    spec2.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    spec3.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    gcd.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ratadd-full.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ratadd.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ratadduse-full.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    ratadduse.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    insertionsort.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    arrayinit.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    arrayinit2-full.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    arrayinit2.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+    mdarrays.xi: Failed to compile: xic exit code 1
+[Compiler's standard output:
+Attempting To Compile 1 File(s)
+]
+[Compiler's standard error:
+Exception in thread "main" java.lang.NullPointerException
+	at compiler_ww424.SymTab.lookup(SymTab.java:14)
+	at compiler_ww424.Function.firstPass(Function.java:44)
+	at compiler_ww424.Program.firstPass(Program.java:35)
+	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
+	at compiler_ww424.Compiler.main(Compiler.java:137)
+]
+  xic (Test --typecheck): 0 out of 26 tests succeeded.
+xthScript: 29 out of 57 tests succeeded.
