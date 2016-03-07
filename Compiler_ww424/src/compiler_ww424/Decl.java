@@ -68,7 +68,7 @@ public class Decl extends Stmt {
 					s = "( [] " + s +")";
  				}
 				else {
-					if(i < accesses.size()) { s = "( [] " + s + accesses.get(i).toString() + " )";}
+					if(i < accesses.size()) { s = "( [] " + s + " " + accesses.get(i).toString() + " )";}
 					else {s = "( [] " + s + " )";}
 				}
 

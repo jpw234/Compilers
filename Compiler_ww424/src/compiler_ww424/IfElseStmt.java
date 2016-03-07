@@ -69,6 +69,6 @@ public class IfElseStmt extends Stmt {
 				ifString += (elsebody.get(i).toString()+" ");
 			}
 		}
-		return String.format("(%s %s (%s) (%s))", "if", condition.toString(),ifString, elseString);
+		return String.format("(%s %s %s %s)", "if", condition.toString(),ifString, elseString);
 	}
 }

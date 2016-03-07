@@ -85,7 +85,7 @@ terminal String STRING;
 terminal String CHARACTER;
 terminal Integer INTEGER;
 terminal INT, BOOL;
-terminal Boolean TRUE, FALSE;
+terminal TRUE, FALSE;
 terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES,
   DIV, MOD, NOT, LANGLE, LEQ, RANGLE, GEQ, EQEQ, AND, OR, EQ, NEQ,
   LBRACKET, RBRACKET, LPAREN, RPAREN, LBRACE, RBRACE,
@@ -309,8 +309,8 @@ retop          ::=  RETURN idlist:el
                    ;
 expr           ::=   INTEGER:i                  {: RESULT = new NumExpr(i,ileft+1,iright+1); :}
                    | CHARACTER:c                {: RESULT = new NumExpr(c.charAt(0), cleft+1, cright+1); :}
-                   | TRUE:v                   {: RESULT = new BoolExpr(v,vleft+1,vright+1); :}
-                   | FALSE:v                  {: RESULT = new BoolExpr(v,vleft+1,vright+1); :}
+                   | TRUE:v                   {: RESULT = new BoolExpr(true,vleft+1,vright+1); :}
+                   | FALSE:v                  {: RESULT = new BoolExpr(false,vleft+1,vright+1); :}
                    | LENGTH LPAREN expr:e1 RPAREN       {: RESULT = new Length(e1,e1left+1,e1right+1); :}
                    | LPAREN expr:ex RPAREN            {: RESULT = ex;:}
                    | var:vt                       {: RESULT = vt ;:}

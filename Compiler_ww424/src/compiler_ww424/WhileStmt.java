@@ -39,16 +39,16 @@ public class WhileStmt extends Stmt {
 	
 	public String toString(){
 		if (condition==null && body == null ){
-			return String.format("(%s) (%s) (%s)", "while", "","");
+			return String.format("(%s %s (%s))", "while", "","");
 		}
 		if (condition!=null && body == null ){
-			return String.format("(%s) (%s) (%s)", "while", condition.toString(),"");
+			return String.format("(%s %s (%s))", "while", condition.toString(),"");
 		}
 		String bodyString = "";
 		for (int i = 0 ; i < body.size(); i ++){
 			bodyString += body.get(i).toString()+" ";
 		}
 		
-		return String.format("(%s) (%s) (%s)", "while", condition.toString(),bodyString.trim());
+		return String.format("(%s %s (%s))", "while", condition.toString(),bodyString.trim());
 	}
 }

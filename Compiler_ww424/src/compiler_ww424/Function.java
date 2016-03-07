@@ -99,7 +99,7 @@ public class Function {
 			}
 		}
 		//add retType (from Tuple class) with "(" & ")" manually, because Tuple.toString() don't print parenthesis
-		s = "( " + name.toString() + " " + s_arg + " ( " + retType.toString() + " ) " + " ( " + s_slist + " ) " + " )";
+		s = "(" + name.toString() + " " + s_arg + "( " + retType.toString() + " ) " + "( " + s_slist + " )" + " )";
 		return s ;
 	}
 }

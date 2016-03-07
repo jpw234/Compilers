@@ -31,7 +31,7 @@ public class Assign extends Stmt {
 	@Override
 	public String toString(){
 		String s = "";
-		s = "( = " + left.toString() + right.toString() + " )";
+		s = "( = " + left.toString() + " " + right.toString() + " )";
 		return s ;
 	}
 }

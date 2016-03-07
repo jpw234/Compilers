@@ -46,6 +46,6 @@ public class IfStmt extends Stmt {
 				bodylist += (body.get(i).toString()+" ");
 			}
 		}
-		return String.format("(%s %s (%s))", "if", condition.toString(),bodylist.trim());
+		return String.format("(%s %s %s)", "if", condition.toString(),bodylist.trim());
 	}
 }

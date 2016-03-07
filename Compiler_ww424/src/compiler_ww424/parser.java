@@ -1413,8 +1413,8 @@ class CUP$parser$actions {
                 Expr RESULT = null;
                 int vleft = CUP$parser$stack.peek().left;
                 int vright = CUP$parser$stack.peek().right;
-                Boolean v = CUP$parser$stack.peek().<Boolean> value();
-                 RESULT = new BoolExpr(v,vleft+1,vright+1); 
+                Object v = CUP$parser$stack.peek().<Object> value();
+                 RESULT = new BoolExpr(true,vleft+1,vright+1); 
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("expr",13, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;
@@ -1425,8 +1425,8 @@ class CUP$parser$actions {
                 Expr RESULT = null;
                 int vleft = CUP$parser$stack.peek().left;
                 int vright = CUP$parser$stack.peek().right;
-                Boolean v = CUP$parser$stack.peek().<Boolean> value();
-                 RESULT = new BoolExpr(v,vleft+1,vright+1); 
+                Object v = CUP$parser$stack.peek().<Object> value();
+                 RESULT = new BoolExpr(false,vleft+1,vright+1); 
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("expr",13, CUP$parser$stack.peek(), CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;

@@ -70,7 +70,7 @@ public class ArrLiteralExpr extends Expr {
 	@Override
 	public String toString(){
 		String s = "";
-		if(isString){s = " \" " + str + " \" ";}
+		if(isString){s = "\"" + str + "\"";}
 		else{//tuple
 			for(int i = 0; i < values.size(); i++){s = s + " " + values.get(i).toString();}
 			s = "( " + s + " )";
