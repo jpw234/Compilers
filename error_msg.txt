@@ -36,7 +36,7 @@ adding: compiler_ww424/ProcCall.class(in = 2112) (out= 1067)(deflated 49%)
 adding: compiler_ww424/Program.class(in = 2111) (out= 985)(deflated 53%)
 adding: compiler_ww424/ReturnStmt.class(in = 2005) (out= 1055)(deflated 47%)
 adding: compiler_ww424/Stmt.class(in = 436) (out= 279)(deflated 36%)
-adding: compiler_ww424/SymTab.class(in = 1279) (out= 645)(deflated 49%)
+adding: compiler_ww424/SymTab.class(in = 1299) (out= 660)(deflated 49%)
 adding: compiler_ww424/Tuple.class(in = 1440) (out= 762)(deflated 47%)
 adding: compiler_ww424/Type.class(in = 1053) (out= 602)(deflated 42%)
 adding: compiler_ww424/UnaryExpr.class(in = 1400) (out= 769)(deflated 45%)
@@ -222,305 +222,155 @@ Attempting To Compile 1 File(s)
 Interface file io.ixi not found.
 Semantic analysis file(s) generated!
 ]
-    ex02.xi: Failed to compile: xic exit code 1
+    ex02.xi: File ex02.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex03.xi: Failed to compile: xic exit code 1
+    ex03.xi: File ex03.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex04.xi: Failed to compile: xic exit code 1
+    ex04.xi: File ex04.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex05.xi: Failed to compile: xic exit code 1
+    ex05.xi: File ex05.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex06.xi: Failed to compile: xic exit code 1
+    ex06.xi: File ex06.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex07.xi: Failed to compile: xic exit code 1
+    ex07.xi: File ex07.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex08.xi: Failed to compile: xic exit code 1
+    ex08.xi: File ex08.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex09.xi: Failed to compile: xic exit code 1
+    ex09.xi: File ex09.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex10.xi: Failed to compile: xic exit code 1
+    ex10.xi: File ex10.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex11.xi: Failed to compile: xic exit code 1
+    ex11.xi: File ex11.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ex12.xi: Failed to compile: xic exit code 1
+    ex12.xi: File ex12.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    spec1-full.xi: Failed to compile: xic exit code 1
+    spec1-full.xi: File spec1-full.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    spec1.xi: Failed to compile: xic exit code 1
+    spec1.xi: File spec1.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    spec2.xi: Failed to compile: xic exit code 1
+    spec2.xi: File spec2.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    spec3.xi: Failed to compile: xic exit code 1
+    spec3.xi: File spec3.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    gcd.xi: Failed to compile: xic exit code 1
+    gcd.xi: File gcd.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ratadd-full.xi: Failed to compile: xic exit code 1
+    ratadd-full.xi: File ratadd-full.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ratadd.xi: Failed to compile: xic exit code 1
+    ratadd.xi: File ratadd.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ratadduse-full.xi: Failed to compile: xic exit code 1
+    ratadduse-full.xi: File ratadduse-full.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    ratadduse.xi: Failed to compile: xic exit code 1
+    ratadduse.xi: File ratadduse.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    insertionsort.xi: Failed to compile: xic exit code 1
+    insertionsort.xi: File insertionsort.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    arrayinit.xi: Failed to compile: xic exit code 1
+    arrayinit.xi: File arrayinit.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    arrayinit2-full.xi: Failed to compile: xic exit code 1
+    arrayinit2-full.xi: File arrayinit2-full.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    arrayinit2.xi: Failed to compile: xic exit code 1
+    arrayinit2.xi: File arrayinit2.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
-]
-    mdarrays.xi: Failed to compile: xic exit code 1
+    mdarrays.xi: File mdarrays.typed does not exist in directory ./.
 [Compiler's standard output:
 Attempting To Compile 1 File(s)
-]
-[Compiler's standard error:
-Exception in thread "main" java.lang.NullPointerException
-	at compiler_ww424.SymTab.lookup(SymTab.java:14)
-	at compiler_ww424.Function.firstPass(Function.java:44)
-	at compiler_ww424.Program.firstPass(Program.java:35)
-	at compiler_ww424.Compiler.lex_parse(Compiler.java:271)
-	at compiler_ww424.Compiler.main(Compiler.java:137)
+Semantic Error: var does not exist
+Semantic analysis file(s) generated!
 ]
   xic (Test --typecheck): 0 out of 26 tests succeeded.
 xthScript: 29 out of 57 tests succeeded.
