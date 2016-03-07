@@ -9,7 +9,7 @@ Compiler_www424/useio
 Compiler_www424/bin
 .DS_Store
 Compiler_ww424/src/compiler_ww424/Lexer.java*
-Compiler_ww424/src/compiler_ww424/Parser.java*
+Compiler_ww424/src/compiler_ww424/parser.java*
 Compiler_ww424/src/compiler_ww424/sym.java*
 # Package Files #
 *.jar
