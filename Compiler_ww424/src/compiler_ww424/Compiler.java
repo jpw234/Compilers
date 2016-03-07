@@ -1,4 +1,5 @@
 package compiler_ww424;
+import java.io.BufferedReader;
 import java.io.File;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
@@ -190,6 +191,8 @@ public class Compiler {
 			catch(IOException ioe){
 				System.err.println("No such File in Directory");
 				return;}
+			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse);
+			if (isempty) break;
 			
 			if (toLex){
 				String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
@@ -283,7 +286,28 @@ public class Compiler {
 
 	}
 
-
+	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse) throws IOException{
+		FileReader fr = new FileReader(fileName);
+		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
+		if (toLex){outFile = fileName.substring(0,fileName.length()-2)+"lexed";}
+		else if (toparse){outFile = fileName.substring(0,fileName.length()-2)+"parsed";}
+		BufferedReader br = new BufferedReader(fr); 
+		FileWriter fw = new FileWriter(outFile); 
+		String line;
+		while((line = br.readLine()) != null)
+		{   line = line.trim(); // remove leading and trailing whitespace
+		    if (!line.equals("")) // don't write out blank lines
+		    {fw.write(line, 0, line.length());}
+		}
+		fr.close();
+		fw.close();
+		Reader reader = new FileReader(outFile);
+		if (reader.read() == -1) { 
+			return true;
+		}
+		return false; 
+		
+	}
 	public static void printUsage() {
 		System.out.println("xic");
 		System.out.println("SYNOPSIS");
