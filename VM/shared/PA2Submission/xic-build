@@ -1,0 +1,8 @@
+./jflex/bin/jflex src/compiler_ww424/lexer.flex
+./cup src/compiler_ww424/parser.cup
+mv parser.java src/compiler_ww424/parser.java
+mv sym.java src/compiler_ww424/sym.java
+javac -d $(pwd) -cp java_cup.jar src/compiler_ww424/*.java
+jar -cvfm xic.jar manifest.txt compiler_ww424/*.class
+echo "java -jar $(pwd)/xic.jar \$@" > xic
+chmod +x xic

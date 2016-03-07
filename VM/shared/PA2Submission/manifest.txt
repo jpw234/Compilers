@@ -1,0 +1,3 @@
+Main-Class: compiler_ww424.Compiler
+Class-Path: xic.jar java_cup.jar
+

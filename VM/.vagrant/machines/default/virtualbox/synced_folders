@@ -1,0 +1,1 @@
+{"virtualbox":{"/home/vagrant/shared":{"guestpath":"/home/vagrant/shared","hostpath":"/Users/frostorb8000/Documents/Compiler/VM/shared","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/frostorb8000/Documents/Compiler/VM","disabled":false,"__vagrantfile":true}}}
