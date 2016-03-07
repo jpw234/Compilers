@@ -1,0 +1,459 @@
+commit 86a9a0d5f5d8f5c33d91d5d9500e8226e03c892b
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 23:03:55 2016 -0500
+
+    empty file fixed
+
+commit 2c4272a437b3349795e9893c15c827c0ac87f713
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 22:59:47 2016 -0500
+
+    PA3_v1
+
+commit 5a015ed607ccd7cebcdb1753916dcbe4803bd1b8
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 19:49:09 2016 -0500
+
+    err msg 2
+
+commit a012cd094a3bd1d2c8add769c94a08c42caf0692
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 19:45:26 2016 -0500
+
+    initialize table in SymTab
+
+commit e2297416d939cbc31f54dfa5886f1c3d95b538b4
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 19:43:16 2016 -0500
+
+    err msg
+
+commit e05b50edbf8d91918063640725078c9fe0990b68
+Merge: 51bdc2c 159cfc7
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 19:40:50 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    merge
+
+commit 51bdc2caf19c4a3231110662f086513863d1bb08
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 19:40:34 2016 -0500
+
+    xth test harness
+
+commit 159cfc7881737f1828c65d4618b14072c2995b5e
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 19:40:19 2016 -0500
+
+    Update .gitignore
+
+commit 4337c69cc5dcf832ac3f56ba194836d74c84857e
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 19:32:29 2016 -0500
+
+    parser
+
+commit a9f59a3839803fb2d7cc3912d061ba366de7636f
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 18:35:17 2016 -0500
+
+    fix if stmt
+
+commit 395df7c930bcb524cf2cb79be07909b8bdae9c9d
+Merge: 901155b 25ad00f
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 18:10:42 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    merge
+
+commit 901155b9c27bbfb2ef9eeee73afd7d8f59891564
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 18:10:35 2016 -0500
+
+    BinaryExpr fixed print
+
+commit 25ad00f9f0650d65a5585ec67f58f8111b0793c1
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 18:10:24 2016 -0500
+
+    fixed the content of if/ifelse/while
+
+commit 29024f2bd131ca232c9fe93ba6c3afbb8ed2a4c4
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 17:57:39 2016 -0500
+
+    fix if stmt cup file
+
+commit b46fe264daf039ba75dd9310e89a7796c669daa3
+Merge: 335b8d0 4086d63
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 17:24:47 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    # By Alex Jaus
+    # Via Alex Jaus
+    * 'master' of https://github.com/jpw234/Compilers:
+      Actually allowed you to specify typeCheck.
+
+commit 335b8d00670a333722a804a7b510c52c5132e0bf
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 17:24:36 2016 -0500
+
+    no message
+
+commit 4086d63f182ec609d830680e11f4a46125da525d
+Merge: 0feb70b 7a672a2
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Sun Mar 6 17:03:48 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit 0feb70be119a58ae0b20a2afc2ac6bf91f5028d6
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Sun Mar 6 17:03:25 2016 -0500
+
+    Actually allowed you to specify typeCheck.
+
+commit 7a672a236ef6bf194abe533facbd0cc34b8b9271
+Merge: ebe4d55 9fcf5ea
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 16:59:59 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    merge
+
+commit ebe4d5558b99da036310171e2620f187e0c8e855
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 16:57:59 2016 -0500
+
+    cup file throw exception
+
+commit 9fcf5ea6778947e0a661d8712d614dfa28b801e8
+Merge: 8b891fb c40206d
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Sun Mar 6 16:56:41 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit 8b891fb316dca81e52878ddf8555fc29871d3c19
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Sun Mar 6 16:56:18 2016 -0500
+
+    Added handler.
+
+commit c40206df5a077ddca1a8bda7521a8365f0155bab
+Merge: 327c118 ca8bb01
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 16:41:37 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    merge
+
+commit 327c1189eeb2eae60f54c6e0de13b62746fd7d78
+Author: 昱絜傅 <frostorb8000@dhcp-mcfad-3051.redrover.cornell.edu>
+Date:   Sun Mar 6 16:40:41 2016 -0500
+
+    modify cup file
+
+commit ca8bb01d37af7a914e4a8c378fe107f821a7e8ab
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 16:38:26 2016 -0500
+
+    no message
+
+commit b17d6a6624490b63c6a9fdc0b07dcb437ede5d91
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 16:26:21 2016 -0500
+
+    no message
+
+commit 6fa3a383d9f7f95eae74778e783d11d1816f9dae
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 16:13:22 2016 -0500
+
+    Proccall toString
+
+commit a407b779bbbf34d9b01720b2a010166a2bbc748a
+Merge: 6e09ec5 b3ebe01
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 16:09:29 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    # By Jared Wright
+    # Via Jared Wright
+    * 'master' of https://github.com/jpw234/Compilers:
+      removed unused nonterminals from parser
+
+commit 6e09ec53e03950f72f6337737408c2ffb5f728c6
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 16:09:05 2016 -0500
+
+    fixed toString
+
+commit b3ebe0101b657be7e4833cb23b3377b6bb3e73b4
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 16:08:16 2016 -0500
+
+    removed unused nonterminals from parser
+
+commit 4068be6ce5e39e22528285b5376cee25e6bea67c
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 15:53:10 2016 -0500
+
+    Modifying some toString functions
+
+commit 5ee7eadf537cc5b17d03959f98787ac4ff6463fe
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 15:49:55 2016 -0500
+
+    modifying Compiler.java to include typecheck logic
+
+commit 9a3760f3b981450b9f2e6064aa6a360373cb6ea3
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 15:11:14 2016 -0500
+
+    modified .cup file to allow parsing Interfaces and made corresponding changes in several .java files
+
+commit be74b98bf61151625533fca617d97c8b1f51cff5
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 14:21:54 2016 -0500
+
+    Compiler main program
+
+commit 700339ef521122c667023cd53626300449941d01
+Merge: acfd552 c0903cf
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 14:16:45 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit acfd552a4ba466dd47cafe856a3310f139b8f82f
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 14:16:38 2016 -0500
+
+    lexer.flex fixes for bugs identified in PA1
+
+commit c0903cf6d9aceab7371481ad663cfab87cd87998
+Author: 昱絜傅 <frostorb8000@akiras-MacBook-Pro-2.local>
+Date:   Sun Mar 6 05:33:07 2016 -0500
+
+    toString_v2
+
+commit 804b868ad6a729a42460f2f2f380bdef5456ec9a
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 05:30:17 2016 -0500
+
+    toString
+
+commit fb04d103c5433f0a59c4e1cbf4b2d8aee374fa87
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 03:17:28 2016 -0500
+
+    fixed generating files
+
+commit bb7a8002d5c34888129efefdf0acfb77f6f7b162
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 02:11:23 2016 -0500
+
+    So far so good! new node/ cup/
+
+commit e170ef6e25d662079f162b1458c5e9672d622d35
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 02:03:44 2016 -0500
+
+    fix constructor
+
+commit c9539dbaf9199815fab6527b5589febb343fd8ca
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 01:54:50 2016 -0500
+
+    Modify BinaryExpr
+
+commit 5e8fd7196ac44c745deeb7371bf553db8a407cb1
+Author: 昱絜傅 <frostorb8000@akiras-MacBook-Pro-2.local>
+Date:   Sun Mar 6 01:51:24 2016 -0500
+
+    ArrExpr&ArrLiteralExpr updated
+
+commit 8ef98541dca5f3148d81fd3408c77475b94800e0
+Merge: 89f0e67 7a254cc
+Author: 昱絜傅 <frostorb8000@akiras-MacBook-Pro-2.local>
+Date:   Sun Mar 6 01:46:42 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+    
+    new one
+
+commit 89f0e674b01c97970c0b7d3c04c56a32e9f32d20
+Author: 昱絜傅 <frostorb8000@akiras-MacBook-Pro-2.local>
+Date:   Sun Mar 6 01:45:01 2016 -0500
+
+    ArrLiteralExpr.java for string
+
+commit 7a254ccdcdee156419f4278b3bd7ec23e93479f5
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 01:43:16 2016 -0500
+
+    ReturnStmt fixes
+
+commit f84aed2d7b8ecc13a8d825d3a423d9082a22b807
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 01:22:16 2016 -0500
+
+    add Char in numExpr
+
+commit 5b6f2cadcc6b713f52ead4dd8493aaa843c14fe1
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 01:12:59 2016 -0500
+
+    setID in Decl
+
+commit 88ef605da9680621cc03305a0e76443efefd88be
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 01:07:17 2016 -0500
+
+    modified ReturnStmt to allow multiple returns
+
+commit 61624ad5b49fad33178f2207cab7be3af48d92a5
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sun Mar 6 00:59:06 2016 -0500
+
+    added ArrLiteralExpr, made corresponding changes to ArrExpr and Assign
+
+commit 7a45d32a211805085abd3766709ebba5ede981d7
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sun Mar 6 00:06:09 2016 -0500
+
+    add depth information in array expression !
+
+commit f02b97ffd3a9965e1999c8f47ce5019f71e64fb5
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Mar 5 23:18:41 2016 -0500
+
+    add line and column in the Length.java
+
+commit 7f586af193fcade88ce26344534163683456d3de
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Mar 5 23:14:26 2016 -0500
+
+    no message
+
+commit 888fe5d8157528f3c5b62565973d6b36fa522b5a
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 23:08:36 2016 -0500
+
+    added Length.java node
+
+commit 76dc875a62311c4bb98509f46d4e1611e0bb62b9
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Mar 5 23:01:37 2016 -0500
+
+    fixed import issue
+
+commit a08302dbcbe4e9f08c751f3afa1f72ea46af46ba
+Merge: 7c5f96a ab76e78
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 22:51:55 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit 7c5f96ae9fb38de9d5a87f568d73988b57273599
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 22:50:57 2016 -0500
+
+    add List<Expr> to Decl
+
+commit ab76e78194ac98dc19235b27c312dd483c94d1dd
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Mar 5 22:50:19 2016 -0500
+
+    fixed Typo in Program.java
+
+commit b54592258032aca248be502a7becbecc7f002ca6
+Merge: d7e682f 25f26b9
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 22:49:58 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit d7e682f97508e16c934c376830c440689cb3edbe
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 21:28:34 2016 -0500
+
+    updated Decl.java to include potential for defined array lengths
+
+commit 25f26b9ecd828c3a805fabbc840f426e91328025
+Merge: f8ffffc bbad1b6
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Sat Mar 5 16:28:36 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit f8ffffc8457d72e6b2a4de249223cf2c2eb1cf9e
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Sat Mar 5 16:28:21 2016 -0500
+
+    Addition of line and column numbers to AST nodes. Conditions changed to Expr type since they only need to be of type bool, not of type binary expr.
+
+commit bbad1b61624fc0077e826170c284e98182cec890
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 15:56:26 2016 -0500
+
+    Changes to Function.java and added Program.java
+
+commit 9c5d9a030550f69937c524f8f1014562bef30e23
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 15:09:52 2016 -0500
+
+    update with changes
+
+commit b828ea0996f2c002d5f43ef86bafc48bb3a8c9bb
+Author: Alex Jaus <ajaus93@hotmail.com>
+Date:   Sat Mar 5 15:03:18 2016 -0500
+
+    Attempt to fix everything.
+
+commit 337208ec43c8a312ee00734521e6da88dace1a74
+Merge: cef6ef4 b09dab3
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 14:57:51 2016 -0500
+
+    Merge branch 'master' of https://github.com/jpw234/Compilers
+
+commit cef6ef4f62a540c98fa6eb338f18f9f347577b0f
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Sat Mar 5 14:54:36 2016 -0500
+
+    updated ArrExpr, Use
+
+commit b09dab3d5e204d5a51f5cf0306cf5079e251349c
+Author: Wen-Yu, Wang <ww424@cornell.edu>
+Date:   Sat Mar 5 14:41:11 2016 -0500
+
+    fix issue of generating lexed and parsed files
+
+commit 950f33be81c06446e0f1d8f3cae8a88e3f382b6e
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Fri Mar 4 19:21:06 2016 -0500
+
+    Adding binaryexpr
+
+commit 958ba00fe1199eb8d307b1413942bc52e55defea
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Thu Mar 3 22:44:29 2016 -0500
+
+    AST initial draft completion
+
+commit 819a713d217537f8f23f484abb104d936b645bfd
+Author: Jared Wright <jpw234@cornell.edu>
+Date:   Wed Mar 2 22:10:05 2016 -0500
+
+    updated AST
