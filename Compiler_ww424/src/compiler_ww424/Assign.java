@@ -20,12 +20,21 @@ public class Assign extends Stmt {
 	}
 	
 	public Type typecheck(SymTab s) {
-		Type expected = s.lookup(left.getName().getName());
-		Type resType = right.typecheck(s);
-		if(expected.getDepth() > 0 && resType.getType() == "empty") return new Type("unit");
-		if(!expected.equals(resType)) throw new Error("mismatched types in assignment");
+		try {
+			Type expected = s.lookup(left.getName().getName());
+			expected = new Type(expected.getType(), expected.getDepth() - left.getDepth());
+			Type resType = right.typecheck(s);
+			if(expected.getDepth() > 0 && resType.getType() == "empty") return new Type("unit");
+			if(!expected.equals(resType)) throw new Error(line + ":" + column + " error: " + "mismatched types in assignment");
 		
-		return new Type("unit");
+			return new Type("unit");
+		}
+		catch(Error e) {
+			if(e.getMessage() == "Semantic Error: var does not exist") {
+				throw new Error(line + ":" + column + " error: " + e.getMessage());
+			}
+			else throw e;
+		}
 	}
 	
 	@Override

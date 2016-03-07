@@ -29,6 +29,9 @@ public class Type {
 	}
 
 	public boolean equals(Type t) {
+		if(t.getType()=="tuple") {
+			return ((Tuple) t).equals(this);
+		}
 		return ((type==t.getType()) && (arrDepth==t.getDepth()));
 	}
 	public String toString(){

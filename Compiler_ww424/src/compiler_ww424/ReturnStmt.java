@@ -6,6 +6,7 @@ public class ReturnStmt extends Stmt{
 	private ArrayList<Expr> val;
 	
 	public ReturnStmt(ArrayList<Expr> v ,int lineNum,int colNum) {
+		if(v==null) System.out.println("null input");
 		val = v;
 		line = lineNum;
 		column = colNum;
@@ -21,19 +22,15 @@ public class ReturnStmt extends Stmt{
 	
 	public Type typecheck(SymTab s) {
 		Type expected = s.getRetval();
-		if(expected == null) throw new Error("returned in scope not expecting return");
+		if(expected == null) throw new Error(line + ":" + column + " error: " + "returned in scope not expecting return");
 		
-		Type given;
-		if(val.size() > 1) {
-			given = new Tuple(new ArrayList<Type>());
+		Type given = new Tuple(new ArrayList<Type>());
 			
-			for(int a = 0; a < val.size(); a++) {
-				((Tuple)given).add(val.get(a).typecheck(s));
-			}
+		for(int a = 0; a < val.size(); a++) {
+			((Tuple)given).add(val.get(a).typecheck(s));
 		}
-		else given = val.get(0).typecheck(s);
-		if(!given.equals(expected)) throw new Error("returned wrong type");
-		else return val.get(0).typecheck(s);
+		if(!given.equals(expected)) throw new Error(line + ":" + column + " error: " + "returned wrong type");
+		else return new Type("void");
 	}
 	@Override
 	public String toString(){

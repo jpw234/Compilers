@@ -23,20 +23,23 @@ public class IfStmt extends Stmt {
 	public Type typecheck(SymTab s) {
 		SymTab newScope = new SymTab(s);
 		
-		if(condition.typecheck(newScope).getType() == "bool") throw new Error("not boolean in if condition");
+		if(condition.typecheck(newScope).getType() != "bool") throw new Error(line + ":" + column + " error: " + "not boolean in if condition");
+		
+		if(body.size()==0) return new Type("unit");
 		
 		for(int a = 0; a < body.size(); a++) {
 			if(a == body.size() - 1) {
-				if(body.get(a).typecheck(newScope).getType() != "unit" && 
-						body.get(a).typecheck(newScope).getType() != "void") {
-					throw new Error("last stmt in if block does not typecheck");
+				Type t = body.get(a).typecheck(newScope);
+				if(t.getType() != "unit" && 
+						t.getType() != "void") {
+					throw new Error(line + ":" + column + " error: " + "last stmt in if block does not typecheck");
 				}
-				else return body.get(a).typecheck(newScope);
+				else return t;
 			}
-			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error("stmt should be unit type");
+			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error(line + ":" + column + " error: " + "stmt should be unit type");
 		}
 		
-		throw new Error("shouldn't get here in ifblock typecheck");
+		throw new Error(line + ":" + column + " error: " + "shouldn't get here in ifblock typecheck");
 	}
 	
 	public String toString(){

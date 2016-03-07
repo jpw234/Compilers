@@ -890,8 +890,8 @@ class CUP$parser$actions {
                 int retright = CUP$parser$stack.elementAt(CUP$parser$top-1).right;
                 ReturnStmt ret = CUP$parser$stack.elementAt(CUP$parser$top-1).<ReturnStmt> value();
                  List<Stmt> retlist = new ArrayList<Stmt>();
-             for (Stmt s : sl){ retlist.add(s);}
-             retlist.add(ret); 
+             for (Stmt s : sl){ if(s!=null) {retlist.add(s);}}
+             if(ret!=null) {retlist.add(ret);} 
              RESULT = new Block(retlist, xleft+1,xright+1);  
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("block",11, CUP$parser$stack.elementAt(CUP$parser$top-3), CUP$parser$stack.peek(), RESULT);
             }
@@ -1091,12 +1091,9 @@ class CUP$parser$actions {
                 int sright = CUP$parser$stack.peek().right;
                 Stmt s = CUP$parser$stack.peek().<Stmt> value();
                 
-            if(s instanceof Block) {RESULT = new IfStmt(cond, ((Block)s).getBody(), condleft+1,condright+1);}
-            else {
-                List<Stmt> ret = new ArrayList<Stmt>();
+                ArrayList<Stmt> ret = new ArrayList<Stmt>();
                 ret.add(s);
                 RESULT = new IfStmt(cond, ret, condleft+1,condright+1);
-            }
           
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("ifblock",28, CUP$parser$stack.elementAt(CUP$parser$top-4), CUP$parser$stack.peek(), RESULT);
             }
@@ -1116,12 +1113,8 @@ class CUP$parser$actions {
                 int esright = CUP$parser$stack.peek().right;
                 Stmt es = CUP$parser$stack.peek().<Stmt> value();
                 
-                List<Stmt> iret;
-                List<Stmt> eret;
-                if(is instanceof Block) {iret = ((Block)is).getBody();}
-                else {iret = new ArrayList<Stmt>(); iret.add(is);}
-                if(es instanceof Block) {eret = ((Block)es).getBody();}
-                else {eret = new ArrayList<Stmt>(); eret.add(es);}
+                ArrayList<Stmt> iret = new ArrayList<Stmt>(); iret.add(is);
+                ArrayList<Stmt> eret = new ArrayList<Stmt>(); eret.add(es);
                 RESULT = new IfElseStmt( cond, iret, eret,condleft+1,condright+1); 
             
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("ifelseblock",29, CUP$parser$stack.elementAt(CUP$parser$top-6), CUP$parser$stack.peek(), RESULT);
@@ -1378,7 +1371,7 @@ class CUP$parser$actions {
         case 53: // retop ::= 
             {
                 ReturnStmt RESULT = null;
-                 RESULT = new ReturnStmt(null, 0,0);  
+
                 CUP$parser$result = parser.getSymbolFactory().newSymbol("retop",30, CUP$parser$stack.peek(), RESULT);
             }
             return CUP$parser$result;

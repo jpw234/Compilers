@@ -16,7 +16,7 @@ public class Length extends Expr {
 	
 	public Type typecheck(SymTab s) {
 		Type t = arg.typecheck(s);
-		if(t.getDepth() < 1) throw new Error("argument to Length() is not an array");
+		if(t.getDepth() < 1) throw new Error(line + ":" + column + " error: " + "argument to Length() is not an array");
 		
 		return new Type("int");
 	}

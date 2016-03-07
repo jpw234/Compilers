@@ -16,19 +16,21 @@ public class Block extends Stmt {
 
 	public Type typecheck(SymTab s) {
 		SymTab newScope = new SymTab(s);
+		
+		if(body.size()==0) return new Type("unit");
 
 		for(int a = 0; a < body.size(); a++) {
 			if(a == body.size() - 1) {
 				if(body.get(a).typecheck(newScope).getType() != "unit" && 
 						body.get(a).typecheck(newScope).getType() != "void") {
-					throw new Error("last stmt in if block does not typecheck");
+					throw new Error(line + ":" + column + " error: " + "last stmt in block does not typecheck");
 				}
 				else return body.get(a).typecheck(newScope);
 			}
-			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error("stmt should be unit type");
+			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error(line + ":" + column + " error: " + "stmt should be unit type");
 		}
 
-		throw new Error("shouldn't get here in ifblock typecheck");
+		throw new Error(line + ":" + column + " error: " + "shouldn't get here in block typecheck");
 	}
 
 	@Override

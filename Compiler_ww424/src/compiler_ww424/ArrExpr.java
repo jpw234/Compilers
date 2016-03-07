@@ -40,7 +40,7 @@ public class ArrExpr extends Expr {
 	
 	public Type typecheck(SymTab s) {
 		Type temp = s.lookup(name.getName());
-		if(temp.getDepth()-accesses.size() < 0) throw new Error("illegal access: that is not an array");
+		if(temp.getDepth()-accesses.size() < 0) throw new Error(line + ":" + column + " error: " + "illegal access: that is not an array");
 		return new Type(temp.getType(), temp.getDepth()-accesses.size());
 	}
 	

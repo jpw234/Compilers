@@ -241,7 +241,7 @@ public class Compiler {
 			}
 			
 			if(toTypecheck) {
-				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
+				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"typed";
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
 				FileWriter fw = new FileWriter(fN);

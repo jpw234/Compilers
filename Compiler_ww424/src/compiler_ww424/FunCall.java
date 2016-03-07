@@ -20,16 +20,23 @@ public class FunCall extends Expr {
 	}
 	
 	public Type typecheck(SymTab s) {
-		FunType ft = (FunType) s.lookup(name.getName());
-		
-		if(args.size() != ft.getInputs().getArgs().size()) throw new Error("incorrect # of args to fun");
-		
-		for(int a = 0; a < args.size(); a++) {
-			if(!args.get(a).typecheck(s).equals(ft.getInputs().getArgs().get(a))) 
-				throw new Error("incorrect type of arg to fun");
+		try {
+			FunType ft = (FunType) s.lookup(name.getName());
+
+			if(args.size() != ft.getInputs().getArgs().size()) throw new Error(line + ":" + column + " error: " + "incorrect # of args to fun");
+			
+			for(int a = 0; a < args.size(); a++) {
+				if(!args.get(a).typecheck(s).equals(ft.getInputs().getArgs().get(a))) 
+					throw new Error(line + ":" + column + " error: " + "incorrect type of arg to fun");
+			}
+			
+			return ft.getOutputs();
+		}
+		catch(Error e) {
+			if(e.getMessage() == "Semantic Error: var does not exist") throw new Error(line + ":" + column + " error: " + e.getMessage());
+			else throw e;
 		}
 		
-		return ft.getOutputs();
 	}
 	
 	@Override

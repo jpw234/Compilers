@@ -184,8 +184,8 @@ vartype        ::=   INT                      {: RESULT = new Type("int"); :}
                    ;
 block               ::=  LBRACE:x stmtlist:sl retop:ret RBRACE          
           {: List<Stmt> retlist = new ArrayList<Stmt>();
-             for (Stmt s : sl){ retlist.add(s);}
-             retlist.add(ret); 
+             for (Stmt s : sl){ if(s!=null) {retlist.add(s);}}
+             if(ret!=null) {retlist.add(ret);} 
              RESULT = new Block(retlist, xleft+1,xright+1);  :}
                     ;
 stmtlist            ::=  stmtlist:stml stmt:stm                   
@@ -219,23 +219,16 @@ idlist              ::= expr :exp1                      {: ArrayList<Expr> retli
 
 ifblock             ::=  IF LPAREN expr:cond RPAREN stmt:s         
           {:
-            if(s instanceof Block) {RESULT = new IfStmt(cond, ((Block)s).getBody(), condleft+1,condright+1);}
-            else {
-                List<Stmt> ret = new ArrayList<Stmt>();
+                ArrayList<Stmt> ret = new ArrayList<Stmt>();
                 ret.add(s);
                 RESULT = new IfStmt(cond, ret, condleft+1,condright+1);
-            }
           :}
           ;
   
 ifelseblock    ::=  IF LPAREN expr:cond RPAREN stmt:is ELSE stmt:es 
             {:
-                List<Stmt> iret;
-                List<Stmt> eret;
-                if(is instanceof Block) {iret = ((Block)is).getBody();}
-                else {iret = new ArrayList<Stmt>(); iret.add(is);}
-                if(es instanceof Block) {eret = ((Block)es).getBody();}
-                else {eret = new ArrayList<Stmt>(); eret.add(es);}
+                ArrayList<Stmt> iret = new ArrayList<Stmt>(); iret.add(is);
+                ArrayList<Stmt> eret = new ArrayList<Stmt>(); eret.add(es);
                 RESULT = new IfElseStmt( cond, iret, eret,condleft+1,condright+1); 
             :}
                    ;
@@ -305,7 +298,7 @@ retop          ::=  RETURN idlist:el
           {: RESULT = new ReturnStmt(el,elleft+1,elright+1);:}
            |RETURN idlist:el SEMI             
            {: RESULT = new ReturnStmt(el,elleft+1,elright+1); :}
-                   |                        {: RESULT = new ReturnStmt(null, 0,0);  :}
+           |
                    ;
 expr           ::=   INTEGER:i                  {: RESULT = new NumExpr(i,ileft+1,iright+1); :}
                    | CHARACTER:c                {: RESULT = new NumExpr(c.charAt(0), cleft+1, cright+1); :}

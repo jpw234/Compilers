@@ -42,8 +42,16 @@ public class Decl extends Stmt {
 	}
 	
 	public Type typecheck(SymTab s) {
-		if(s.lookup(name.getName()) != null) throw new Error("redeclared variable error");
-		
+		try {
+			if(s.lookup(name.getName()) != null) throw new Error("redeclared variable error");
+		}
+		catch(Error e) {
+			if(e.getMessage() == "Semantic Error: var does not exist") {
+				//do nothing
+			}
+			else throw new Error(line + ":" + column + " error: " + e.getMessage());
+		}
+			
 		if(type.getType() != "underscore") s.add(name.getName(), type);
 		
 		Type dummyType = new Type("int");
@@ -51,7 +59,7 @@ public class Decl extends Stmt {
 		if(accesses != null) {
 			for(int a = 0; a < accesses.size(); a++) {
 				if(!dummyType.equals(accesses.get(a).typecheck(s))) {
-					throw new Error("non-integer expression used as array access");
+					throw new Error(line + ":" + column + " error: " + "non-integer expression used as array access");
 				}
 			}
 		}

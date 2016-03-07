@@ -48,20 +48,20 @@ public class ArrLiteralExpr extends Expr {
 	
 	public Type typecheck(SymTab s) {
 		if(values.size() == 0) {
-			if(accesses.size() != 0) throw new Error("tried to access empty array");
+			if(accesses.size() != 0) throw new Error(line + ":" + column + " error: " + "tried to access empty array");
 			else return new Type("empty", 1);
 		}
 		
 		Type t = values.get(0).typecheck(s);
 		for(int a = 1; a < values.size(); a++) {
-			if(!t.equals(values.get(a).typecheck(s))) throw new Error("mismatched args to array literal");
+			if(!t.equals(values.get(a).typecheck(s))) throw new Error(line + ":" + column + " error: " + "mismatched args to array literal");
 		}
 		
-		if(accesses.size() > (t.getDepth() + 1)) throw new Error("tried to access something that isn't an array");
+		if(accesses.size() > (t.getDepth() + 1)) throw new Error(line + ":" + column + " error: " + "tried to access something that isn't an array");
 		
 		Type dummyInt = new Type("int");
 		for(int a = 0; a < accesses.size(); a++) {
-			if(!dummyInt.equals(accesses.get(a).typecheck(s))) throw new Error("non-integer expr in array access");
+			if(!dummyInt.equals(accesses.get(a).typecheck(s))) throw new Error(line + ":" + column + " error: " + "non-integer expr in array access");
 		}
 		
 		t.addDepth();

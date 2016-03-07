@@ -24,7 +24,7 @@ public class UnaryExpr extends Expr {
 		Type t = expr.typecheck(s);
 		if(t.getType() == "bool" && t.getDepth() == 0 && op == UnaryOp.BOOLNEG) return new Type("bool");
 		else if(t.getType() == "int" && t.getDepth() == 0 && op == UnaryOp.ARITHNEG) return new Type("int");
-		else throw new Error("unaryexpr failed to typecheck");
+		else throw new Error(line + ":" + column + " error: " + "unaryexpr failed to typecheck");
 	}
 	
 	public String toString(){
