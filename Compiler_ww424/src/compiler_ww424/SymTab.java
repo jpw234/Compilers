@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class SymTab {
 	private SymTab parent = null;
-	private HashMap<String, Type> table;
+	private HashMap<String, Type> table = new HashMap<String, Type>();
 	private Type retval = null;
 	
 	public SymTab(SymTab p) {
