@@ -75,4 +75,53 @@ public class IfElseStmt extends Stmt {
 		}
 		return String.format("(%s %s %s %s)", "if", condition.toString(),ifString, elseString);
 	}
+	public boolean returncheck() {
+		boolean ifreturns = false;
+		boolean elsereturns = false;
+		if(ifbody.size()>=1) {
+			if((ifbody.get(ifbody.size()-1) instanceof ReturnStmt))
+			{
+				ifreturns = true;
+			}
+			for(Stmt statement : ifbody) {
+				if(statement instanceof Block)
+				{
+					if(((Block)statement).returncheck())
+					{
+						ifreturns = true;
+					}
+				}
+				if(statement instanceof IfElseStmt)
+				{
+					if(((IfElseStmt)statement).returncheck())
+					{
+						ifreturns = true;
+					}
+				}
+			}
+		}
+		if(elsebody.size()>=1) {
+			if((elsebody.get(elsebody.size()-1) instanceof ReturnStmt))
+			{
+				elsereturns = true;
+			}
+			for(Stmt statement : elsebody) {
+				if(statement instanceof Block)
+				{
+					if(((Block)statement).returncheck())
+					{
+						elsereturns = true;
+					}
+				}
+				if(statement instanceof IfElseStmt)
+				{
+					if(((IfElseStmt)statement).returncheck())
+					{
+						elsereturns = true;
+					}
+				}
+			}
+		}
+		return (ifreturns && elsereturns);
+	}
 }

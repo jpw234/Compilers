@@ -11,12 +11,16 @@ public class Function {
 
 	private int line;
 	private int column;
+	private int bline;
+	private int bcolumn;
 	//these Tuples must be created in the .cup file
 
-	public Function(IDExpr n, List<Decl> a, Tuple r, List<Stmt> b,int lineNum,int colNum) {
+	public Function(IDExpr n, List<Decl> a, Tuple r, List<Stmt> b,int lineNum,int colNum,int bodLine,int bodCol) {
 		name = n; args = a; retType = r; body = b;
 		line = lineNum;
 		column = colNum;
+		bline = bodLine;
+		bcolumn = bodCol;
 	}
 	public Function(IDExpr n, List<Decl> a, Tuple r,int lineNum,int colNum) {
 		name = n; args = a; retType = r; 
@@ -92,7 +96,37 @@ public class Function {
 	{
 		return column;
 	}
-
+	public void returncheck() {
+		//MAKE THIS LESS HACKY
+		if(retType.toString() == "")
+		{
+			return;
+		}
+		else
+		{
+			if((body.get(body.size()-1) instanceof ReturnStmt))
+			{
+				return;
+			}
+			for(Stmt statement : body) {
+				if(statement instanceof Block)
+				{
+					if(((Block)statement).returncheck())
+					{
+						return;
+					}
+				}
+				if(statement instanceof IfElseStmt)
+				{
+					if(((IfElseStmt)statement).returncheck())
+					{
+						return;
+					}
+				}
+			}
+			throw new Error(bline + ":" + bcolumn + " error: Missing return statement!");
+		}
+	}
 	@Override
 	public String toString(){
 		String s = "";

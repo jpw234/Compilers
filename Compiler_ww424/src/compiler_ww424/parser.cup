@@ -99,18 +99,16 @@ nonterminal Use useprod;
 nonterminal List<Decl> arglist,decllist;
 nonterminal Decl arg,decl;
 nonterminal Tuple funtype ;
-nonterminal Decl vartype_init_tmp,vartype_init;
+nonterminal Decl vartype_init;
 nonterminal Block block;
 nonterminal Type vartype;
 nonterminal Expr expr;
-nonterminal ArrExpr var,var_tmp;
+nonterminal ArrExpr var;
 nonterminal Function func;
 nonterminal BinaryExpr binaryexpr;  
 nonterminal UnaryExpr unaryexpr;
 nonterminal FunCall funcall;
-nonterminal List<Expr> exprlist; 
 nonterminal ArrLiteralExpr tuple; 
-nonterminal Assign assignment;
 nonterminal Stmt ass;
 nonterminal List<Stmt> stmtlist;
 nonterminal ArrayList<Expr> idlist;
@@ -152,7 +150,7 @@ funclist            ::= funclist: fl func:f                       {: fl.add(f); 
                     ;
 func                ::= ID:id LPAREN arglist:al RPAREN funtype:ft block:bl  
           {:  if(parser.getState()) parser.report_error("Syntax error", new Error("interface declarations shouldn't have bodies"));
-              RESULT = new Function(new IDExpr(id,idleft+1,idright+1), al, ft, bl.getBody(), idleft+1, idright+1); :}
+              RESULT = new Function(new IDExpr(id,idleft+1,idright+1), al, ft, bl.getBody(), idleft+1, idright+1,blleft+1,blright+1); :}
           |   ID:id LPAREN arglist:al RPAREN funtype:ft
           {:  if(!parser.getState()) parser.report_error("Syntax error", new Error("function declarations shouldn't be empty"));
               RESULT = new Function(new IDExpr("*"+id,idleft+1,idright+1), al, ft, idleft+1, idright+1); :}

@@ -11,8 +11,26 @@ public class SymTab {
 	}
 	
 	public Type lookup(String id) {
+		/*System.out.println("Looking for :" + id);
+		for (HashMap.Entry<String, Type> entry : table.entrySet()) {
+			String key = entry.getKey().toString();
+			Type value = entry.getValue();
+			System.out.println(key + ":" + value.toString());
+		}*/
 		if(table.get(id) != null) return table.get(id);
 		else if(parent != null) return parent.lookup(id);
+		else throw new Error("Semantic Error: var does not exist");
+	}
+	public Type lookupFunction(String id) {
+		/*System.out.println("Looking for :" + id);
+		for (HashMap.Entry<String, Type> entry : table.entrySet()) {
+			String key = entry.getKey().toString();
+			Type value = entry.getValue();
+			System.out.println(key + ":" + value.toString());
+		}*/
+		if(table.get(id) != null) return table.get(id);
+		else if(table.get("*"+id) != null) return table.get("*"+id);
+		else if(parent != null) return parent.lookupFunction(id);
 		else throw new Error("Semantic Error: var does not exist");
 	}
 	

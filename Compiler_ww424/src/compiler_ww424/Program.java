@@ -41,7 +41,11 @@ public class Program {
 			funcs.get(a).typecheck(s);
 		}
 	}
-
+	public void returnPass() {
+		for(int a = 0; a < funcs.size(); a++) {
+			funcs.get(a).returncheck();
+		}
+	}
 	public String toString(){
 
 		String useString = "";

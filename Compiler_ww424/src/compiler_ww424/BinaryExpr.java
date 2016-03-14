@@ -17,6 +17,8 @@ public class BinaryExpr extends Expr {
 		leftCol = elcolNum;
 		rightLine = erlineNum;
 		rightCol = ercolNum;
+		line = leftLine;
+		column = leftCol;
 	}
 	
 	public Expr getLeft() {

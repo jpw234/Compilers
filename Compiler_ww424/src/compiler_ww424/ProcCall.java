@@ -22,15 +22,20 @@ public class ProcCall extends Stmt {
 	}
 	
 	public Type typecheck(SymTab s) {
-		FunType ft = (FunType) s.lookup(name.getName());
+		try {
+			FunType ft = (FunType) s.lookupFunction(name.getName());
 		
-		if(args.size() != ft.getInputs().getArgs().size()) throw new Error(line + ":" + column + " error: " + "incorrect # of args to fun");
+			if(args.size() != ft.getInputs().getArgs().size()) throw new Error(line + ":" + column + " error: " + "incorrect # of args to fun");
 		
-		for(int a = 0; a < args.size(); a++) {
-			if(!args.get(a).typecheck(s).equals(ft.getInputs().getArgs().get(a))) 
-				throw new Error(line + ":" + column + " error: " + "incorrect type of arg to fun");
+			for(int a = 0; a < args.size(); a++) {
+				if(!args.get(a).typecheck(s).equals(ft.getInputs().getArgs().get(a))) 
+					throw new Error(line + ":" + column + " error: " + "incorrect type of arg to fun");
+			}
 		}
-		
+		catch(Error e) {
+			if(e.getMessage() == "Semantic Error: var does not exist") throw new Error(line + ":" + column + " error: " + e.getMessage());
+			else throw e;
+		}
 		return new Type("unit");
 	}
 	public String toString(){

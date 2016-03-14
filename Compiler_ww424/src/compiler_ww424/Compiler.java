@@ -260,6 +260,7 @@ public class Compiler {
 					for(int a = 0; a < program.getImports().size(); a++) {
 						Reader impReader = null;
 						try {
+							//System.out.println(libRoot + program.getImports().get(a).getString()+".ixi");
 							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
 						}
 						catch(Exception excp) {
@@ -267,17 +268,19 @@ public class Compiler {
 						}
 						Lexer impLexer = new Lexer(impReader);
 						parser impPar = new parser(impLexer);
+						impPar.setState(true);
 						Program impProgram = (Program) impPar.parse().value;
 						impProgram.firstPass(table);
 						impReader.close();
 					}
 					program.firstPass(table);
 					program.secondPass(table);
-					fw.write("Valid Xi Program");
+					program.returnPass();
+					fw.write("Valid Xi Program\r\n");
 				}
 				catch(Error e) {
 					System.out.println(e.getMessage());
-					fw.write(e.getMessage());
+					fw.write(e.getMessage()+"\r\n");
 				}
 				System.out.println("Semantic analysis file(s) generated!");
 				fw.close();

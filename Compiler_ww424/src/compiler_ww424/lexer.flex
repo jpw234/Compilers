@@ -22,18 +22,24 @@ public class Token extends Symbol{
       super(symbol);
       column  = col;
       line    = lin;
+	  left = lin;
+	  right = col;
   }
   public Token(int symbol,String val,int lin,int col) {
       super(symbol);
       column  = col;
       line    = lin;
       value   = val;
+	  left = lin;
+	  right = col;
   }
   public Token(int symbol,int val,int lin,int col) {
       super(symbol);
       column  = col;
       line    = lin;
       value   = new Integer(val);
+	  left = lin;
+	  right = col;
   }
 	public int getCol() {
 		return column;

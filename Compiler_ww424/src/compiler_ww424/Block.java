@@ -32,6 +32,31 @@ public class Block extends Stmt {
 
 		throw new Error(line + ":" + column + " error: " + "shouldn't get here in block typecheck");
 	}
+	public boolean returncheck() {
+		if(body.size()>=1) {
+			if((body.get(body.size()-1) instanceof ReturnStmt))
+			{
+				return true;
+			}
+			for(Stmt statement : body) {
+				if(statement instanceof Block)
+				{
+					if(((Block)statement).returncheck())
+					{
+						return true;
+					}
+				}
+				if(statement instanceof IfElseStmt)
+				{
+					if(((IfElseStmt)statement).returncheck())
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public String toString(){

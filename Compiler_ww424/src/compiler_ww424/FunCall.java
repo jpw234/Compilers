@@ -21,7 +21,7 @@ public class FunCall extends Expr {
 	
 	public Type typecheck(SymTab s) {
 		try {
-			FunType ft = (FunType) s.lookup(name.getName());
+			FunType ft = (FunType) s.lookupFunction(name.getName());
 
 			if(args.size() != ft.getInputs().getArgs().size()) throw new Error(line + ":" + column + " error: " + "incorrect # of args to fun");
 			
