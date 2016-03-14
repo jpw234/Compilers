@@ -104,7 +104,8 @@ public class Function {
 		}
 		else
 		{
-			if((body.get(body.size()-1) instanceof ReturnStmt))
+			
+			if((body.size()>=1) && (body.get(body.size()-1) instanceof ReturnStmt))
 			{
 				return;
 			}

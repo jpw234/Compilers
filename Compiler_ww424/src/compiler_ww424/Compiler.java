@@ -274,6 +274,7 @@ public class Compiler {
 						impReader.close();
 					}
 					program.firstPass(table);
+					//System.out.println(program.toString());
 					program.secondPass(table);
 					program.returnPass();
 					fw.write("Valid Xi Program\r\n");

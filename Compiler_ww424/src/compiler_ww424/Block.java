@@ -21,11 +21,11 @@ public class Block extends Stmt {
 
 		for(int a = 0; a < body.size(); a++) {
 			if(a == body.size() - 1) {
-				if(body.get(a).typecheck(newScope).getType() != "unit" && 
-						body.get(a).typecheck(newScope).getType() != "void") {
+				Type t = body.get(a).typecheck(newScope);
+				if(t.getType() != "unit" && t.getType() != "void") {
 					throw new Error(line + ":" + column + " error: " + "last stmt in block does not typecheck");
 				}
-				else return body.get(a).typecheck(newScope);
+				else return t;
 			}
 			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error(line + ":" + column + " error: " + "stmt should be unit type");
 		}
