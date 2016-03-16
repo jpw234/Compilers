@@ -84,8 +84,8 @@ public class ArrExpr extends Expr {
 		return pass;
 	}
 	
-	public IRExpr buildIRExpr() {
-		//TODO: add out-of-bounds checking
+	public IRExpr getAddress() {
+		//TODO: figure out where to add "kill" label
 		IRTemp idVal = (IRTemp) name.buildIRExpr();
 		
 		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
@@ -108,6 +108,10 @@ public class ArrExpr extends Expr {
 		}
 		
 		return k;
+	}
+	
+	public IRExpr buildIRExpr() {
+		return new IRMem(this.getAddress());
 	}
 	
 	@Override

@@ -130,7 +130,13 @@ public class BinaryExpr extends Expr {
 	public IRExpr buildIRExpr() {
 		switch(op) {
 		case PLUS: {
-			//TODO: this logic
+			if(left.getType().equals(new Type("int"))){
+				return new IRBinOp(IRBinOp.OpType.ADD,
+								   left.buildIRExpr(),
+								   right.buildIRExpr());
+			}
+			
+			
 		}
 		case MINUS: return new IRBinOp(IRBinOp.OpType.SUB,
 									   left.buildIRExpr(),
