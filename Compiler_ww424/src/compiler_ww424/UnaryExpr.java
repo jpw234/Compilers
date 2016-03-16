@@ -1,6 +1,7 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class UnaryExpr extends Expr {
 	private UnaryOp op;
@@ -22,8 +23,14 @@ public class UnaryExpr extends Expr {
 	
 	public Type typecheck(SymTab s) {
 		Type t = expr.typecheck(s);
-		if(t.getType() == "bool" && t.getDepth() == 0 && op == UnaryOp.BOOLNEG) return new Type("bool");
-		else if(t.getType() == "int" && t.getDepth() == 0 && op == UnaryOp.ARITHNEG) return new Type("int");
+		if(t.getType() == "bool" && t.getDepth() == 0 && op == UnaryOp.BOOLNEG){
+			type = new Type("bool");
+			return type;
+		}
+		else if(t.getType() == "int" && t.getDepth() == 0 && op == UnaryOp.ARITHNEG) {
+			type = new Type("int");
+			return type;
+		}
 		else throw new Error(line + ":" + column + " error: " + "unaryexpr failed to typecheck");
 	}
 	
@@ -35,6 +42,7 @@ public class UnaryExpr extends Expr {
 		return String.format("(%s %s)", operator, expr.toString());
 	}
 	
+	@Override
 	public Expr constantFold() {
 		expr = expr.constantFold();
 		
@@ -105,5 +113,14 @@ public class UnaryExpr extends Expr {
 		}
 		
 		return this;
+	}
+	
+	public IRExpr buildIRExpr() {
+		if(op == UnaryOp.ARITHNEG) {
+			return new IRBinOp(IRBinOp.OpType.SUB, new IRConst(0), expr.buildIRExpr());
+		}
+		else {
+			return new IRBinOp(IRBinOp.OpType.XOR, new IRConst(1), expr.buildIRExpr());
+		}
 	}
 }

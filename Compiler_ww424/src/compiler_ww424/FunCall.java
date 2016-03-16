@@ -1,9 +1,38 @@
 package compiler_ww424;
 import java.util.List;
+import java.util.ArrayList;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class FunCall extends Expr {
 	private IDExpr name;
 	private List<Expr> args;
+	private Type type;
+	
+	public static String mangle_name(String n, FunType t) {
+		String res = "_I" + n.replaceAll("_", "__") + "_";
+		Tuple out = t.getOutputs();
+		if(out.getArgs().size() == 0) res = res + "p";
+		else if(out.getArgs().size() > 1) res = res + "t" + out.getArgs().size();
+		
+		for(int a = 0; a < out.getArgs().size(); a++) {
+			for(int b = 0; b < out.getArgs().get(a).getDepth(); b++) {
+				res = res + "a";
+			}
+			if(out.getArgs().get(a).getType() == "int") res = res + "i";
+			else res = res + "b";
+		}
+		
+		Tuple in = t.getInputs();
+		for(int a = 0; a < in.getArgs().size(); a++) {
+			for(int b = 0; b < in.getArgs().get(a).getDepth(); b++) {
+				res = res + "a";
+			}
+			if(in.getArgs().get(a).getType() == "int") res = res + "i";
+			else res = res + "b";
+		}
+		
+		return res;
+	} 
 	
 	public FunCall(IDExpr n, List<Expr> a,int linNum,int colNum) {
 		name = n; args = a;
@@ -30,13 +59,31 @@ public class FunCall extends Expr {
 					throw new Error(line + ":" + column + " error: " + "incorrect type of arg to fun");
 			}
 			
-			return ft.getOutputs();
+			type = ft.getOutputs();
+			return type;
 		}
 		catch(Error e) {
 			if(e.getMessage() == "Semantic Error: var does not exist") throw new Error(line + ":" + column + " error: " + e.getMessage());
 			else throw e;
 		}
 		
+	}
+	
+	public IRExpr buildIRExpr() {
+		
+		Tuple inputs = new Tuple(new ArrayList<Type>());
+		for(int a = 0; a < args.size(); a++) {
+			inputs.add(args.get(a).getType());
+		}
+		
+		FunType ft = new FunType(inputs, (Tuple) type);
+		
+		ArrayList<IRExpr> irargs = new ArrayList<IRExpr>();
+		for(int a = 0; a < args.size(); a++) {
+			irargs.add(args.get(a).buildIRExpr());
+		}
+		
+		return new IRCall(new IRName(mangle_name(name.getName(), ft)), irargs);
 	}
 	
 	@Override

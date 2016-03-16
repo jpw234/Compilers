@@ -1,6 +1,7 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class NumExpr extends Expr {
     private int intvalue;
@@ -14,19 +15,25 @@ public class NumExpr extends Expr {
     }
     public NumExpr(char c, int lineNum, int colNum){
         charval = c;
+        intvalue = (int) c;
         line = lineNum;
         column = colNum;
         isChar = true;
     }
     
     public Type typecheck(SymTab s) {
-        return new Type("int");
+        type = new Type("int");
+        return type;
     }
     public int getIntVal() {
         return intvalue;
     }
     public char getCharVal(){
         return charval;
+    }
+    
+    public IRExpr buildIRExpr() {
+    	return new IRConst((long) intvalue);
     }
     
 	public String toString(){
