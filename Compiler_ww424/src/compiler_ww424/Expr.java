@@ -1,4 +1,5 @@
 package compiler_ww424;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public abstract class Expr {
 	
@@ -17,4 +18,10 @@ public abstract class Expr {
 	{
 		return column;
 	}
+	
+	public Expr constantFold() {
+		return this;
+	}
+	
+	abstract IRExpr buildIRExpr();
 }
