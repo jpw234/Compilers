@@ -1,6 +1,7 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import java.util.List;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class ArrExpr extends Expr {
@@ -60,29 +61,53 @@ public class ArrExpr extends Expr {
 		return this;
 	}
 	
-	public IRExpr buildIRExpr() {
-		//TODO: add out-of-bounds checking
-		IRTemp idVal = (IRTemp) name.buildIRExpr();
+	// invariant: depth <= acc.size()
+	public static IRExpr get_offset(int depth, IRExpr baseExpr, List<Expr> acc) {
+		IRExpr pass = baseExpr;
 		
-		IRExpr pass = idVal;
-		
-		for(int a = 0; a < accesses.size(); a++) {
-			if(a == accesses.size() - 1) {
+		for(int a = 0; a < depth; a++) {
+			if(a == depth - 1) {
 				pass = new IRBinOp(IRBinOp.OpType.ADD,
 								   pass,
 								   new IRBinOp(IRBinOp.OpType.MUL,
-										       accesses.get(a).buildIRExpr(),
+										       acc.get(a).buildIRExpr(),
 										       new IRConst(8)));
 			}
 			else {
 				pass = new IRMem(new IRBinOp(IRBinOp.OpType.ADD, 
 										 	 pass,
 										 	 new IRBinOp(IRBinOp.OpType.MUL,
-												 	 	 accesses.get(a).buildIRExpr(),
+												 	 	 acc.get(a).buildIRExpr(),
 												 	 	 new IRConst(8))));
 			}
 		}
 		return pass;
+	}
+	
+	public IRExpr buildIRExpr() {
+		//TODO: add out-of-bounds checking
+		IRTemp idVal = (IRTemp) name.buildIRExpr();
+		
+		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
+							  idVal);
+		
+		for(int a = 0; a < accesses.size(); a++) {
+			k = new IRESeq(
+							new IRCJump(
+									new IRBinOp(IRBinOp.OpType.OR,
+												new IRBinOp(IRBinOp.OpType.LT,
+															accesses.get(a).buildIRExpr(),
+															new IRConst(0)),
+												new IRBinOp(IRBinOp.OpType.GEQ,
+															accesses.get(a).buildIRExpr(),
+															new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
+																				  k,
+																				  new IRConst(8))))),
+									"kill"),
+							get_offset(a, idVal, accesses));
+		}
+		
+		return k;
 	}
 	
 	@Override
