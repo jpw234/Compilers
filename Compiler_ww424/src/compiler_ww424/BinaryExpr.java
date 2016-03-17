@@ -1,7 +1,7 @@
 package compiler_ww424;
 
 import edu.cornell.cs.cs4120.xic.ir.*;
-
+import java.util.ArrayList;
 public class BinaryExpr extends Expr {
 	private Expr left;
 	private Expr right;
@@ -135,7 +135,114 @@ public class BinaryExpr extends Expr {
 								   left.buildIRExpr(),
 								   right.buildIRExpr());
 			}
+			ArrayList <IRStmt> sequence = new ArrayList<IRStmt>();
+			sequence.add(new IRMove(
+							new IRTemp("_STRING_CONCAT_LLEN"),
+							new IRMem(
+								new IRBinOp(
+									IRBinOp.OpType.SUB,
+									left.buildIRExpr(),
+									new IRConst(8)))));
+			sequence.add(new IRMove(
+							new IRTemp("_STRING_CONCAT_RLEN"),
+							new IRMem(
+								new IRBinOp(
+									IRBinOp.OpType.SUB,
+									right.buildIRExpr(),
+									new IRConst(8)))));
+			sequence.add(new IRMove(
+							new IRTemp("_STRING_CONCAT_LENGTH"),
+							new IRBinOp(
+										IRBinOp.OpType.ADD,
+										new IRTemp("_STRING_CONCAT_LLEN"),
+										new IRTemp("_STRING_CONCAT_RLEN"))));
+			sequence.add(new IRMove(
+							new IRTemp("_STRING_CONCAT_LOC"),
+							new IRCall(
+								new IRName("_I_alloc_i"),
+								new IRBinOp(
+										IRBinOp.OpType.MUL,
+										new IRBinOp(IRBinOp.OpType.ADD,
+													new IRTemp("_STRING_CONCAT_LENGTH"),
+													new IRConst(1)),
+										new IRConst(8)))));
+			sequence.add(new IRMove(
+							new IRMem(
+								new IRTemp("_STRING_CONCAT_LOC")),
+							new IRTemp("_STRING_CONCAT_LENGTH")));
+			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_COUNTER"),new IRConst(8)));
+			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_LCOUNTER"),new IRConst(0)));
+			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_RCOUNTER"),new IRConst(0)));
+			String uleft_label_start 	= LabelMaker.Generate_Unique_Label("_STRING_CONCAT_LLOOP_START");
+			String uright_label_start 	= LabelMaker.Generate_Unique_Label("_STRING_CONCAT_RLOOP_START");
+			String udone_label 			= LabelMaker.Generate_Unique_Label("_STRING_CONCAT_DONE");
 			
+			sequence.add(new IRLabel(uleft_label_start));
+			sequence.add(new IRCJump(
+							new IRBinOp(
+								IRBinOp.OpType.GEQ,
+								new IRTemp("_STRING_CONCAT_LCOUNTER"),
+								new IRTemp("_STRING_CONCAT_LLEN")),
+								uright_label_start));
+			sequence.add(new IRMove(
+								new IRMem(
+									new IRBinOp(
+										IRBinOp.OpType.ADD,
+										new IRTemp("_STRING_CONCAT_LOC"),
+										new IRTemp("_STRING_CONCAT_COUNTER"))),
+								new IRMem(
+									new IRBinOp(
+										IRBinOp.OpType.ADD,
+										left.buildIRExpr(),
+										new IRBinOp(
+											IRBinOp.OpType.MUL,
+											new IRTemp("_STRING_CONCAT_LCOUNTER"),
+											new IRConst(8))))));
+			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_COUNTER"),new IRBinOp(
+																			IRBinOp.OpType.ADD,
+																			new IRTemp("_STRING_CONCAT_COUNTER"),
+																			new IRConst(8))));
+			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_LCOUNTER"),new IRBinOp(
+																			IRBinOp.OpType.ADD,
+																			new IRTemp("_STRING_CONCAT_LCOUNTER"),
+																			new IRConst(1))));
+			sequence.add(new IRJump(new IRName(uleft_label_start)));
+			
+			sequence.add(new IRLabel(uright_label_start));
+			sequence.add(new IRCJump(
+							new IRBinOp(
+								IRBinOp.OpType.GEQ,
+								new IRTemp("_STRING_CONCAT_LCOUNTER"),
+								new IRTemp("_STRING_CONCAT_LLEN")),
+								udone_label));
+			sequence.add(new IRMove(
+								new IRMem(
+									new IRBinOp(
+										IRBinOp.OpType.ADD,
+										new IRTemp("_STRING_CONCAT_LOC"),
+										new IRTemp("_STRING_CONCAT_COUNTER"))),
+								new IRMem(
+									new IRBinOp(
+										IRBinOp.OpType.ADD,
+										right.buildIRExpr(),
+										new IRBinOp(
+											IRBinOp.OpType.MUL,
+											new IRTemp("_STRING_CONCAT_RCOUNTER"),
+											new IRConst(8))))));
+			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_COUNTER"),new IRBinOp(
+																			IRBinOp.OpType.ADD,
+																			new IRTemp("_STRING_CONCAT_COUNTER"),
+																			new IRConst(8))));
+			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_RCOUNTER"),new IRBinOp(
+																			IRBinOp.OpType.ADD,
+																			new IRTemp("_STRING_CONCAT_RCOUNTER"),
+																			new IRConst(1))));
+			sequence.add(new IRJump(new IRName(uright_label_start)));
+			sequence.add(new IRLabel(udone_label));
+			return new IRESeq(new IRSeq(sequence),new IRBinOp(
+													IRBinOp.OpType.ADD,
+													new IRTemp("_STRING_CONCAT_LOC"),
+													new IRConst(8)));
 			
 		}
 		case MINUS: return new IRBinOp(IRBinOp.OpType.SUB,

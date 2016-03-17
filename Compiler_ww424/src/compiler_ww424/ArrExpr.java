@@ -92,18 +92,25 @@ public class ArrExpr extends Expr {
 							  idVal);
 		
 		for(int a = 0; a < accesses.size(); a++) {
+			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 			k = new IRESeq(
-							new IRCJump(
-									new IRBinOp(IRBinOp.OpType.OR,
-												new IRBinOp(IRBinOp.OpType.LT,
-															accesses.get(a).buildIRExpr(),
-															new IRConst(0)),
-												new IRBinOp(IRBinOp.OpType.GEQ,
-															accesses.get(a).buildIRExpr(),
-															new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
-																				  k,
-																				  new IRConst(8))))),
-									"kill"),
+							new IRSeq(
+								new IRCJump(
+										new IRBinOp(IRBinOp.OpType.AND,
+													new IRBinOp(IRBinOp.OpType.GEQ,
+																accesses.get(a).buildIRExpr(),
+																new IRConst(0)),
+													new IRBinOp(IRBinOp.OpType.LT,
+																accesses.get(a).buildIRExpr(),
+																new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
+																					  k,
+																					  new IRConst(8))))),
+										live_label),
+								new IRExp(
+									new IRCall(new IRName("_I_outOfBounds_p"))
+									),
+								new IRLabel(live_label)
+							),
 							get_offset(a, idVal, accesses));
 		}
 		

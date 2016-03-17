@@ -85,6 +85,6 @@ public class ArrLiteralExpr extends Expr {
 	}
 	
 	public IRExpr buildIRExpr() {
-		
+		return new IRConst(42); // THIS IS TO GET THIS TO COMPILE WHILE WAITING FOR JARED REMOVE ASAP
 	}
 }

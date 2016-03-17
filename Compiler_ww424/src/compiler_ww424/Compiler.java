@@ -316,7 +316,7 @@ public class Compiler {
 	public static void printUsage() {
 		System.out.println("xic");
 		System.out.println("SYNOPSIS");
-		System.out.println("xic [--lex] [--help] [-p path] [file ...]");
+		System.out.println("xic [--lex] [--parse] [--typecheck] [--irgen] [--help] [-sourcepath path] [-libpath path] [-D] [-O] [file ...]");
 		System.out.println("DESCRIPTION");
 		System.out.println("Compile programming code. Transfer input string into a set of tokens.");
 		System.out.println("--help: A synopsis of options lists all possible options along with brief descriptions.");
