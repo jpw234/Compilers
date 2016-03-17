@@ -85,6 +85,59 @@ public class ArrLiteralExpr extends Expr {
 	}
 	
 	public IRExpr buildIRExpr() {
-		return new IRConst(42); // THIS IS TO GET THIS TO COMPILE WHILE WAITING FOR JARED REMOVE ASAP
+		ArrayList<IRStmt> stmtlist = new ArrayList<IRStmt>();
+		
+		IRTemp arrpointer = new IRTemp("a");
+		
+		//allocate (n+1)*8 bytes of memory and move the pointer to temp register "a"
+		stmtlist.add(new IRMove(arrpointer, new IRCall(new IRName("_I_alloc_i"), new IRConst((values.size() + 1) * 8))));
+		//put the length in this spot
+		stmtlist.add(new IRMove(new IRMem(arrpointer), new IRConst(values.size())));
+		//shift the pointer to the array up 8, so length is in spot -1
+		stmtlist.add(new IRMove(arrpointer, new IRBinOp(IRBinOp.OpType.ADD,
+														arrpointer,
+														new IRConst(8))));
+		//now fill the array
+		for(int a = 0; a < values.size(); a++) {
+			//add value a to position at arrpointer + (a*8)
+			stmtlist.add(new IRMove(new IRMem(new IRBinOp(IRBinOp.OpType.ADD,
+														  arrpointer,
+														  new IRConst(a*8))),
+									values.get(a).buildIRExpr()));
+		}
+		
+		//Create base eseq which initializes the ArrLiteralExpr and returns it
+		//This is the result of buildIRExpr in the case of no accesses
+		IRESeq eseq = new IRESeq(new IRSeq(stmtlist), arrpointer);
+		
+		if(accesses.size() == 0) return eseq;
+		
+		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
+				  			  arrpointer);
+
+		for(int a = 0; a < accesses.size(); a++) {
+			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
+			k = new IRESeq(
+					new IRSeq(
+							new IRCJump(
+									new IRBinOp(IRBinOp.OpType.AND,
+												new IRBinOp(IRBinOp.OpType.GEQ,
+															accesses.get(a).buildIRExpr(),
+															new IRConst(0)),
+												new IRBinOp(IRBinOp.OpType.LT,
+															accesses.get(a).buildIRExpr(),
+															new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
+																		  		  k,
+																		  		  new IRConst(8))))),
+							live_label),
+					new IRExp(
+						new IRCall(new IRName("_I_outOfBounds_p"))
+						),
+					new IRLabel(live_label)
+				),
+				ArrExpr.get_offset(a, arrpointer, accesses));
+		}
+		
+		return k;
 	}
 }
