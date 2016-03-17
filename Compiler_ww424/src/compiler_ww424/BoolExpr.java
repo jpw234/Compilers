@@ -1,5 +1,7 @@
 package compiler_ww424;
 
+import edu.cornell.cs.cs4120.xic.ir.*;
+
 public class BoolExpr extends Expr {
 	private boolean val;
 	
@@ -14,7 +16,15 @@ public class BoolExpr extends Expr {
 	}
 	
 	public Type typecheck(SymTab s) {
-		return new Type("bool");
+		type = new Type("bool");
+		return type;
+	}
+	
+	public IRExpr buildIRExpr() {
+		long numval;
+		if(val) numval = 1; else numval = 0;
+		
+		return new IRConst(numval);
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import java.util.List;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class ArrExpr extends Expr {
 	private IDExpr name;
@@ -41,7 +43,75 @@ public class ArrExpr extends Expr {
 	public Type typecheck(SymTab s) {
 		Type temp = s.lookup(name.getName());
 		if(temp.getDepth()-accesses.size() < 0) throw new Error(line + ":" + column + " error: " + "illegal access: that is not an array");
-		return new Type(temp.getType(), temp.getDepth()-accesses.size());
+		for(int a = 0; a < accesses.size(); a++) {
+			if(accesses.get(a).typecheck(s).getType() != "int") {
+				throw new Error(line + ":" + column + " error: " + "illegal expr: non-integer value used as array access");
+			}
+		}
+		type = new Type(temp.getType(), temp.getDepth()-accesses.size());
+		return type;
+	}
+	
+	@Override
+	public Expr constantFold() {
+		for(int a = 0; a < accesses.size(); a++) {
+			accesses.set(a, accesses.get(a).constantFold());
+		}
+		
+		return this;
+	}
+	
+	// invariant: depth <= acc.size()
+	public static IRExpr get_offset(int depth, IRExpr baseExpr, List<Expr> acc) {
+		IRExpr pass = baseExpr;
+		
+		for(int a = 0; a < depth; a++) {
+			if(a == depth - 1) {
+				pass = new IRBinOp(IRBinOp.OpType.ADD,
+								   pass,
+								   new IRBinOp(IRBinOp.OpType.MUL,
+										       acc.get(a).buildIRExpr(),
+										       new IRConst(8)));
+			}
+			else {
+				pass = new IRMem(new IRBinOp(IRBinOp.OpType.ADD, 
+										 	 pass,
+										 	 new IRBinOp(IRBinOp.OpType.MUL,
+												 	 	 acc.get(a).buildIRExpr(),
+												 	 	 new IRConst(8))));
+			}
+		}
+		return pass;
+	}
+	
+	public IRExpr getAddress() {
+		//TODO: figure out where to add "kill" label
+		IRTemp idVal = (IRTemp) name.buildIRExpr();
+		
+		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
+							  idVal);
+		
+		for(int a = 0; a < accesses.size(); a++) {
+			k = new IRESeq(
+							new IRCJump(
+									new IRBinOp(IRBinOp.OpType.OR,
+												new IRBinOp(IRBinOp.OpType.LT,
+															accesses.get(a).buildIRExpr(),
+															new IRConst(0)),
+												new IRBinOp(IRBinOp.OpType.GEQ,
+															accesses.get(a).buildIRExpr(),
+															new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
+																				  k,
+																				  new IRConst(8))))),
+									"kill"),
+							get_offset(a, idVal, accesses));
+		}
+		
+		return k;
+	}
+	
+	public IRExpr buildIRExpr() {
+		return new IRMem(this.getAddress());
 	}
 	
 	@Override

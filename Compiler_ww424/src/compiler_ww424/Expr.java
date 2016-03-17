@@ -6,7 +6,7 @@ public abstract class Expr {
 	protected int line;
 	protected int column;
 	
-	private Type type;
+	protected Type type = null;
 	abstract Type typecheck(SymTab s);
 	public Type getType() {
 		return type;

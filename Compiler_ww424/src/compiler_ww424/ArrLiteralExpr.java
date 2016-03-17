@@ -1,6 +1,7 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class ArrLiteralExpr extends Expr {
 	private ArrayList<Expr> values;
@@ -49,7 +50,7 @@ public class ArrLiteralExpr extends Expr {
 	public Type typecheck(SymTab s) {
 		if(values.size() == 0) {
 			if(accesses.size() != 0) throw new Error(line + ":" + column + " error: " + "tried to access empty array");
-			else return new Type("empty", 1);
+			else type = new Type("empty", 1); return type;
 		}
 		
 		Type t = values.get(0).typecheck(s);
@@ -65,7 +66,8 @@ public class ArrLiteralExpr extends Expr {
 		}
 		
 		t.addDepth();
-		return t;
+		type = t;
+		return type;
 	}
 	@Override
 	public String toString(){
@@ -80,5 +82,9 @@ public class ArrLiteralExpr extends Expr {
 		}
 		
 		return s ;
+	}
+	
+	public IRExpr buildIRExpr() {
+		
 	}
 }

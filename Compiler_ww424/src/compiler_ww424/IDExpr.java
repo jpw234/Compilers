@@ -1,5 +1,7 @@
 package compiler_ww424;
 
+import edu.cornell.cs.cs4120.xic.ir.*;
+
 public class IDExpr extends Expr {
 	private String name;
 	
@@ -10,7 +12,8 @@ public class IDExpr extends Expr {
 	}
 	
 	public Type typecheck(SymTab s) {
-		return s.lookup(name);
+		type = s.lookup(name);
+		return type;
 	}
 	
 	public String getName() {
@@ -18,5 +21,9 @@ public class IDExpr extends Expr {
 	}
 	public String toString(){
 		return name;
+	}
+	
+	public IRExpr buildIRExpr() {
+		return new IRTemp(name);
 	}
 }
