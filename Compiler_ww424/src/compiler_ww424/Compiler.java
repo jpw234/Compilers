@@ -157,7 +157,7 @@ public class Compiler {
 			File f = p.file.toFile();
 			if(f.isDirectory()) {
 				for(File _f : f.listFiles()) {
-					// We Only Want XML Files
+					// We Only Want XI Files
 					if(!_f.getPath().endsWith(".xi")) continue;
 					if (sourceRoot == null){
 						codeToCompile.add(new CodePath(p.getRoot(), _f.getName().toString()));;
@@ -168,7 +168,7 @@ public class Compiler {
 				}
 			}
 			else {
-				// We Only Want XML Files
+				// We Only Want XI Files
 				if(!f.getPath().endsWith(".xi")) continue;
 				// Just A Single Scene
 				if (sourceRoot == null){
@@ -219,7 +219,7 @@ public class Compiler {
 					
 				}
 				
-				System.out.println("Lexed file(s) generated!");
+				//System.out.println("Lexed file(s) generated!"); //XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
 			if(toParse){
@@ -239,7 +239,7 @@ public class Compiler {
 				}catch(ArrayInitException ex) {
 					fw.write(ex.getMessage());
 				}
-				System.out.println("Parsed file(s) generated!");
+				//System.out.println("Parsed file(s) generated!"); //XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
 			
@@ -283,7 +283,7 @@ public class Compiler {
 					System.out.println(e.getMessage());
 					fw.write(e.getMessage()+"\r\n");
 				}
-				System.out.println("Semantic analysis file(s) generated!");
+				//System.out.println("Semantic analysis file(s) generated!"); //XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
 		}
@@ -312,6 +312,7 @@ public class Compiler {
 		return false; 
 		
 	}
+	//REMEMBER!!! ADD IRRUN
 	public static void printUsage() {
 		System.out.println("xic");
 		System.out.println("SYNOPSIS");
@@ -322,7 +323,12 @@ public class Compiler {
 		System.out.println("--lex: Generate output from lexical analysis. For each source file named filename.xi,");
 		System.out.println("an output file named filename.lexed is generated to provide the result of lexing");
 		System.out.println("the source file.");
-		System.out.println("-p setting the file path of the xi files to be compiled");
-
+		System.out.println("--parse: Generate output from syntactic analysis.");
+		System.out.println("--irgen: Generate intermediate code.");
+		System.out.println("--typecheck: Generate output from semantic analysis.");
+		System.out.println("-sourcepath <path>: specify the file path of the xi files to be compiled");
+		System.out.println("-libpath <path>: specify the file path of the library interfaces files that will be used");
+		System.out.println("-D <path>: specify the file path where diagnostic files will be generated");
+		System.out.println("-O: Turn off optimizations.");
 	}
 }

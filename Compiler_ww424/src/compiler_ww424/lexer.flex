@@ -9,13 +9,7 @@ import java.io.IOException;
 %cup
 
 %{
-/*public enum TokenType {
-	LBRACE, RBRACE, LPAREN, RPAREN, LBRACKET, RBRACKET, COMMA,
-	COLON, SEMI, EQ, EQEQ, LEQ, GEQ, NEQ, PLUS, MINUS, NOT, TIMES, DIV, MOD,
-	LANGLE, RANGLE, AND, OR, 
-  USE, IF, WHILE, ELSE, RETURN, LENGTH, TRUE, FALSE, INT, BOOL, UNDERSCORE,
-  ID, INTEGER, CHARACTER, STRING
-}*/
+
 public class Token extends Symbol{
 	protected int column, line;
   public Token(int symbol,int lin,int col) {
