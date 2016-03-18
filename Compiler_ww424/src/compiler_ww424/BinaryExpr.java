@@ -203,7 +203,7 @@ public class BinaryExpr extends Expr {
 								IRBinOp.OpType.GEQ,
 								new IRTemp("_STRING_CONCAT_LCOUNTER"),
 								new IRTemp("_STRING_CONCAT_LLEN")),
-								uright_label_start));
+							uright_label_start));
 			sequence.add(new IRMove(
 								new IRMem(
 									new IRBinOp(
@@ -234,7 +234,7 @@ public class BinaryExpr extends Expr {
 								IRBinOp.OpType.GEQ,
 								new IRTemp("_STRING_CONCAT_LCOUNTER"),
 								new IRTemp("_STRING_CONCAT_LLEN")),
-								udone_label));
+							udone_label));
 			sequence.add(new IRMove(
 								new IRMem(
 									new IRBinOp(
@@ -299,34 +299,34 @@ public class BinaryExpr extends Expr {
 									 left.buildIRExpr(),
 									 right.buildIRExpr());
 		case AND: {
+			String tempLabel = LabelMaker.Generate_Unique_Label("lf");
+			
 			ArrayList<IRStmt> k = new ArrayList<IRStmt>();
 			k.add(new IRMove(new IRTemp("x"), new IRConst(0)));
-			k.add(new IRCJump(left.buildIRExpr(),
-							  "l1",
-							  "lf"));
-			k.add(new IRLabel("l1"));
-			k.add(new IRCJump(right.buildIRExpr(),
-							  "l2",
-							  "lf"));
-			k.add(new IRLabel("l2"));
+			k.add(new IRCJump(new IRBinOp(IRBinOp.OpType.XOR,
+										  left.buildIRExpr(),
+										  new IRConst(1)),
+							  tempLabel));
+			k.add(new IRCJump(new IRBinOp(IRBinOp.OpType.XOR,
+										  right.buildIRExpr(),
+										  new IRConst(1)),
+							  tempLabel));
 			k.add(new IRMove(new IRTemp("x"), new IRConst(1)));
-			k.add(new IRLabel("lf"));
+			k.add(new IRLabel(tempLabel));
 			
 			return new IRESeq(new IRSeq(k), new IRTemp("x"));
 		}
 		case OR: {
+			String tempLabel = LabelMaker.Generate_Unique_Label("lf");
+			
 			ArrayList<IRStmt> k = new ArrayList<IRStmt>();
 			k.add(new IRMove(new IRTemp("x"), new IRConst(1)));
 			k.add(new IRCJump(left.buildIRExpr(),
-							  "lf",
-							  "l1"));
-			k.add(new IRLabel("l1"));
+							  tempLabel));
 			k.add(new IRCJump(right.buildIRExpr(),
-							  "lf",
-							  "l2"));
-			k.add(new IRLabel("l2"));
+							  tempLabel));
 			k.add(new IRMove(new IRTemp("x"), new IRConst(0)));
-			k.add(new IRLabel("lf"));
+			k.add(new IRLabel(tempLabel));
 			
 			return new IRESeq(new IRSeq(k), new IRTemp("x"));
 		}

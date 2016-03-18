@@ -1,6 +1,7 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 import edu.cornell.cs.cs4120.util.SExpPrinter;
+import java.util.ArrayList;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
@@ -41,6 +42,17 @@ public class IRJump extends IRStmt {
         T result = v.unit();
         result = v.bind(result, v.visit(target));
         return result;
+    }
+    
+    public IRSeq IRLower() {
+    	ArrayList<IRStmt> ret = new ArrayList<IRStmt>();
+    	
+    	IRESeq k = target.IRLower();
+    	
+    	ret.add(k.stmt());
+    	ret.add(new IRJump(k.expr()));
+    	
+    	return new IRSeq(ret);
     }
 
     @Override

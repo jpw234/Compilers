@@ -1,5 +1,7 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
+import java.util.ArrayList;
+
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
@@ -77,6 +79,17 @@ public class IRCJump extends IRStmt {
     @Override
     public boolean isCanonical(CheckCanonicalIRVisitor v) {
         return !hasFalseLabel();
+    }
+    
+    public IRSeq IRLower() {
+    	ArrayList<IRStmt> ret = new ArrayList<IRStmt>();
+    	
+    	IRESeq k = expr.IRLower();
+    	
+    	ret.add(k.stmt());
+    	ret.add(new IRCJump(k.expr(), trueLabel, falseLabel));
+    	
+    	return new IRSeq(ret);
     }
 
     @Override

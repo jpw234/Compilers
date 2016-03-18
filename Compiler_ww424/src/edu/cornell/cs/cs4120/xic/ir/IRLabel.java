@@ -1,6 +1,7 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 import edu.cornell.cs.cs4120.util.SExpPrinter;
+import java.util.ArrayList;
 import edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
 /**
@@ -30,6 +31,12 @@ public class IRLabel extends IRStmt {
     public InsnMapsBuilder buildInsnMapsEnter(InsnMapsBuilder v) {
         v.addNameToCurrentIndex(name);
         return v;
+    }
+    
+    public IRSeq IRLower() {
+    	ArrayList<IRStmt> k = new ArrayList<IRStmt>();
+    	k.add(this);
+    	return new IRSeq(k);
     }
 
     @Override

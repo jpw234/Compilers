@@ -44,6 +44,10 @@ public class IRExp extends IRStmt {
         result = v.bind(result, v.visit(expr));
         return result;
     }
+    
+    public IRSeq IRLower() {
+    	return new IRSeq(expr.IRLower().stmt());
+    }
 
     @Override
     public void printSExp(SExpPrinter p) {

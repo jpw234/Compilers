@@ -74,6 +74,16 @@ public class IRSeq extends IRStmt {
     public boolean isCanonical(CheckCanonicalIRVisitor v) {
         return !v.inSeq();
     }
+    
+    public IRSeq IRLower() {
+    	ArrayList<IRStmt> combinedList = new ArrayList<IRStmt>();
+    	
+    	for(int a = 0; a < stmts.size(); a++){
+    		combinedList.addAll(stmts.get(a).IRLower().stmts());
+    	}
+    	
+    	return new IRSeq(combinedList);
+    }
 
     @Override
     public void printSExp(SExpPrinter p) {

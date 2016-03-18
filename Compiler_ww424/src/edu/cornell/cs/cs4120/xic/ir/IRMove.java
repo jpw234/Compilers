@@ -1,6 +1,7 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 import edu.cornell.cs.cs4120.util.SExpPrinter;
+import java.util.ArrayList;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
@@ -52,6 +53,23 @@ public class IRMove extends IRStmt {
         result = v.bind(result, v.visit(target));
         result = v.bind(result, v.visit(expr));
         return result;
+    }
+    
+    public IRSeq IRLower() {
+    	IRESeq targetLowered = target.IRLower();
+    	IRESeq exprLowered = expr.IRLower();
+    	
+    	ArrayList<IRStmt> stmts = new ArrayList<IRStmt>();
+    	stmts.add(targetLowered.stmt());
+    	
+    	IRTemp naiveTemp = new IRTemp("_MOVENAIVE");
+    	
+    	stmts.add(new IRMove(naiveTemp, targetLowered.expr()));
+    	stmts.add(exprLowered.stmt());
+    	
+    	stmts.add(new IRMove(naiveTemp, exprLowered.expr()));
+    	
+    	return new IRSeq(stmts);
     }
 
     @Override
