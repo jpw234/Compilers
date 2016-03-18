@@ -85,7 +85,6 @@ public class ArrExpr extends Expr {
 	}
 	
 	public IRExpr getAddress() {
-		//TODO: figure out where to add "kill" label
 		IRTemp idVal = (IRTemp) name.buildIRExpr();
 		
 		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),

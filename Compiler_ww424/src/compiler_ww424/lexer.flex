@@ -64,9 +64,9 @@ public class Token extends Symbol{
 //%eofval{
 //	return new Token(0, 0, line, col); 
 //%eofval}
-%eofval{
-	return new Token(sym.EOF, 0, 0); 
-%eofval}
+//%eofval{
+//	return new Token(sym.EOF, 0, 0); 
+//%eofval}
 
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
@@ -166,6 +166,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	\\n 							{ string.append("\\n"); }
 	\\r 							{ string.append("\\r"); }
 	\\\" 							{ string.append("\""); }
+	\\\' 							{ string.append("\'"); }
 	\\								{ string.append('\\'); }
 	\\0x {HexNumber}				{ int k = Integer.parseInt(yytext().substring(3), 16);
 									  if(k > 31 && k < 127) string.append((char) k);
@@ -178,3 +179,14 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 /* error fallback */
 [^] 								{ return token(sym.error, "Illegal character <"+yytext()+">"); }
 
+<STRING><<EOF>> {
+ 	return token(sym.error, "error: EOF encountered in String");
+}
+
+<CHAR><<EOF>> {
+	return token(sym.error, "error: EOF encountered in Char");
+}
+
+<<EOF>> {
+	return new Token(sym.EOF, 0, 0);
+}
