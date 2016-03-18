@@ -3,6 +3,8 @@ package compiler_ww424;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.cornell.cs.cs4120.xic.ir.*;
+
 public class Program {
 	List<Use> imports;
 	List<Function> funcs;
@@ -52,7 +54,13 @@ public class Program {
 			funcs.get(a).constantFold();
 		}
 	}
-	
+	public IRFuncDecl buildIR(){
+		ArrayList<IRStmt> funbody = new ArrayList<IRStmt>();
+		for (Function f: funcs){
+			funbody.add(f.buildIRStmt());
+		}
+		return new IRFuncDecl("program",new IRSeq(funbody));
+	}
 	public String toString(){
 
 		String useString = "";
