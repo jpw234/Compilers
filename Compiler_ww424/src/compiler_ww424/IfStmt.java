@@ -1,7 +1,7 @@
 package compiler_ww424;
 import java.util.ArrayList;
 import java.util.List;
-
+import edu.cornell.cs.cs4120.xic.ir.*;
 public class IfStmt extends Stmt {
 	private Expr condition; 
 	private List<Stmt> body;
@@ -58,5 +58,19 @@ public class IfStmt extends Stmt {
 			}
 		}
 		return String.format("(%s %s %s)", "if", condition.toString(),bodylist.trim());
+	}
+	
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		List<IRStmt> ifstmts = new ArrayList<IRStmt>();
+		String t = LabelMaker.Generate_Unique_Label("_TRUE");
+		for (Stmt s : body){
+			if (s.buildIRStmt() == null) continue;
+			ifstmts.add(s.buildIRStmt());
+		}
+
+		return new IRSeq( new IRCJump(condition.buildIRExpr(), t),
+					 new IRLabel(t), new IRSeq(ifstmts));
 	}
 }

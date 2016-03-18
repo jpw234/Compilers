@@ -1,7 +1,7 @@
 package compiler_ww424;
 import java.util.ArrayList;
 import java.util.List;
-
+import edu.cornell.cs.cs4120.xic.ir.*;
 public class IfElseStmt extends Stmt {
 	private Expr condition;
 	private List<Stmt> ifbody;
@@ -136,4 +136,24 @@ public class IfElseStmt extends Stmt {
 		}
 		return (ifreturns && elsereturns);
 	}
+	
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		List<IRStmt> ifstmts = new ArrayList<IRStmt>();
+		List<IRStmt> elsestmts = new ArrayList<IRStmt>();
+		String t = LabelMaker.Generate_Unique_Label("_TRUE");
+		String f = LabelMaker.Generate_Unique_Label("_FALSE");
+		for (Stmt s : ifbody){
+			if (s.buildIRStmt() == null) continue;
+			ifstmts.add(s.buildIRStmt());
+		}
+		for (Stmt s : elsebody){
+			if (s.buildIRStmt() == null) continue;
+			elsestmts.add(s.buildIRStmt());
+		}
+		return new IRSeq( new IRCJump(condition.buildIRExpr(), t,f),
+					 new IRLabel(t), new IRSeq(ifstmts) ,
+					 new IRLabel(f), new IRSeq(elsestmts));
+	}	
 }

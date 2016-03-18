@@ -1,7 +1,7 @@
 package compiler_ww424;
 import java.util.ArrayList;
 import java.util.List;
-
+import edu.cornell.cs.cs4120.xic.ir.*;
 public class WhileStmt extends Stmt {
 	private Expr condition; 
 	private List<Stmt> body;
@@ -61,5 +61,23 @@ public class WhileStmt extends Stmt {
 		}
 		
 		return String.format("(%s %s (%s))", "while", condition.toString(),bodyString.trim());
+	}
+	
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		List<IRStmt> stmtlist = new ArrayList<IRStmt>();
+		if (body != null){
+			for (Stmt s: body){
+				if (s.buildIRStmt() == null) continue;
+				stmtlist.add(s.buildIRStmt());
+			}
+		}
+		String t = LabelMaker.Generate_Unique_Label("_TRUE");
+		String h = LabelMaker.Generate_Unique_Label("_WHILE_HEAD");
+		return new IRSeq(new IRLabel(h), new IRCJump(condition.buildIRExpr(), t),
+				   new IRLabel(t), new IRSeq(stmtlist), 
+				   new IRJump(new IRName(h)));
+		
 	}
 }

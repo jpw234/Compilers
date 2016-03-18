@@ -59,6 +59,12 @@ public class ProcCall extends Stmt {
 	
 	@Override
 	public IRStmt buildIRStmt() {
+		//prepare for mangle name
+		Tuple inputs = new Tuple(new ArrayList<Type>());
+		for(int a = 0; a < args.size(); a++) {
+			inputs.add(args.get(a).getType());
+		}
+		FunType ft = new FunType(inputs, null);
 		// TODO Auto-generated method stub
 		List<IRStmt> proc = new ArrayList<IRStmt>();
 		for(int i = 0; i < args.size(); i++){
@@ -66,6 +72,7 @@ public class ProcCall extends Stmt {
 			proc.add(new IRMove(new IRTemp(argNum), args.get(i).buildIRExpr()));
 		}
 		proc.add(new IRExp(new IRName(name.toString())));
+		proc.add(new IRExp(new IRName(FunCall.mangle_name(name.getName(), ft))));
 		return new IRSeq(proc);
 	}
 	

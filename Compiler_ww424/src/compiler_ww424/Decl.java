@@ -2,6 +2,8 @@ package compiler_ww424;
 
 import java.util.List;
 
+import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+
 public class Decl extends Stmt {
 	private IDExpr name;
 	private Type type;
@@ -93,5 +95,10 @@ public class Decl extends Stmt {
 		}
 		s = "( " + name.toString() + " " + s + " )";
 		return (type.getType()=="underscore")? "_" : s ;
+	}
+	@Override
+	public IRStmt buildIRStmt() {
+		if(type.getDepth() == 0) {return null;}//just normal declaration, e.g. x:int
+		
 	}
 }
