@@ -2,7 +2,7 @@ package compiler_ww424;
 
 import java.util.List;
 
-import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class DeclAssign extends Stmt {
 	private List<Decl> left;
@@ -83,7 +83,24 @@ public class DeclAssign extends Stmt {
 	}
 	@Override
 	public IRStmt buildIRStmt() {
-		
-		
+		List<IRStmt> seqList = new ArrayList<IRStmt>();
+		if(left.size() == 1){
+			if(left.get(0).buildIRStmt() != null){seqList.add(left.get(0).buildIRStmt());}
+			seqList.add(new IRMove(new IRTemp(left.get(0).getName().toString()), right.buildIRExpr()));
+		}
+		else{ //multiple returns for function call
+			for(int i = 0; i < left.size(); i++){
+				String _ret = "_RET" + i;
+				if(i == 0){
+					String n = LabelMaker.Generate_Unique_Label("_n");
+					if(left.get(0).getType().getType()=="underscore") {seqList.add(new IRMove(new IRTemp(n), right.buildIRExpr()));}
+					else {seqList.add(new IRMove(new IRTemp(left.get(i).getName().getName()), right.buildIRExpr()));}
+				}
+				else if(left.get(i).getType().getType() != "underscore"){
+					seqList.add(new IRMove(new IRTemp(left.get(i).getName().getName()), new IRTemp(_ret)));
+				}
+			}
+		}
+		return new IRSeq(seqList);
 	}
 }

@@ -2,7 +2,7 @@ package compiler_ww424;
 
 import java.util.List;
 
-import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class Decl extends Stmt {
 	private IDExpr name;
@@ -99,7 +99,32 @@ public class Decl extends Stmt {
 	@Override
 	public IRStmt buildIRStmt() {
 		if(type.getDepth() == 0) {return null;}//just normal declaration, e.g. x:int
-		return null;
-		
+		else{ //array declaration
+			if(accesses.size() == 0) {return null;}
+			List<IRStmt> seqList = new ArrayList<IRStmt>();
+			IRTemp arrpointer = new IRTemp("a");
+			int i = 0;//start with index 0
+			String n = LabelMaker.Generate_Unique_Label("_n");
+			IRTemp _n = new IRTemp(n);
+			seqList.add(new IRMove(_n, accesses.get(i).buildIRExpr()));//_n = E[[expr]]
+			seqList.add(new IRMove(_n, new IRBinOp(IRBinOp.OpType.MUL, new IRBinOp(IRBinOp.OpType.ADD, _n, new IRConst(1)), new IRConst(8))));//(_n+1)*8
+			seqList.add(new IRMove(arrpointer, new IRCall(new IRName("_I_alloc_i"), _n)));
+			seqList.add(new IRMove(new IRMem(arrpointer), _n));//arr[-1] = _n
+			seqList.add(new IRMove(arrpointer, new IRBinOp(IRBinOp.OpType.ADD, arrpointer, new IRConst(8)))); // arr = arr + 8
+			seqList.add(new IRMove(new IRTemp(name.getName()), arrpointer));
+			return new IRSeq(seqList);
+//			i++;
+//			if(i < accesses.size()){
+//				String j = LabelMaker.Generate_Unique_Label("_j");
+//				IRTemp _j = new IRTemp(j);
+//				seqList.add(new IRMove(_j, new IRConst(0)));
+//				//while statement
+//				String t = LabelMaker.Generate_Unique_Label("_TRUE");
+//				String h = LabelMaker.Generate_Unique_Label("_WHILE_HEAD");
+//				List<IRStmt> wList = new ArrayList<IRStmt>();
+//				wList.add();
+//				//
+//			}
+		}
 	}
 }
