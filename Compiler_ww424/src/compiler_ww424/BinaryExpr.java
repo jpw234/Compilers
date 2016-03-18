@@ -298,12 +298,38 @@ public class BinaryExpr extends Expr {
 		case NEQ: return new IRBinOp(IRBinOp.OpType.NEQ,
 									 left.buildIRExpr(),
 									 right.buildIRExpr());
-		case AND: return new IRBinOp(IRBinOp.OpType.AND,
-									 left.buildIRExpr(),
-									 right.buildIRExpr());
-		case OR: return new IRBinOp(IRBinOp.OpType.OR,
-									left.buildIRExpr(),
-									right.buildIRExpr());
+		case AND: {
+			ArrayList<IRStmt> k = new ArrayList<IRStmt>();
+			k.add(new IRMove(new IRTemp("x"), new IRConst(0)));
+			k.add(new IRCJump(left.buildIRExpr(),
+							  "l1",
+							  "lf"));
+			k.add(new IRLabel("l1"));
+			k.add(new IRCJump(right.buildIRExpr(),
+							  "l2",
+							  "lf"));
+			k.add(new IRLabel("l2"));
+			k.add(new IRMove(new IRTemp("x"), new IRConst(1)));
+			k.add(new IRLabel("lf"));
+			
+			return new IRESeq(new IRSeq(k), new IRTemp("x"));
+		}
+		case OR: {
+			ArrayList<IRStmt> k = new ArrayList<IRStmt>();
+			k.add(new IRMove(new IRTemp("x"), new IRConst(1)));
+			k.add(new IRCJump(left.buildIRExpr(),
+							  "lf",
+							  "l1"));
+			k.add(new IRLabel("l1"));
+			k.add(new IRCJump(right.buildIRExpr(),
+							  "lf",
+							  "l2"));
+			k.add(new IRLabel("l2"));
+			k.add(new IRMove(new IRTemp("x"), new IRConst(0)));
+			k.add(new IRLabel("lf"));
+			
+			return new IRESeq(new IRSeq(k), new IRTemp("x"));
+		}
 		default: return null;
 		}
 	}
