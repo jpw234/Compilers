@@ -1,6 +1,8 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import java.util.List;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class ReturnStmt extends Stmt{
 	private ArrayList<Expr> val;
@@ -49,5 +51,19 @@ public class ReturnStmt extends Stmt{
 		}
 		s = "(return " + s.trim() + " )";
 		return s;
+	}
+	
+	@Override
+	public IRStmt buildIRStmt() {
+		if(val.size() == 0){ return new IRReturn();} //void return
+		else {//single return or multiple return
+			List<IRStmt> retlist = new ArrayList<IRStmt>();
+			for(int i = 0; i < val.size(); i++){
+				String ret = "_RET"+i;
+				retlist.add(new IRMove(new IRTemp(ret), val.get(i).buildIRExpr()));
+			}
+			retlist.add(new IRReturn());
+			return new IRSeq(retlist);
+		}
 	}
 }

@@ -1,5 +1,9 @@
 package compiler_ww424;
+import java.util.ArrayList;
 import java.util.List;
+
+import edu.cornell.cs.cs4120.xic.ir.IRSeq;
+import edu.cornell.cs.cs4120.xic.ir.IRStmt;
 
 public class Block extends Stmt {
 	private List<Stmt> body;
@@ -75,5 +79,17 @@ public class Block extends Stmt {
 		}
 		s = "( " + s + " )";
 		return s ;
+	}
+	
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		if (body == null) return null; 
+		List<IRStmt> stmts = new ArrayList<IRStmt>();
+		for (Stmt s : body){
+			if (s.buildIRStmt() == null) continue;
+			stmts.add(s.buildIRStmt());
+		}
+		return new IRSeq(stmts);
 	}
 }

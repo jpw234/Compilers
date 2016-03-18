@@ -2,6 +2,12 @@ package compiler_ww424;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.cornell.cs.cs4120.xic.ir.ControlFlow;
+import edu.cornell.cs.cs4120.xic.ir.IRCJump;
+import edu.cornell.cs.cs4120.xic.ir.IRLabel;
+import edu.cornell.cs.cs4120.xic.ir.IRSeq;
+import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+
 public class IfStmt extends Stmt {
 	private Expr condition; 
 	private List<Stmt> body;
@@ -42,14 +48,6 @@ public class IfStmt extends Stmt {
 		throw new Error(line + ":" + column + " error: " + "shouldn't get here in ifblock typecheck");
 	}
 	
-	@Override
-	public void constantFold() {
-		condition = condition.constantFold();
-		for(int a = 0; a < body.size(); a++) {
-			body.get(a).constantFold();
-		}
-	}
-	
 	public String toString(){
 		String bodylist = "";
 		if (body != null){
@@ -58,5 +56,19 @@ public class IfStmt extends Stmt {
 			}
 		}
 		return String.format("(%s %s %s)", "if", condition.toString(),bodylist.trim());
+	}
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		List<IRStmt> ifstmts = new ArrayList<IRStmt>();
+		String t = LabelMaker.Generate_Unique_Label("_TRUE");
+		String f = LabelMaker.Generate_Unique_Label("_FALSE");
+		for (Stmt s : body){
+			if (s.buildIRStmt() == null) continue;
+			ifstmts.add(s.buildIRStmt());
+		}
+		ControlFlow _true = new ControlFlow(condition.buildIRExpr(), t,f);
+		return new IRSeq( _true.convert(),
+					 new IRLabel(t), new IRSeq(ifstmts), new IRLabel(f));
 	}
 }

@@ -2,6 +2,12 @@ package compiler_ww424;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.cornell.cs.cs4120.xic.ir.ControlFlow;
+import edu.cornell.cs.cs4120.xic.ir.IRCJump;
+import edu.cornell.cs.cs4120.xic.ir.IRLabel;
+import edu.cornell.cs.cs4120.xic.ir.IRSeq;
+import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+
 public class IfElseStmt extends Stmt {
 	private Expr condition;
 	private List<Stmt> ifbody;
@@ -60,18 +66,6 @@ public class IfElseStmt extends Stmt {
 		
 		throw new Error(line + ":" + column + " error: " + "shouldn't get here in ifelseblock typecheck");
 	}
-	
-	@Override
-	public void constantFold() {
-		condition = condition.constantFold();
-		for(int a = 0; a < ifbody.size(); a++) {
-			ifbody.get(a).constantFold();
-		}
-		for(int a = 0; a < elsebody.size(); a++) {
-			elsebody.get(a).constantFold();
-		}
-	}
-	
 	public String toString(){
 		String ifString = "";
 		String elseString = "";
@@ -135,5 +129,26 @@ public class IfElseStmt extends Stmt {
 			}
 		}
 		return (ifreturns && elsereturns);
+	}
+
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		List<IRStmt> ifstmts = new ArrayList<IRStmt>();
+		List<IRStmt> elsestmts = new ArrayList<IRStmt>();
+		String t = LabelMaker.Generate_Unique_Label("_TRUE");
+		String f = LabelMaker.Generate_Unique_Label("_FALSE");
+		for (Stmt s : ifbody){
+			if (s.buildIRStmt() == null) continue;
+			ifstmts.add(s.buildIRStmt());
+		}
+		for (Stmt s : elsebody){
+			if (s.buildIRStmt() == null) continue;
+			elsestmts.add(s.buildIRStmt());
+		}
+		ControlFlow _true = new ControlFlow(condition.buildIRExpr(), t,f);
+		return new IRSeq( _true.convert() ,
+					 new IRLabel(t), new IRSeq(ifstmts) ,
+					 new IRLabel(f), new IRSeq(elsestmts));
 	}
 }

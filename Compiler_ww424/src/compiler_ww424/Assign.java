@@ -1,5 +1,7 @@
 package compiler_ww424;
 
+import edu.cornell.cs.cs4120.xic.ir.*;
+
 public class Assign extends Stmt {
 	private ArrExpr left;
 	private Expr right;
@@ -48,5 +50,17 @@ public class Assign extends Stmt {
 		String s = "";
 		s = "( = " + left.toString() + " " + right.toString() + " )";
 		return s ;
+	}
+	
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		if (left.getDepth() == 0 ){
+			return new IRMove( left.getName().buildIRExpr(), right.buildIRExpr());
+		}
+		else{
+			//getDepth != 0 --> An array 
+			return new IRMove(left.buildIRExpr(), right.buildIRExpr());
+		}
 	}
 }

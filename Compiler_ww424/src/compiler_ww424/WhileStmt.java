@@ -2,6 +2,14 @@ package compiler_ww424;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.cornell.cs.cs4120.xic.ir.ControlFlow;
+import edu.cornell.cs.cs4120.xic.ir.IRCJump;
+import edu.cornell.cs.cs4120.xic.ir.IRJump;
+import edu.cornell.cs.cs4120.xic.ir.IRLabel;
+import edu.cornell.cs.cs4120.xic.ir.IRName;
+import edu.cornell.cs.cs4120.xic.ir.IRSeq;
+import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+
 public class WhileStmt extends Stmt {
 	private Expr condition; 
 	private List<Stmt> body;
@@ -40,14 +48,6 @@ public class WhileStmt extends Stmt {
 		throw new Error(line + ":" + column + " error: " + "shouldn't get here in whileblock typecheck");
 	}
 	
-	@Override
-	public void constantFold() {
-		condition = condition.constantFold();
-		for(int a = 0; a < body.size(); a++) {
-			body.get(a).constantFold();
-		}
-	}
-	
 	public String toString(){
 		if (condition==null && body == null ){
 			return String.format("(%s %s (%s))", "while", "","");
@@ -61,5 +61,25 @@ public class WhileStmt extends Stmt {
 		}
 		
 		return String.format("(%s %s (%s))", "while", condition.toString(),bodyString.trim());
+	}
+
+	@Override
+	public IRStmt buildIRStmt() {
+		// TODO Auto-generated method stub
+		List<IRStmt> stmtlist = new ArrayList<IRStmt>();
+		if (body != null){
+			for (Stmt s: body){
+				if (s.buildIRStmt() == null) continue;
+				stmtlist.add(s.buildIRStmt());
+			}
+		}
+		String t = LabelMaker.Generate_Unique_Label("_TRUE");
+		String f = LabelMaker.Generate_Unique_Label("_FALSE");
+		String h = LabelMaker.Generate_Unique_Label("_WHILE_HEAD");
+		ControlFlow _e = new ControlFlow(condition.buildIRExpr(), t, f );
+		return new IRSeq(new IRLabel(h), _e.convert(),
+				   new IRLabel(t), new IRSeq(stmtlist), 
+				   new IRJump(new IRName(h)), new IRLabel(f));
+		
 	}
 }

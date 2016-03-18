@@ -2,6 +2,11 @@ package compiler_ww424;
 
 import java.util.List;
 import java.util.ArrayList;
+import edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
+import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import edu.cornell.cs.cs4120.xic.ir.IRMove;
+import edu.cornell.cs.cs4120.xic.ir.IRTemp;
+import edu.cornell.cs.cs4120.xic.ir.IRSeq;
 
 public class Function {
 	private IDExpr name;
@@ -157,5 +162,20 @@ public class Function {
 		//add retType (from Tuple class) with "(" & ")" manually, because Tuple.toString() don't print parenthesis
 		s = "(" + name.toString() + " " + s_arg + "( " + retType.toString() + " ) " + "( " + s_slist + " )" + " )";
 		return s ;
+	}
+	
+	IRFuncDecl buildIR(){
+		List<IRStmt> seqList = new ArrayList<IRStmt>();
+		//handle argument
+		for(int i = 0; i < args.size(); i++){
+			String argPrefix = "_ARG" + i;
+			seqList.add(new IRMove(new IRTemp(args.get(i).getName().toString()), new IRTemp(argPrefix)));
+		}
+		//function body
+		for(int i = 0; i < body.size(); i++){
+			if(body.get(i).buildIRStmt() == null) {continue;}
+			seqList.add(body.get(i).buildIRStmt()); //return statement is included in body
+		}
+		return new IRFuncDecl(name.toString(), new IRSeq(seqList));
 	}
 }
