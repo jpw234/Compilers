@@ -3,10 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.cornell.cs.cs4120.xic.ir.ControlFlow;
-import edu.cornell.cs.cs4120.xic.ir.IRCJump;
-import edu.cornell.cs.cs4120.xic.ir.IRLabel;
-import edu.cornell.cs.cs4120.xic.ir.IRSeq;
-import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class IfStmt extends Stmt {
 	private Expr condition; 
@@ -59,16 +56,21 @@ public class IfStmt extends Stmt {
 	}
 	@Override
 	public IRStmt buildIRStmt() {
-		// TODO Auto-generated method stub
-		List<IRStmt> ifstmts = new ArrayList<IRStmt>();
-		String t = LabelMaker.Generate_Unique_Label("_TRUE");
-		String f = LabelMaker.Generate_Unique_Label("_FALSE");
-		for (Stmt s : body){
-			if (s.buildIRStmt() == null) continue;
+		String uniqueLabelEnd = LabelMaker.Generate_Unique_Label("endif");
+		
+		ArrayList<IRStmt> ifstmts = new ArrayList<IRStmt>();
+		
+		ifstmts.add(new IRCJump(new IRBinOp(IRBinOp.OpType.XOR,
+											condition.buildIRExpr(),
+											new IRConst(1)),
+								uniqueLabelEnd));
+		
+		for(Stmt s : body) {
 			ifstmts.add(s.buildIRStmt());
 		}
-		ControlFlow _true = new ControlFlow(condition.buildIRExpr(), t,f);
-		return new IRSeq( _true.convert(),
-					 new IRLabel(t), new IRSeq(ifstmts), new IRLabel(f));
+		
+		ifstmts.add(new IRLabel(uniqueLabelEnd));
+		
+		return new IRSeq(ifstmts);
 	}
 }
