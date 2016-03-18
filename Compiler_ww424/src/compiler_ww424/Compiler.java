@@ -155,7 +155,7 @@ public class Compiler {
 				break;
 			}
 		}
-		if ((toLex || toParse || toTypecheck) && !useHelp){
+		if ((toLex || toParse || toTypecheck || toGenIR || toRunIR || toOptimize) && !useHelp){
 			lex_parse(toLex, toParse,toTypecheck,toGenIR,toRunIR,toOptimize,
 					  pathArgs,codeToCompile,sourceRoot,diagnosisRoot,libRoot);
 		}
@@ -346,15 +346,13 @@ public class Compiler {
 			        for (Function f: program.getFunctions()){
 			        	compUnit.appendFunc(f.buildIR());
 			        }
-			        
-			        // IR pretty-printer demo
-			       
 			        StringWriter sw = new StringWriter();
 			        try (PrintWriter pw = new PrintWriter(sw);
 			             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 			            compUnit.printSExp(sp);
 			        }
 					fw.write(sw.toString());
+					System.out.println(sw.toString());
 				}
 				catch(Error e) {
 					System.out.println(e.getMessage());
