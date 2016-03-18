@@ -27,6 +27,11 @@ public class Length extends Expr {
 		return String.format("(%s %s)", "length", arg.toString());
 	}
 	
+	public Expr constantFold() {
+		arg = arg.constantFold();
+		return this;
+	}
+	
 	public IRExpr buildIRExpr() {
 		return new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
 									 arg.buildIRExpr(),

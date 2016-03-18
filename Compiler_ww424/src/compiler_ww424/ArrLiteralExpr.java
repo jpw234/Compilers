@@ -84,6 +84,46 @@ public class ArrLiteralExpr extends Expr {
 		return s ;
 	}
 	
+	@Override
+	public Expr constantFold() {
+		for(int a = 0; a < values.size(); a++) {
+			values.set(a, values.get(a).constantFold());
+		}
+		//only have to fold the first access b/c recursive call does remaining
+		if(!accesses.isEmpty()) accesses.set(0, accesses.get(0).constantFold());
+		
+		//if the first access isn't a constant, we just return this
+		if(!(accesses.get(0) instanceof NumExpr)) return this;
+		
+		else {
+			//set the return to the element specified by the access
+			Expr ret = values.get(((NumExpr) accesses.get(0)).getIntVal()); 
+			
+			//now we need to check if we're done, or if we have more nesting/accesses to do
+			if(accesses.size() == 1) return ret;
+			
+			else {
+				//if there's more nestings, the val is either an ArrExpr or an ArrLiteralExpr, or an IDExpr
+				if(ret instanceof ArrExpr) {
+					for(int a = 1; a < accesses.size(); a++) {
+						((ArrExpr) ret).add(accesses.get(a));
+					}
+				}
+				else if(ret instanceof ArrLiteralExpr) {
+					for(int a = 1; a < accesses.size(); a++) {
+						((ArrLiteralExpr) ret).addAccess(accesses.get(a));
+					}
+				}
+				//here ret must be IDExpr
+				else {
+					ret = new ArrExpr(((IDExpr) ret), (ArrayList<Expr>) accesses.subList(1, accesses.size()), line, column);
+				}
+				
+				return ret.constantFold();
+			}
+		}
+	}
+	
 	public IRExpr buildIRExpr() {
 		ArrayList<IRStmt> stmtlist = new ArrayList<IRStmt>();
 		

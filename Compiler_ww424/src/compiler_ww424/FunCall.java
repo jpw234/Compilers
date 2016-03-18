@@ -5,7 +5,7 @@ import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class FunCall extends Expr {
 	private IDExpr name;
-	private List<Expr> args;
+	private ArrayList<Expr> args;
 	private Type type;
 	
 	public static String mangle_name(String n, FunType t) {
@@ -34,7 +34,7 @@ public class FunCall extends Expr {
 		return res;
 	} 
 	
-	public FunCall(IDExpr n, List<Expr> a,int linNum,int colNum) {
+	public FunCall(IDExpr n, ArrayList<Expr> a,int linNum,int colNum) {
 		name = n; args = a;
 		line = linNum;
 		column = colNum;
@@ -84,6 +84,14 @@ public class FunCall extends Expr {
 		}
 		
 		return new IRCall(new IRName(mangle_name(name.getName(), ft)), irargs);
+	}
+	
+	public Expr constantFold() {
+		for(int a = 0; a < args.size(); a++) {
+			args.set(a, args.get(a).constantFold());
+		}
+		
+		return this;
 	}
 	
 	@Override

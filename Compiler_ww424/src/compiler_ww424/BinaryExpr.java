@@ -76,7 +76,6 @@ public class BinaryExpr extends Expr {
 	
 	@Override
 	public Expr constantFold() {
-		//TODO: finish this
 		left = left.constantFold();
 		right = right.constantFold();
 		
@@ -123,6 +122,27 @@ public class BinaryExpr extends Expr {
 				return new NumExpr(((NumExpr) left).getIntVal() * ((NumExpr) right).getIntVal(), line, column);
 			default: return this;
 			}
+		}
+		else if((left instanceof ArrLiteralExpr) && (right instanceof ArrLiteralExpr)
+				&& (((ArrLiteralExpr) left).getAccesses().size() == 0)
+				&& (((ArrLiteralExpr) right).getAccesses().size() == 0)){
+			/* Last potential constant folding: array concatenation. Can only be folded if
+			 * we have 2 ArrLiteralExprs. **BY THE DEFINITION OF ARRLITERALEXPR'S CONSTANTFOLD**,
+			 * if getAccesses.size() > 0, then the first access is a non-constant, so constant-folding
+			 * this concat is out of the picture - this justifies the guard. If both are shallow arrays,
+			 * we constant-fold concatenation by simply making an ArrLiteralExpr with the values
+			 * of both left and right, and returning that ArrLiteralExpr.
+			 */
+			ArrLiteralExpr ret = new ArrLiteralExpr(new ArrayList<Expr>(), line, column);
+			//first add all the values in left
+			for(int a = 0; a < ((ArrLiteralExpr) left).getValues().size(); a++) {
+				ret.addValue(((ArrLiteralExpr) left).getValues().get(a));
+			}
+			for(int a = 0; a < ((ArrLiteralExpr) right).getValues().size(); a++) {
+				ret.addValue(((ArrLiteralExpr) right).getValues().get(a));
+			}
+			
+			return ret;
 		}
 		return this;
 	}
