@@ -38,6 +38,14 @@ public class ProcCall extends Stmt {
 		}
 		return new Type("unit");
 	}
+	
+	@Override
+	public void constantFold() {
+		for(int a = 0; a < args.size(); a++) {
+			args.set(a, args.get(a).constantFold());
+		}
+	}
+	
 	public String toString(){
 		if (args == null) { return String.format("(%s %s)", name,""); }
 		String arglist = "";

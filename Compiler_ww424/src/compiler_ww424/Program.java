@@ -46,6 +46,13 @@ public class Program {
 			funcs.get(a).returncheck();
 		}
 	}
+	
+	public void constantFold() {
+		for(int a = 0; a < funcs.size(); a++) {
+			funcs.get(a).constantFold();
+		}
+	}
+	
 	public String toString(){
 
 		String useString = "";

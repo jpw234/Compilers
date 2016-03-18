@@ -62,6 +62,14 @@ public class DeclAssign extends Stmt {
 	}
 	
 	@Override
+	public void constantFold() {
+		for(int a = 0; a < left.size(); a++) {
+			left.get(a).constantFold();
+		}
+		right = right.constantFold();
+	}
+	
+	@Override
 	public String toString(){
 		String s = "";
 		for(int i = 0; i < left.size(); i++){

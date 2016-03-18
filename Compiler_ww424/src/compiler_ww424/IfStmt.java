@@ -42,6 +42,14 @@ public class IfStmt extends Stmt {
 		throw new Error(line + ":" + column + " error: " + "shouldn't get here in ifblock typecheck");
 	}
 	
+	@Override
+	public void constantFold() {
+		condition = condition.constantFold();
+		for(int a = 0; a < body.size(); a++) {
+			body.get(a).constantFold();
+		}
+	}
+	
 	public String toString(){
 		String bodylist = "";
 		if (body != null){

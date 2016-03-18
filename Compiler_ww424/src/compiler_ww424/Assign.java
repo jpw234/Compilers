@@ -38,6 +38,12 @@ public class Assign extends Stmt {
 	}
 	
 	@Override
+	public void constantFold() {
+		left = (ArrExpr) left.constantFold();
+		right = right.constantFold();
+	}
+	
+	@Override
 	public String toString(){
 		String s = "";
 		s = "( = " + left.toString() + " " + right.toString() + " )";

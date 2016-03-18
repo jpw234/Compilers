@@ -40,6 +40,14 @@ public class WhileStmt extends Stmt {
 		throw new Error(line + ":" + column + " error: " + "shouldn't get here in whileblock typecheck");
 	}
 	
+	@Override
+	public void constantFold() {
+		condition = condition.constantFold();
+		for(int a = 0; a < body.size(); a++) {
+			body.get(a).constantFold();
+		}
+	}
+	
 	public String toString(){
 		if (condition==null && body == null ){
 			return String.format("(%s %s (%s))", "while", "","");

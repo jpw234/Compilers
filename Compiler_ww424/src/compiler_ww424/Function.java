@@ -128,6 +128,16 @@ public class Function {
 			throw new Error(bline + ":" + bcolumn + " error: Missing return statement!");
 		}
 	}
+	
+	public void constantFold() {
+		for(int a = 0; a < args.size(); a++) {
+			args.get(a).constantFold();
+		}
+		for(int a = 0; a < body.size(); a++) {
+			body.get(a).constantFold();
+		}
+	}
+	
 	@Override
 	public String toString(){
 		String s = "";

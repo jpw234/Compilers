@@ -68,6 +68,15 @@ public class Decl extends Stmt {
 	}
 	
 	@Override
+	public void constantFold() {
+		if(accesses != null) {
+			for(int a = 0; a < accesses.size(); a++) {
+				accesses.set(a, accesses.get(a).constantFold());
+			}
+		}
+	}
+	
+	@Override
 	public String toString(){
 		String s = type.getType();
 		if(type.getDepth() > 0) {//array type variable

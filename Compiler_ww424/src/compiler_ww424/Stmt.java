@@ -9,4 +9,7 @@ public abstract class Stmt {
 	public int getColumn() {
 		return column;
 	}
+	public void constantFold() {
+		return;
+	}
 }

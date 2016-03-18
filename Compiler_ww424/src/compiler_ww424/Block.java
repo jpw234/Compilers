@@ -57,6 +57,13 @@ public class Block extends Stmt {
 		}
 		return false;
 	}
+	
+	@Override
+	public void constantFold() {
+		for(int a = 0; a < body.size(); a++) {
+			body.get(a).constantFold();
+		}
+	}
 
 	@Override
 	public String toString(){

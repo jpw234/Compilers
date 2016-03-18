@@ -32,6 +32,14 @@ public class ReturnStmt extends Stmt{
 		if(!given.equals(expected)) throw new Error(line + ":" + column + " error: " + "returned wrong type");
 		else return new Type("void");
 	}
+	
+	@Override
+	public void constantFold() {
+		for(int a = 0; a < val.size(); a++) {
+			val.set(a, val.get(a).constantFold());
+		}
+	}
+	
 	@Override
 	public String toString(){
 		String s = "";

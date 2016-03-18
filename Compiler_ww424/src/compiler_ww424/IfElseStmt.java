@@ -60,6 +60,18 @@ public class IfElseStmt extends Stmt {
 		
 		throw new Error(line + ":" + column + " error: " + "shouldn't get here in ifelseblock typecheck");
 	}
+	
+	@Override
+	public void constantFold() {
+		condition = condition.constantFold();
+		for(int a = 0; a < ifbody.size(); a++) {
+			ifbody.get(a).constantFold();
+		}
+		for(int a = 0; a < elsebody.size(); a++) {
+			elsebody.get(a).constantFold();
+		}
+	}
+	
 	public String toString(){
 		String ifString = "";
 		String elseString = "";
