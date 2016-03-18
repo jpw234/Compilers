@@ -339,6 +339,9 @@ public class Compiler {
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
+					if(toOptimize){
+						program.constantFold();
+					}
 					IRFuncDecl irfun = program.buildIR();
 			        IRCompUnit compUnit = new IRCompUnit("main");
 			        compUnit.appendFunc(irfun);
@@ -364,8 +367,6 @@ public class Compiler {
 
 	}
 
-	
-	
 	
 	
 	
