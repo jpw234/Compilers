@@ -1,6 +1,7 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 import edu.cornell.cs.cs4120.util.InternalCompilerError;
+import java.util.ArrayList;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
@@ -105,6 +106,21 @@ public class IRBinOp extends IRExpr {
         result = v.bind(result, v.visit(left));
         result = v.bind(result, v.visit(right));
         return result;
+    }
+    
+    public IRESeq IRLower() {
+    	IRESeq llower = left.IRLower();
+    	IRESeq rlower = right.IRLower();
+    	
+    	ArrayList<IRStmt> stmts = new ArrayList<IRStmt>();
+    	stmts.add(llower.stmt());
+    	
+    	IRTemp naiveTemp = new IRTemp("_BINOPNAIVE");
+    	
+    	stmts.add(new IRMove(naiveTemp, llower.expr()));
+    	stmts.add(rlower.stmt());
+    	
+    	return new IRESeq(new IRSeq(stmts), new IRBinOp(type, naiveTemp, rlower.expr()));
     }
 
     @Override
