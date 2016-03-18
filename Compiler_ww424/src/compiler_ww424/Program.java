@@ -54,13 +54,7 @@ public class Program {
 			funcs.get(a).constantFold();
 		}
 	}
-	public IRFuncDecl buildIR(){
-		ArrayList<IRStmt> funbody = new ArrayList<IRStmt>();
-		for (Function f: funcs){
-			funbody.add(f.buildIRStmt());
-		}
-		return new IRFuncDecl("program",new IRSeq(funbody));
-	}
+
 	public String toString(){
 
 		String useString = "";

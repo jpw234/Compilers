@@ -342,9 +342,11 @@ public class Compiler {
 					if(toOptimize){
 						program.constantFold();
 					}
-					IRFuncDecl irfun = program.buildIR();
 			        IRCompUnit compUnit = new IRCompUnit("main");
-			        compUnit.appendFunc(irfun);
+			        for (Function f: program.getFunctions()){
+			        	compUnit.appendFunc(f.buildIR());
+			        }
+			        
 			        // IR pretty-printer demo
 			       
 			        StringWriter sw = new StringWriter();
