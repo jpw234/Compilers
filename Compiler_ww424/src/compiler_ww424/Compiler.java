@@ -6,12 +6,18 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import compiler_ww424.Lexer.Token;
+import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
+import edu.cornell.cs.cs4120.util.SExpPrinter;
+import edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
+import edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
 import java_cup.runtime.*;
 
 public class Compiler {
@@ -22,6 +28,9 @@ public class Compiler {
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
 	public static final String INPUT_DIAGNOSIS_PATH = "-d";
 	public static final String INPUT_LIBRARY_PATH = "-libpath";
+	public static final String INPUT_IRGEN = "--irgen";
+	public static final String INPUT_IRRUN = "--irrun";
+	public static final String INPUT_OPTIMIZATION = "-O";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -97,10 +106,13 @@ public class Compiler {
 		Boolean useHelp = false;
 		Boolean toParse = false;
 		Boolean toTypecheck = false;
+		Boolean toGenIR = false;
+		Boolean toRunIR = false;
+		Boolean toOptimize = false;
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
-			switch(args[i].toLowerCase()) {
+			switch(args[i]) {
 			case INPUT_SOURCEPATH :
 				i++;
 				if(i < args.length) sourceRoot = args[i];
@@ -128,6 +140,15 @@ public class Compiler {
 			case INPUT_TYPECHECK:
 				toTypecheck = true;
 				break;
+			case INPUT_IRGEN:
+				toGenIR = true;
+				break;
+			case INPUT_IRRUN:
+				toRunIR = true;
+				break;
+			case INPUT_OPTIMIZATION:
+				toOptimize = true;
+				break;
 			default:
 				// This Must Be A File
 				pathArgs.add(new CodePath(currentRoot, args[i]));
@@ -135,13 +156,17 @@ public class Compiler {
 			}
 		}
 		if ((toLex || toParse || toTypecheck) && !useHelp){
-			lex_parse(toLex, toParse,toTypecheck,pathArgs,codeToCompile,sourceRoot,diagnosisRoot,libRoot);
+			lex_parse(toLex, toParse,toTypecheck,toGenIR,toRunIR,toOptimize,
+					  pathArgs,codeToCompile,sourceRoot,diagnosisRoot,libRoot);
 		}
 
 
 
 	}
-	public static void lex_parse(Boolean toLex, Boolean toParse,Boolean toTypecheck,ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
+	public static void lex_parse(
+			Boolean toLex, Boolean toParse,Boolean toTypecheck,
+			Boolean toGenIR, Boolean toRunIR, Boolean toOptimize,
+			ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
 			String sourceRoot,String diagnosisRoot,String libRoot) throws Exception{
 		if(pathArgs.size() < 1) {
 			// Attempt To Compile All the Codes
@@ -215,11 +240,8 @@ public class Compiler {
 					else{lineVal = lexer.yytext();}
 					//WRITE IN THE FILES
 					String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
-					fw.write(s);
-					
+					fw.write(s);	
 				}
-				
-				//System.out.println("Lexed file(s) generated!"); //XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
 			if(toParse){
@@ -239,7 +261,6 @@ public class Compiler {
 				}catch(ArrayInitException ex) {
 					fw.write(ex.getMessage());
 				}
-				//System.out.println("Parsed file(s) generated!"); //XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
 			
@@ -260,7 +281,6 @@ public class Compiler {
 					for(int a = 0; a < program.getImports().size(); a++) {
 						Reader impReader = null;
 						try {
-							//System.out.println(libRoot + program.getImports().get(a).getString()+".ixi");
 							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
 						}
 						catch(Exception excp) {
@@ -283,13 +303,72 @@ public class Compiler {
 					System.out.println(e.getMessage());
 					fw.write(e.getMessage()+"\r\n");
 				}
+				fw.close();
+			}
+			
+			
+			if(toGenIR) {
+				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"ir";
+				Reader fr = new FileReader(p.getFile());
+				Lexer lexer = new Lexer(fr);
+				FileWriter fw = new FileWriter(fN);
+				parser par = new parser(lexer);
+				
+				SymTab table = new SymTab(null);
+				if(libRoot ==null)
+				{
+					libRoot = new String("");
+				}
+				try{
+					Program program = (Program) par.parse().value;
+					for(int a = 0; a < program.getImports().size(); a++) {
+						Reader impReader = null;
+						try {
+							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
+						}
+						catch(Exception excp) {
+							throw new Error("Interface file " + libRoot + program.getImports().get(a).getString()+".ixi not found.");
+						}
+						Lexer impLexer = new Lexer(impReader);
+						parser impPar = new parser(impLexer);
+						impPar.setState(true);
+						Program impProgram = (Program) impPar.parse().value;
+						impProgram.firstPass(table);
+						impReader.close();
+					}
+					program.firstPass(table);
+					program.secondPass(table);
+					program.returnPass();
+					IRFuncDecl irfun = program.buildIR();
+			        IRCompUnit compUnit = new IRCompUnit("main");
+			        compUnit.appendFunc(irfun);
+			        // IR pretty-printer demo
+			       
+			        StringWriter sw = new StringWriter();
+			        try (PrintWriter pw = new PrintWriter(sw);
+			             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+			            compUnit.printSExp(sp);
+			        }
+					fw.write(sw.toString());
+				}
+				catch(Error e) {
+					System.out.println(e.getMessage());
+					fw.write(e.getMessage()+"\r\n");
+				}
 				//System.out.println("Semantic analysis file(s) generated!"); //XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
+			
+			
 		}
 
 	}
 
+	
+	
+	
+	
+	
 	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse) throws IOException{
 		FileReader fr = new FileReader(fileName);
 		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
@@ -305,6 +384,7 @@ public class Compiler {
 		}
 		fr.close();
 		fw.close();
+		@SuppressWarnings("resource")
 		Reader reader = new FileReader(outFile);
 		if (reader.read() == -1) { 
 			return true;
@@ -325,6 +405,7 @@ public class Compiler {
 		System.out.println("the source file.");
 		System.out.println("--parse: Generate output from syntactic analysis.");
 		System.out.println("--irgen: Generate intermediate code.");
+		System.out.println("--irrun Generate and interpret intermediate code.");
 		System.out.println("--typecheck: Generate output from semantic analysis.");
 		System.out.println("-sourcepath <path>: specify the file path of the xi files to be compiled");
 		System.out.println("-libpath <path>: specify the file path of the library interfaces files that will be used");
