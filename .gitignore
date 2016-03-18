@@ -7,8 +7,6 @@ Compiler_ww424/.project
 Compiler_ww424/test1.lexed
 Compiler_ww424/useio
 Compiler_ww424/bin
-Compiler_ww424/src/edu
-Compiler_ww424/src/polyglot
 .DS_Store
 Compiler_ww424/src/compiler_ww424/Lexer.java*
 Compiler_ww424/src/compiler_ww424/parser.java*
