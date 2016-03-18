@@ -99,6 +99,7 @@ public class Decl extends Stmt {
 	@Override
 	public IRStmt buildIRStmt() {
 		if(type.getDepth() == 0) {return null;}//just normal declaration, e.g. x:int
+		return null;
 		
 	}
 }

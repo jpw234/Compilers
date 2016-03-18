@@ -2,6 +2,8 @@ package compiler_ww424;
 
 import java.util.List;
 
+import edu.cornell.cs.cs4120.xic.ir.IRStmt;
+
 public class DeclAssign extends Stmt {
 	private List<Decl> left;
 	private Expr right;
@@ -78,5 +80,10 @@ public class DeclAssign extends Stmt {
 		if(left.size() > 1) {s = "( " + s + " )";}
 		s = "(= " + s + " " + right.toString() + " )";
 		return s ;
+	}
+	@Override
+	public IRStmt buildIRStmt() {
+		
+		
 	}
 }
