@@ -18,6 +18,7 @@ import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
 import edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
+import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
 import java_cup.runtime.*;
 
 public class Compiler {
@@ -352,8 +353,13 @@ public class Compiler {
 			             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 			            compUnit.printSExp(sp);
 			        }
+			        {
+			            CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
+			            System.out.print("Canonical?: ");
+			            System.out.println(cv.visit(compUnit));
+			        }
 					fw.write(sw.toString());
-					System.out.println(sw.toString());
+					//System.out.println(sw.toString());
 				}
 				catch(Error e) {
 					System.out.println(e.getMessage());

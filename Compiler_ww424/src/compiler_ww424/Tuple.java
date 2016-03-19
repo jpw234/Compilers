@@ -15,7 +15,6 @@ public class Tuple extends Type {
 	}
 	
 	public List<Type> getArgs() {
-		if (args == null) return new ArrayList<Type>();
 		return args;
 	}
 	

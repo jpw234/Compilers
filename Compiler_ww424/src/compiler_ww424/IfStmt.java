@@ -71,6 +71,6 @@ public class IfStmt extends Stmt {
 		
 		ifstmts.add(new IRLabel(uniqueLabelEnd));
 		
-		return new IRSeq(ifstmts);
+		return new IRSeq(ifstmts).IRLower();
 	}
 }

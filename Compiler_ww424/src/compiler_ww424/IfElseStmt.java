@@ -150,6 +150,6 @@ public class IfElseStmt extends Stmt {
 		
 		stmts.add(new IRLabel(endLabel));
 		
-		return new IRSeq(stmts);
+		return new IRSeq(stmts).IRLower();
 	}
 }

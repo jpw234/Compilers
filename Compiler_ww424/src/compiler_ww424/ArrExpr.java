@@ -85,7 +85,7 @@ public class ArrExpr extends Expr {
 	}
 	
 	public IRExpr getAddress() {
-		IRTemp idVal = (IRTemp) name.buildIRExpr();
+		IRTemp idVal = (IRTemp)( name.buildIRExpr());
 		
 		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
 							  idVal);

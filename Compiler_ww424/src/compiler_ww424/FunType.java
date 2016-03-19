@@ -12,12 +12,12 @@ public class FunType extends Type {
 	}
 	
 	public Tuple getInputs() {
-		if (inputs == null) return new Tuple(new ArrayList<Type>());
+		
 		return inputs;
 	}
 	
 	public Tuple getOutputs() {
-		if (outputs == null) return new Tuple(new ArrayList<Type>());
+		
 		return outputs;
 	}
 	
