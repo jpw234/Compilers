@@ -32,6 +32,10 @@ public class Type {
 		if(t.getType()=="tuple") {
 			return ((Tuple) t).equals(this);
 		}
+		if((t.getType()=="empty" && this.getDepth()>=1)
+			|| (this.getType()=="empty" && t.getDepth()>=1)) {
+				return true;
+		}
 		return ((type==t.getType()) && (arrDepth==t.getDepth()));
 	}
 	public String toString(){

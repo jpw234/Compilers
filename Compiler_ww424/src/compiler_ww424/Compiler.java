@@ -173,7 +173,7 @@ public class Compiler {
 			pathArgs.add(new CodePath(sourceRoot, "."));
 
 			// Display What's Going To Go Down
-			System.out.println("\nAttempting To Compile All Files");
+			//System.out.println("\nAttempting To Compile All Files");
 		}
 		// Expand All The Possible Codes
 		for(CodePath p : pathArgs) {
@@ -206,7 +206,7 @@ public class Compiler {
 
 		}
 
-		System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
+		//System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
 
 		for (CodePath p: codeToCompile){
 			//DETECT IF THIS EXISTS 
@@ -304,6 +304,7 @@ public class Compiler {
 					fw.write(e.getMessage()+"\r\n");
 				}
 				fw.close();
+				//System.out.println("Semantic analysis file(s) generated!"); XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 			}
 			
 			
@@ -358,7 +359,7 @@ public class Compiler {
 					System.out.println(e.getMessage());
 					fw.write(e.getMessage()+"\r\n");
 				}
-				//System.out.println("Semantic analysis file(s) generated!"); //XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
+				//System.out.println("IRGEN file(s) generated!"); XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
 			
