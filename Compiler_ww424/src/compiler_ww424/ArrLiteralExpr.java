@@ -66,7 +66,8 @@ public class ArrLiteralExpr extends Expr {
 		}
 		
 		t.addDepth();
-		type = t;
+		
+		type = new Type(t.getType(), t.getDepth()-accesses.size());
 		return type;
 	}
 	@Override
