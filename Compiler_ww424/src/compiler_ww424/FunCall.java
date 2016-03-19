@@ -11,10 +11,11 @@ public class FunCall extends Expr {
 	public static String mangle_name(String n, FunType t) {
 		String res = "_I" + n.replaceAll("_", "__") + "_";
 		Tuple out = t.getOutputs();
-		if(out.getArgs().size() == 0) res = res + "p";
+		if(out.getArgs().size() == 0 ) res = res + "p";
 		else if(out.getArgs().size() > 1) res = res + "t" + out.getArgs().size();
 		
 		for(int a = 0; a < out.getArgs().size(); a++) {
+			if (out.getArgs().get(a) == null ) continue;
 			for(int b = 0; b < out.getArgs().get(a).getDepth(); b++) {
 				res = res + "a";
 			}
@@ -24,6 +25,7 @@ public class FunCall extends Expr {
 		
 		Tuple in = t.getInputs();
 		for(int a = 0; a < in.getArgs().size(); a++) {
+			if (in.getArgs().get(a) == null ) continue;
 			for(int b = 0; b < in.getArgs().get(a).getDepth(); b++) {
 				res = res + "a";
 			}
