@@ -34,7 +34,7 @@ public class WhileStmt extends Stmt {
 						t.getType() != "void") {
 					throw new Error(line + ":" + column + " error: " + "last stmt in while block does not typecheck");
 				}
-				else return t;
+				else return new Type("unit");
 			}
 			else if(body.get(a).typecheck(s).getType() != "unit") throw new Error(line + ":" + column + " error: " + "stmt should be unit type");
 		}

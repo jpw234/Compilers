@@ -39,7 +39,7 @@ public class IfElseStmt extends Stmt {
 						t.getType() != "void") {
 					throw new Error(line + ":" + column + " error: " + "last stmt in if block does not typecheck");
 				}
-				else return t;
+				else return new Type("unit");
 			}
 			else if(ifbody.get(a).typecheck(ifScope).getType() != "unit") throw new Error(line + ":" + column + " error: " + "stmt should be unit type");
 		}

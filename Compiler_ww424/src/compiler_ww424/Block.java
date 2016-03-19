@@ -29,7 +29,7 @@ public class Block extends Stmt {
 				if(t.getType() != "unit" && t.getType() != "void") {
 					throw new Error(line + ":" + column + " error: " + "last stmt in block does not typecheck");
 				}
-				else return t;
+				else return new Type("unit");
 			}
 			else if(body.get(a).typecheck(newScope).getType() != "unit") throw new Error(line + ":" + column + " error: " + "stmt should be unit type");
 		}
