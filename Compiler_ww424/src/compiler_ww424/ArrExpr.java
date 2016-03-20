@@ -61,64 +61,31 @@ public class ArrExpr extends Expr {
 		return this;
 	}
 	
-	// invariant: depth <= acc.size()
-	public static IRExpr get_offset(int depth, IRExpr baseExpr, List<Expr> acc) {
-		IRExpr pass = baseExpr;
-		
-		for(int a = 0; a < depth; a++) {
-			if(a == depth - 1) {
-				pass = new IRBinOp(IRBinOp.OpType.ADD,
-								   pass,
-								   new IRBinOp(IRBinOp.OpType.MUL,
-										       acc.get(a).buildIRExpr(),
-										       new IRConst(8)));
-			}
-			else {
-				pass = new IRMem(new IRBinOp(IRBinOp.OpType.ADD, 
-										 	 pass,
-										 	 new IRBinOp(IRBinOp.OpType.MUL,
-												 	 	 acc.get(a).buildIRExpr(),
-												 	 	 new IRConst(8))));
-			}
-		}
-		return pass;
-	}
-	
 	public IRExpr getAddress() {
-		IRTemp idVal = (IRTemp)( name.buildIRExpr());
-		
-		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
-				name.buildIRExpr());
-		
-		for(int a = 0; a < accesses.size(); a++) {
-			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
-			k = new IRESeq(
-							new IRSeq(
-								new IRCJump(
-										new IRBinOp(IRBinOp.OpType.AND,
-													new IRBinOp(IRBinOp.OpType.GEQ,
-																accesses.get(a).buildIRExpr(),
-																new IRConst(0)),
-													new IRBinOp(IRBinOp.OpType.LT,
-																accesses.get(a).buildIRExpr(),
-																new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
-																					  k,
-																					  new IRConst(8))))),
-										live_label),
-								new IRExp(
-									new IRCall(new IRName("_I_outOfBounds_p"))
-									),
-								new IRLabel(live_label)
-							),
-							get_offset(a, name.buildIRExpr(), accesses));
+		List<IRStmt> seqList = new ArrayList<IRStmt>();
+		String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
+		String _aP = LabelMaker.Generate_Unique_Label("_arrPtr");//temp address
+		IRTemp arrPtr = new IRTemp(_aP);
+		seqList.add(new IRMove(new IRTemp(_aP), new IRTemp(name.getName())));//get starting location
+		for(int i = 0; i < accesses.size(); i++){
+			seqList.add(new IRCJump(new IRBinOp(IRBinOp.OpType.AND,
+						new IRBinOp(IRBinOp.OpType.GEQ, accesses.get(i).buildIRExpr(), new IRConst(0)),
+						new IRBinOp(IRBinOp.OpType.LT, accesses.get(i).buildIRExpr(), new IRMem(new IRBinOp(IRBinOp.OpType.SUB, new IRTemp(_aP), new IRConst(8))))),
+						live_label));
+			seqList.add(new IRExp(new IRCall(new IRName("_I_outOfBounds_p"))));
+			seqList.add(new IRLabel(live_label));
+			seqList.add(new IRMove(new IRTemp(_aP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_aP), 
+													new IRBinOp(IRBinOp.OpType.MUL, accesses.get(i).buildIRExpr(), new IRConst(8)))));
+			seqList.add(new IRMove(new IRTemp(_aP), new IRMem(new IRTemp(_aP))));
 		}
-		
-		return k;
+		return new IRESeq(new IRSeq(seqList), new IRTemp(_aP));
 	}
 	
 	public IRExpr buildIRExpr() {
-		if(depth > 0) return new IRMem(this.getAddress());
-		else return this.getAddress();
+		if(depth > 0)
+			return this.getAddress();
+		else
+			return new IRTemp(name.getName());
 	}
 	
 	@Override

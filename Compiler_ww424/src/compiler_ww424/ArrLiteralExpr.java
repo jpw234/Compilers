@@ -130,58 +130,41 @@ public class ArrLiteralExpr extends Expr {
 	
 	public IRExpr buildIRExpr() {
 		ArrayList<IRStmt> stmtlist = new ArrayList<IRStmt>();
-		
-		
-		
-		//allocate (n+1)*8 bytes of memory and move the pointer to temp register "a"
-		stmtlist.add(new IRMove(new IRTemp("a"), new IRCall(new IRName("_I_alloc_i"), new IRConst((values.size() + 1) * 8))));
+		String _aP = LabelMaker.Generate_Unique_Label("_arrPtr");//temp address
+		//allocate (n+1)*8 bytes of memory and move the pointer to temp register _aP
+		stmtlist.add(new IRMove(new IRTemp(_aP), new IRCall(new IRName("_I_alloc_i"), new IRConst((values.size() + 1) * 8))));
 		//put the length in this spot
-		stmtlist.add(new IRMove(new IRMem(new IRTemp("a")), new IRConst(values.size())));
+		stmtlist.add(new IRMove(new IRMem(new IRTemp(_aP)), new IRConst(values.size())));
 		//shift the pointer to the array up 8, so length is in spot -1
-		stmtlist.add(new IRMove(new IRTemp("a"), new IRBinOp(IRBinOp.OpType.ADD,
-														new IRTemp("a"),
+		stmtlist.add(new IRMove(new IRTemp(_aP), new IRBinOp(IRBinOp.OpType.ADD,
+														new IRTemp(_aP),
 														new IRConst(8))));
 		//now fill the array
 		for(int a = 0; a < values.size(); a++) {
-			//add value a to position at new IRTemp("a") + (a*8)
+			//add value a to position at new IRTemp(_aP) + (a*8)
 			stmtlist.add(new IRMove(new IRMem(new IRBinOp(IRBinOp.OpType.ADD,
-														  new IRTemp("a"),
+														  new IRTemp(_aP),
 														  new IRConst(a*8))),
 									values.get(a).buildIRExpr()));
 		}
 		
 		//Create base eseq which initializes the ArrLiteralExpr and returns it
 		//This is the result of buildIRExpr in the case of no accesses
-		IRESeq eseq = new IRESeq(new IRSeq(stmtlist), new IRTemp("a"));
-		
+		IRESeq eseq = new IRESeq(new IRSeq(stmtlist), new IRTemp(_aP));
+		//get index
+		String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 		if(accesses.size() == 0) return eseq;
-		
-		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
-				  			  new IRTemp("a"));
-
-		for(int a = 0; a < accesses.size(); a++) {
-			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
-			k = new IRESeq(
-					new IRSeq(
-							new IRCJump(
-									new IRBinOp(IRBinOp.OpType.AND,
-												new IRBinOp(IRBinOp.OpType.GEQ,
-															accesses.get(a).buildIRExpr(),
-															new IRConst(0)),
-												new IRBinOp(IRBinOp.OpType.LT,
-															accesses.get(a).buildIRExpr(),
-															new IRMem(new IRBinOp(IRBinOp.OpType.SUB,
-																		  		  k,
-																		  		  new IRConst(8))))),
-							live_label),
-					new IRExp(
-						new IRCall(new IRName("_I_outOfBounds_p"))
-						),
-					new IRLabel(live_label)
-				),
-				ArrExpr.get_offset(a, new IRTemp("a"), accesses));
+		for(int i = 0; i < accesses.size(); i++){
+			stmtlist.add(new IRCJump(new IRBinOp(IRBinOp.OpType.AND,
+						new IRBinOp(IRBinOp.OpType.GEQ, accesses.get(i).buildIRExpr(), new IRConst(0)),
+						new IRBinOp(IRBinOp.OpType.LT, accesses.get(i).buildIRExpr(), new IRMem(new IRBinOp(IRBinOp.OpType.SUB, new IRTemp(_aP), new IRConst(8))))),
+						live_label));
+			stmtlist.add(new IRExp(new IRCall(new IRName("_I_outOfBounds_p"))));
+			stmtlist.add(new IRLabel(live_label));
+			stmtlist.add(new IRMove(new IRTemp(_aP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_aP), 
+													new IRBinOp(IRBinOp.OpType.MUL, accesses.get(i).buildIRExpr(), new IRConst(8)))));
+			stmtlist.add(new IRMove(new IRTemp(_aP), new IRMem(new IRTemp(_aP))));
 		}
-		
-		return k;
+		return new IRESeq(new IRSeq(stmtlist), new IRTemp(_aP));
 	}
 }
