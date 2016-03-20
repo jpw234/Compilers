@@ -88,7 +88,7 @@ public class ArrExpr extends Expr {
 		IRTemp idVal = (IRTemp)( name.buildIRExpr());
 		
 		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
-							  idVal);
+				name.buildIRExpr());
 		
 		for(int a = 0; a < accesses.size(); a++) {
 			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
@@ -110,7 +110,7 @@ public class ArrExpr extends Expr {
 									),
 								new IRLabel(live_label)
 							),
-							get_offset(a, idVal, accesses));
+							get_offset(a, name.buildIRExpr(), accesses));
 		}
 		
 		return k;
