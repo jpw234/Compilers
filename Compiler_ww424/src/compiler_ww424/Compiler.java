@@ -17,6 +17,7 @@ import compiler_ww424.Lexer.Token;
 import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.*;
+import edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
 import java_cup.runtime.*;
 
@@ -345,8 +346,8 @@ public class Compiler {
 					}
 			        IRCompUnit compUnit = new IRCompUnit("main");
 			        for (Function f: program.getFunctions()){
-			        	IRStmt loweredIR = f.buildIR().body().IRLower();
-			        	IRFuncDecl F = new IRFuncDecl(f.getName().getName(), loweredIR);
+			        	IRFuncDecl F = f.buildIR();
+			        	F.IRLower();
 			        	compUnit.appendFunc(F);
 			        }
 			        StringWriter sw = new StringWriter();
@@ -354,22 +355,24 @@ public class Compiler {
 			             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 			            compUnit.printSExp(sp);
 			        }
-			       /* {
-			            IRSimulator sim = new IRSimulator(compUnit);
-			            long result = sim.call("main");
-			            System.out.println("main " + result);
-			        }*/
 			        {
 			            CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 			            System.out.print("Canonical?: ");
 			            System.out.println(cv.visit(compUnit));
 			        }
+//			        {
+//			            IRSimulator sim = new IRSimulator(compUnit);
+//			            long result = sim.call("main");
+//			            System.out.println("main " + result);
+//			        }
 					fw.write(sw.toString());
+					System.out.println(sw.toString());
 				}
 				catch(Error e) {
 					System.out.println(e.getMessage());
 					fw.write(e.getMessage()+"\r\n");
-				}catch(ArrayInitException ex) {
+				}
+				catch(ArrayInitException ex) {
 					fw.write(ex.getMessage());
 				}
 				//System.out.println("IRGEN file(s) generated!"); XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
