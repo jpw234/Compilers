@@ -365,7 +365,7 @@ public class Compiler {
 					// IR interpreter demo
 			        {
 			            IRSimulator sim = new IRSimulator(compUnit);
-			            long result = sim.call("b", 2, 1);
+			            long result = sim.call("a");
 			            System.out.println("b(2,1) == " + result);
 			        }
 				}

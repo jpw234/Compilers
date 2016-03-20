@@ -129,8 +129,6 @@ public class IRBinOp extends IRExpr {
     	
     	String genLabel = LabelMaker.Generate_Unique_Label("_BINOPNAIVE");
     	
-    	IRTemp naiveTemp = new IRTemp(genLabel);
-    	
     	stmts.add(new IRMove( new IRTemp(genLabel), llower.expr()));
 
     	IRESeq rlower = right.IRLower();
