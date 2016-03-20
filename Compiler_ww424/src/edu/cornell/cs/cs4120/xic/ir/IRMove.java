@@ -10,7 +10,7 @@ import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
  * MOVE(target, expr)
  */
 public class IRMove extends IRStmt {
-    private IRExpr target;
+    private IRExpr target;	
     private IRExpr expr;
 
     /**
@@ -63,15 +63,27 @@ public class IRMove extends IRStmt {
     	
     	IRTemp naiveTemp = new IRTemp("_MOVENAIVE");
     	
-    	stmts.add(new IRMove(naiveTemp, targetLowered.expr()));
+    	if(targetLowered.expr() instanceof IRTemp) {
+    		IRESeq exprLowered = expr.IRLower();
+    		stmts.add(exprLowered.stmt());
+    		stmts.add(new IRMove(targetLowered.expr(), exprLowered.expr()));
+    		
+    		return new IRSeq(stmts);
+    	}
     	
-    	IRESeq exprLowered = expr.IRLower();
+    	else if(targetLowered.expr() instanceof IRMem) {
+    		stmts.add(new IRMove(naiveTemp, ((IRMem) targetLowered.expr()).expr() ));
+    		
+    		IRESeq exprLowered = expr.IRLower();
+    		stmts.add(exprLowered.stmt());
+    		stmts.add(new IRMove(new IRMem(naiveTemp), exprLowered.expr()));
+    		
+    		return new IRSeq(stmts);
+    	}
     	
-    	stmts.add(exprLowered.stmt());
-    	
-    	stmts.add(new IRMove(naiveTemp, exprLowered.expr()));
-    	
-    	return new IRSeq(stmts);
+    	else {
+    		throw new Error("left side of MOVE is not MEM or TEMP");
+    	}		
     }
 
     @Override
