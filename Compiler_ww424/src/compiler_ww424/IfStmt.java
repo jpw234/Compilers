@@ -26,7 +26,7 @@ public class IfStmt extends Stmt {
 	public Type typecheck(SymTab s) {
 		SymTab newScope = new SymTab(s);
 		
-		if(condition.typecheck(newScope).getType() != "bool") throw new Error(line + ":" + column + " error: " + "not boolean in if condition");
+		if(!condition.typecheck(newScope).equals(new Type("bool"))) throw new Error(line + ":" + column + " error: " + "not boolean in if condition");
 		
 		if(body.size()==0) return new Type("unit");
 		

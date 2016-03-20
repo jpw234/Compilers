@@ -40,6 +40,11 @@ public class BinaryExpr extends Expr {
 		Type rtype = right.typecheck(s);
 		if(!rtype.equals(ltype)) throw new Error(line + ":" + column + " error: " + "2 sides of binaryexpr do not match types");
 		
+		String ltypeVal = ltype.getType();
+		if(ltypeVal == "tuple") {
+			ltypeVal = ((Tuple) ltype).getArgs().get(0).getType();
+		}
+		
 		if(ltype.getDepth() > 0) {
 			if(op == BinaryOp.PLUS || op == BinaryOp.EQEQ || op == BinaryOp.NEQ) {
 				type = ltype;
@@ -48,7 +53,7 @@ public class BinaryExpr extends Expr {
 			else throw new Error(line + ":" + column + " error: " + "that binary operation does not work on arrays");
 		}
 		
-		else if(ltype.getType() == "bool") {
+		else if(ltypeVal == "bool") {
 			if(op == BinaryOp.EQEQ || op == BinaryOp.NEQ || op == BinaryOp.AND ||
 					op == BinaryOp.OR) {
 				type = ltype;
@@ -57,7 +62,7 @@ public class BinaryExpr extends Expr {
 			else throw new Error(line + ":" + column + " error: " + "that binary operation does not work on booleans");
 		}
 		
-		else if(ltype.getType() == "int") {
+		else if(ltypeVal == "int") {
 			if(op == BinaryOp.PLUS || op == BinaryOp.MINUS || op == BinaryOp.TIMES || 
 			   op == BinaryOp.DIV || op == BinaryOp.MOD || op == BinaryOp.HIGHMUL) {
 				type = new Type("int");

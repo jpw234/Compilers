@@ -30,7 +30,7 @@ public class IfElseStmt extends Stmt {
 	public Type typecheck(SymTab s) {
 		SymTab ifScope = new SymTab(s);
 		
-		if(condition.typecheck(ifScope).getType() != "bool") throw new Error(line + ":" + column + " error: " + "not boolean in if condition");
+		if(!condition.typecheck(ifScope).equals(new Type("bool"))) throw new Error(line + ":" + column + " error: " + "not boolean in if condition");
 		
 		for(int a = 0; a < ifbody.size(); a++) {
 			if(a == ifbody.size() - 1) {
