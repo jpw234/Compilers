@@ -11,6 +11,7 @@ Compiler_ww424/bin
 Compiler_ww424/src/compiler_ww424/Lexer.java*
 Compiler_ww424/src/compiler_ww424/parser.java*
 Compiler_ww424/src/compiler_ww424/sym.java*
+Compiler_ww424/src/compiler_ww424/*.xi
 # Package Files #
 *.jar
 *.war
