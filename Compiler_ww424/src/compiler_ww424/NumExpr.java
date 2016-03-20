@@ -8,10 +8,13 @@ public class NumExpr extends Expr {
     private char charval;
     private Boolean isChar = false;
     
+   
+    
     public NumExpr(int i,int lineNum,int colNum) {
         intvalue = i;
         line = lineNum;
         column = colNum;
+        type = new Type("int");
     }
     public NumExpr(char c, int lineNum, int colNum){
         charval = c;
@@ -19,6 +22,7 @@ public class NumExpr extends Expr {
         line = lineNum;
         column = colNum;
         isChar = true;
+        type = new Type("int");
     }
     
     public Type typecheck(SymTab s) {
