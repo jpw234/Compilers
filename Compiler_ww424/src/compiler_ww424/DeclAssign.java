@@ -2,18 +2,26 @@ package compiler_ww424;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import compiler_ww424.ArrayInitException;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class DeclAssign extends Stmt {
 	private List<Decl> left;
 	private Expr right;
 	
-	public DeclAssign(List<Decl> l, Expr r,int lineNum,int colNum) {
-		left = l;
-		right = r;
-		line = lineNum;
-		column = colNum;
+	public DeclAssign(List<Decl> l, Expr r,int lineNum,int colNum) throws ArrayInitException {
+		try{
+			for(Decl d : l){
+				if(d.getAccesses()!=null && d.getAccesses().size()>0){
+					throw new ArrayInitException(String.valueOf(lineNum)+":"+String.valueOf(colNum)+" error:Cannot specify both Array Dimension & Initialization");
+				}
+			}
+        }finally{
+			left = l;
+			right = r;
+			line = lineNum;
+			column = colNum;
+        }
 	}
 	
 	public List<Decl> getLeft() {
@@ -85,15 +93,12 @@ public class DeclAssign extends Stmt {
 	@Override
 	public IRStmt buildIRStmt() {
 		List<IRStmt> seqList = new ArrayList<IRStmt>();
-		if(left.size() == 1){
-			if(left.get(0).buildIRStmt() != null){seqList.add(left.get(0).buildIRStmt());}
-			seqList.add(new IRMove(new IRTemp(left.get(0).getName().toString()), right.buildIRExpr()));
-		}
+		if(left.size() == 1){seqList.add(new IRMove(new IRTemp(left.get(0).getName().toString()), right.buildIRExpr()));}
 		else{ //multiple returns for function call
 			for(int i = 0; i < left.size(); i++){
 				String _ret = "_RET" + i;
 				if(i == 0){
-					String n = LabelMaker.Generate_Unique_Label("_n");
+					String n = LabelMaker.Generate_Unique_Label("_noUse");
 					if(left.get(0).getType().getType()=="underscore") {seqList.add(new IRMove(new IRTemp(n), right.buildIRExpr()));}
 					else {seqList.add(new IRMove(new IRTemp(left.get(i).getName().getName()), right.buildIRExpr()));}
 				}
