@@ -1,5 +1,8 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
@@ -63,5 +66,26 @@ public class IRFuncDecl extends IRNode {
         p.printAtom(name);
         body.printSExp(p);
         p.endList();
+    }
+    
+    public void IRLower(){
+    	IRStmt stmtLow = body.IRLower();
+    	List<IRStmt> listLow = unwrapIRStmt(stmtLow);
+    	body = new IRSeq(listLow);
+    	
+    }
+    
+    public List<IRStmt> unwrapIRStmt(IRStmt s){
+    	List<IRStmt> unwrapS = new ArrayList<IRStmt>();
+    	for (IRStmt st:((IRSeq) s).stmts()){
+    		if(st instanceof IRSeq){
+    			List<IRStmt> tmp = unwrapIRStmt(st);
+    			for(IRStmt b:tmp){
+    				unwrapS.add(b);
+    			}
+    		}
+    		else{unwrapS.add(st);}
+    	}
+    	return unwrapS;
     }
 }
