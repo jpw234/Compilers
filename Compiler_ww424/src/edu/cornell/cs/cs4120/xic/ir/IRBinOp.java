@@ -2,6 +2,8 @@ package edu.cornell.cs.cs4120.xic.ir;
 
 import edu.cornell.cs.cs4120.util.InternalCompilerError;
 import java.util.ArrayList;
+
+import compiler_ww424.LabelMaker;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
@@ -110,14 +112,18 @@ public class IRBinOp extends IRExpr {
     
     public IRESeq IRLower() {
     	IRESeq llower = left.IRLower();
-    	IRESeq rlower = right.IRLower();
     	
     	ArrayList<IRStmt> stmts = new ArrayList<IRStmt>();
     	stmts.add(llower.stmt());
     	
-    	IRTemp naiveTemp = new IRTemp("_BINOPNAIVE");
+    	String genLabel = LabelMaker.Generate_Unique_Label("_BINOPNAIVE");
+    	
+    	IRTemp naiveTemp = new IRTemp(genLabel);
     	
     	stmts.add(new IRMove(naiveTemp, llower.expr()));
+
+    	IRESeq rlower = right.IRLower();
+    	
     	stmts.add(rlower.stmt());
     	
     	return new IRESeq(new IRSeq(stmts), new IRBinOp(type, naiveTemp, rlower.expr()));
