@@ -23,7 +23,6 @@ public class Use {
 		return column;
 	}
 	
-	
 	public String toString(){
 		
 		return String.format("(%s %s)", "use", name);

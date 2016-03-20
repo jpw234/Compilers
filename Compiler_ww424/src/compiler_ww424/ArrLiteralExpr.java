@@ -87,6 +87,9 @@ public class ArrLiteralExpr extends Expr {
 	
 	@Override
 	public Expr constantFold() {
+		//If this is empty, return it
+		if(accesses.size() == 0) return this;
+		
 		for(int a = 0; a < values.size(); a++) {
 			values.set(a, values.get(a).constantFold());
 		}
