@@ -117,7 +117,8 @@ public class ArrExpr extends Expr {
 	}
 	
 	public IRExpr buildIRExpr() {
-		return this.getAddress();
+		if(depth > 0) return new IRMem(this.getAddress());
+		else return this.getAddress();
 	}
 	
 	@Override
