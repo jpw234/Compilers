@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import compiler_ww424.LabelMaker;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
@@ -88,18 +89,19 @@ public class IRCall extends IRExpr {
     	
     	IRESeq t = target.IRLower();
     	stmts.add(t.stmt()); 
-    	stmts.add(new IRMove(new IRTemp("_ARG0"), t.expr()));
     	
     	for(int a = 0; a < args.size(); a++) {
+    		String lab = LabelMaker.Generate_Unique_Label("_PASSARG");
+    		
     		IRESeq k = args.get(a).IRLower();
     		stmts.add(k.stmt());
-    		stmts.add(new IRMove(new IRTemp("_ARG" + (a+1)), k.expr()));
-    		temps.add(new IRTemp("_ARG" + (a+1)));
+    		stmts.add(new IRMove(new IRTemp(lab), k.expr()));
+    		temps.add(new IRTemp(lab));
     	}
     	
     	//IRTemp ret = new IRTemp("_CALLRET");
     	
-    	stmts.add(new IRMove(new IRTemp("_CALLRET"), new IRCall(new IRTemp("_ARG0"), temps)));
+    	stmts.add(new IRMove(new IRTemp("_CALLRET"), new IRCall(t.expr(), temps)));
     	
     	return new IRESeq(new IRSeq(stmts), new IRTemp("_CALLRET"));
     }

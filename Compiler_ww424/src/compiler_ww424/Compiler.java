@@ -19,6 +19,7 @@ import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.*;
 import edu.cornell.cs.cs4120.xic.ir.interpret.IRSimulator;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
+import edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import java_cup.runtime.*;
 
 public class Compiler {
@@ -362,10 +363,16 @@ public class Compiler {
 			        }
 					fw.write(sw.toString());
 					System.out.println(sw.toString());
+			        // IR constant-folding checker demo
+			        {
+			            CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
+			            System.out.print("Constant-folded?: ");
+			            System.out.println(cv.visit(compUnit));
+			        }
 					// IR interpreter demo
 			        {
 			            IRSimulator sim = new IRSimulator(compUnit);
-			            long result = sim.call("a");
+			            long result = sim.call("main");
 			            System.out.println("b(2,1) == " + result);
 			        }
 				}
