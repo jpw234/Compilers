@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import compiler_ww424.Lexer.Token;
 import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
-import edu.cornell.cs.cs4120.xic.ir.IRCompUnit;
-import edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
+import edu.cornell.cs.cs4120.xic.ir.*;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
 import java_cup.runtime.*;
 
@@ -217,7 +216,7 @@ public class Compiler {
 			catch(IOException ioe){
 				System.err.println("No such File in Directory");
 				return;}
-			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse);
+			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR );
 			if (isempty) break;
 			
 			if (toLex){
@@ -295,7 +294,6 @@ public class Compiler {
 						impReader.close();
 					}
 					program.firstPass(table);
-					//System.out.println(program.toString());
 					program.secondPass(table);
 					program.returnPass();
 					fw.write("Valid Xi Program\r\n");
@@ -305,7 +303,6 @@ public class Compiler {
 					fw.write(e.getMessage()+"\r\n");
 				}
 				fw.close();
-				//System.out.println("Semantic analysis file(s) generated!"); XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 			}
 			
 			
@@ -346,20 +343,26 @@ public class Compiler {
 					}
 			        IRCompUnit compUnit = new IRCompUnit("main");
 			        for (Function f: program.getFunctions()){
-			        	compUnit.appendFunc(f.buildIR());
+			        	IRStmt loweredIR = f.buildIR().body().IRLower();
+			        	IRFuncDecl F = new IRFuncDecl(f.getName().getName(), loweredIR);
+			        	compUnit.appendFunc(F);
 			        }
 			        StringWriter sw = new StringWriter();
 			        try (PrintWriter pw = new PrintWriter(sw);
 			             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 			            compUnit.printSExp(sp);
 			        }
+			       /* {
+			            IRSimulator sim = new IRSimulator(compUnit);
+			            long result = sim.call("main");
+			            System.out.println("main " + result);
+			        }*/
 			        {
 			            CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 			            System.out.print("Canonical?: ");
 			            System.out.println(cv.visit(compUnit));
 			        }
 					fw.write(sw.toString());
-					//System.out.println(sw.toString());
 				}
 				catch(Error e) {
 					System.out.println(e.getMessage());
@@ -377,11 +380,13 @@ public class Compiler {
 	
 	
 	
-	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse) throws IOException{
+	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse,
+								   Boolean toGenIR) throws IOException{
 		FileReader fr = new FileReader(fileName);
 		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
 		if (toLex){outFile = fileName.substring(0,fileName.length()-2)+"lexed";}
 		else if (toparse){outFile = fileName.substring(0,fileName.length()-2)+"parsed";}
+		else if (toGenIR){outFile = fileName.substring(0,fileName.length()-2)+"ir";}
 		BufferedReader br = new BufferedReader(fr); 
 		FileWriter fw = new FileWriter(outFile); 
 		String line;
