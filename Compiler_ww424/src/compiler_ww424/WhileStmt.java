@@ -23,7 +23,7 @@ public class WhileStmt extends Stmt {
 	}
 	
 	public Type typecheck(SymTab s) {
-		if(condition.typecheck(s).getType() != "bool") throw new Error(line + ":" + column + " error: " + "not boolean in if condition");
+		if(!condition.typecheck(s).equals(new Type("bool"))) throw new Error(line + ":" + column + " error: " + "not boolean in if condition");
 		
 		if(body.size()==0) return new Type("unit");
 		
