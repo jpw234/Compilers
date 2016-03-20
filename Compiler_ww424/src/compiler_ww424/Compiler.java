@@ -301,6 +301,8 @@ public class Compiler {
 				catch(Error e) {
 					System.out.println(e.getMessage());
 					fw.write(e.getMessage()+"\r\n");
+				}catch(ArrayInitException ex) {
+					fw.write(ex.getMessage());
 				}
 				fw.close();
 			}
@@ -367,6 +369,8 @@ public class Compiler {
 				catch(Error e) {
 					System.out.println(e.getMessage());
 					fw.write(e.getMessage()+"\r\n");
+				}catch(ArrayInitException ex) {
+					fw.write(ex.getMessage());
 				}
 				//System.out.println("IRGEN file(s) generated!"); XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
