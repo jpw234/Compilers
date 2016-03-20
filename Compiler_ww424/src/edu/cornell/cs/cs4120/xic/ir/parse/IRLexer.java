@@ -2,6 +2,9 @@
 
 package edu.cornell.cs.cs4120.xic.ir.parse;
 
+import java_cup.runtime.ComplexSymbolFactory;
+import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.Symbol;
 
 import java.math.BigInteger;
@@ -450,38 +453,65 @@ public class IRLexer implements java_cup.runtime.Scanner {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
+    private static ComplexSymbolFactory csf = new ComplexSymbolFactory();
+
+    private Symbol sym(String name, int id) {
+        return csf.newSymbol(name, id, beginPos(), endPos());
+    }
+
+    private Symbol name(String s) {
+        return new Name(s, beginPos(), endPos());
+    }
+
     private Symbol number(String s) {
         BigInteger x = new BigInteger(s);
         if (x.bitLength() > 64) {
             return lexError("Number literal \"" +
                         yytext() + "\" out of range.");
         }
-        return new Number(x.longValue());
+        return new Number(x.longValue(), beginPos(), endPos());
     }
 
     private Symbol lexError(String msg) {
         System.err.println(msg);
-        return new LexErrorToken();
+        return new LexErrorToken(beginPos(), endPos());
     }
 
-static class Name extends Symbol {
-    protected String name;
+    private Position beginPos() {
+        return new Position(yyline+1, yycolumn+1);
+    }
 
-    public Name(String name) {
-        super(IRSym.ATOM, name);
-        this.name = name;
+    private Position endPos() {
+        int len = yytext().length();
+        return new Position(yyline+1, yycolumn+1+len);
+    }
+
+private static class Position extends Location {
+    public Position(int line, int column) {
+        super(line, column);
+    }
+
+    @Override
+    public String toString() {
+        return getLine() + ":" + getColumn();
     }
 }
 
-static class Number extends Symbol {
-    public Number(long val) {
-        super(IRSym.NUMBER, val);
+static class Name extends ComplexSymbol {
+    public Name(String name, Position left, Position right) {
+        super("NAME", IRSym.ATOM, left, right, name);
     }
 }
 
-static class LexErrorToken extends Symbol {
-    public LexErrorToken() {
-        super(IRSym.error);
+static class Number extends ComplexSymbol {
+    public Number(long val, Position left, Position right) {
+        super("NUMBER", IRSym.NUMBER, left, right, val);
+    }
+}
+
+static class LexErrorToken extends ComplexSymbol {
+    public LexErrorToken(Position left, Position right) {
+        super("error", IRSym.error, left, right);
     }
 
     @Override
@@ -751,8 +781,6 @@ static class LexErrorToken extends Symbol {
     while (true) {
       zzMarkedPosL = zzMarkedPos;
 
-      yychar+= zzMarkedPosL-zzStartRead;
-
       boolean zzR = false;
       int zzCh;
       int zzCharCount;
@@ -872,13 +900,13 @@ static class LexErrorToken extends Symbol {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
             zzDoEOF();
-          {     return new Symbol(IRSym.EOF);
+          {     return sym("EOF", IRSym.EOF);
  }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { return lexError("Illegal character \"" +
+            { return lexError(beginPos() + ": Illegal character \"" +
                                  yytext() + "\"");
             }
           case 40: break;
@@ -887,7 +915,7 @@ static class LexErrorToken extends Symbol {
             }
           case 41: break;
           case 3: 
-            { return new Name(yytext());
+            { return name(yytext());
             }
           case 42: break;
           case 4: 
@@ -895,143 +923,143 @@ static class LexErrorToken extends Symbol {
             }
           case 43: break;
           case 5: 
-            { return new Symbol(IRSym.LPAREN);
+            { return sym("(", IRSym.LPAREN);
             }
           case 44: break;
           case 6: 
-            { return new Symbol(IRSym.RPAREN);
+            { return sym(")", IRSym.RPAREN);
             }
           case 45: break;
           case 7: 
-            { return new Symbol(IRSym.OR);
+            { return sym("OR", IRSym.OR);
             }
           case 46: break;
           case 8: 
-            { return new Symbol(IRSym.EQ);
+            { return sym("EQ", IRSym.EQ);
             }
           case 47: break;
           case 9: 
-            { return new Symbol(IRSym.LT);
+            { return sym("LT", IRSym.LT);
             }
           case 48: break;
           case 10: 
-            { return new Symbol(IRSym.GT);
+            { return sym("GT", IRSym.GT);
             }
           case 49: break;
           case 11: 
-            { return new Symbol(IRSym.MOD);
+            { return sym("MOD", IRSym.MOD);
             }
           case 50: break;
           case 12: 
-            { return new Symbol(IRSym.MUL);
+            { return sym("MUL", IRSym.MUL);
             }
           case 51: break;
           case 13: 
-            { return new Symbol(IRSym.MEM);
+            { return sym("MEM", IRSym.MEM);
             }
           case 52: break;
           case 14: 
-            { return new Symbol(IRSym.NEQ);
+            { return sym("NEQ", IRSym.NEQ);
             }
           case 53: break;
           case 15: 
-            { return new Symbol(IRSym.EXP);
+            { return sym("EXP", IRSym.EXP);
             }
           case 54: break;
           case 16: 
-            { return new Symbol(IRSym.XOR);
+            { return sym("XOR", IRSym.XOR);
             }
           case 55: break;
           case 17: 
-            { return new Symbol(IRSym.SUB);
+            { return sym("SUB", IRSym.SUB);
             }
           case 56: break;
           case 18: 
-            { return new Symbol(IRSym.SEQ);
+            { return sym("SEQ", IRSym.SEQ);
             }
           case 57: break;
           case 19: 
-            { return new Symbol(IRSym.LEQ);
+            { return sym("LEQ", IRSym.LEQ);
             }
           case 58: break;
           case 20: 
-            { return new Symbol(IRSym.AND);
+            { return sym("AND", IRSym.AND);
             }
           case 59: break;
           case 21: 
-            { return new Symbol(IRSym.ADD);
+            { return sym("ADD", IRSym.ADD);
             }
           case 60: break;
           case 22: 
-            { return new Symbol(IRSym.DIV);
+            { return sym("DIV", IRSym.DIV);
             }
           case 61: break;
           case 23: 
-            { return new Symbol(IRSym.GEQ);
+            { return sym("GEQ", IRSym.GEQ);
             }
           case 62: break;
           case 24: 
-            { return new Symbol(IRSym.CALL);
+            { return sym("CALL", IRSym.CALL);
             }
           case 63: break;
           case 25: 
-            { return new Symbol(IRSym.MOVE);
+            { return sym("MOVE", IRSym.MOVE);
             }
           case 64: break;
           case 26: 
-            { return new Symbol(IRSym.NAME);
+            { return sym("NAME", IRSym.NAME);
             }
           case 65: break;
           case 27: 
-            { return new Symbol(IRSym.TEMP);
+            { return sym("TEMP", IRSym.TEMP);
             }
           case 66: break;
           case 28: 
-            { return new Symbol(IRSym.FUNC);
+            { return sym("FUNC", IRSym.FUNC);
             }
           case 67: break;
           case 29: 
-            { return new Symbol(IRSym.ESEQ);
+            { return sym("ESEQ", IRSym.ESEQ);
             }
           case 68: break;
           case 30: 
-            { return new Symbol(IRSym.JUMP);
+            { return sym("JUMP", IRSym.JUMP);
             }
           case 69: break;
           case 31: 
-            { return new Symbol(IRSym.HMUL);
+            { return sym("HMUL", IRSym.HMUL);
             }
           case 70: break;
           case 32: 
-            { return new Symbol(IRSym.CONST);
+            { return sym("CONST", IRSym.CONST);
             }
           case 71: break;
           case 33: 
-            { return new Symbol(IRSym.CJUMP);
+            { return sym("CJUMP", IRSym.CJUMP);
             }
           case 72: break;
           case 34: 
-            { return new Symbol(IRSym.LABEL);
+            { return sym("LABEL", IRSym.LABEL);
             }
           case 73: break;
           case 35: 
-            { return new Symbol(IRSym.LSHIFT);
+            { return sym("LSHIFT", IRSym.LSHIFT);
             }
           case 74: break;
           case 36: 
-            { return new Symbol(IRSym.RETURN);
+            { return sym("RETURN", IRSym.RETURN);
             }
           case 75: break;
           case 37: 
-            { return new Symbol(IRSym.RSHIFT);
+            { return sym("RSHIFT", IRSym.RSHIFT);
             }
           case 76: break;
           case 38: 
-            { return new Symbol(IRSym.ARSHIFT);
+            { return sym("ARSHIFT", IRSym.ARSHIFT);
             }
           case 77: break;
           case 39: 
-            { return new Symbol(IRSym.COMPUNIT);
+            { return sym("COMPUNIT", IRSym.COMPUNIT);
             }
           case 78: break;
           default:

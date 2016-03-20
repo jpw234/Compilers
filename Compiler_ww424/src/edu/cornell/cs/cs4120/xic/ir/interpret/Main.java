@@ -21,6 +21,7 @@ import edu.cornell.cs.cs4120.xic.ir.IRTemp;
 import edu.cornell.cs.cs4120.xic.ir.parse.IRLexer;
 import edu.cornell.cs.cs4120.xic.ir.parse.IRParser;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
+import edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 
 public class Main {
 
@@ -96,6 +97,13 @@ public class Main {
             System.out.println(cv.visit(compUnit));
         }
 
+        // IR constant-folding checker demo
+        {
+            CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
+            System.out.print("Constant-folded?: ");
+            System.out.println(cv.visit(compUnit));
+        }
+
         // IR parser demo
         String prog = sw.toString();
         try (StringReader r = new StringReader(prog)) {
@@ -104,11 +112,13 @@ public class Main {
             try {
                 compUnit_ = parser.parse().<IRCompUnit> value();
             }
+            catch (RuntimeException e) {
+                throw e;
+            }
             catch (Exception e) {
+                // Used by CUP to indicate an unrecoverable error.
                 String msg = e.getMessage();
-                if (msg != null)
-                    System.err.println("Syntax error: " + e.getMessage());
-                e.printStackTrace();
+                if (msg != null) System.err.println("Syntax error: " + msg);
             }
 
             if (compUnit_ != null) {

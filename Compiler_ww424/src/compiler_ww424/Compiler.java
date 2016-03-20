@@ -360,13 +360,14 @@ public class Compiler {
 			            System.out.print("Canonical?: ");
 			            System.out.println(cv.visit(compUnit));
 			        }
-//			        {
-//			            IRSimulator sim = new IRSimulator(compUnit);
-//			            long result = sim.call("main");
-//			            System.out.println("main " + result);
-//			        }
 					fw.write(sw.toString());
 					System.out.println(sw.toString());
+					// IR interpreter demo
+			        {
+			            IRSimulator sim = new IRSimulator(compUnit);
+			            long result = sim.call("b", 2, 1);
+			            System.out.println("b(2,1) == " + result);
+			        }
 				}
 				catch(Error e) {
 					System.out.println(e.getMessage());

@@ -28,6 +28,7 @@ import edu.cornell.cs.cs4120.xic.ir.IRNode;
 import edu.cornell.cs.cs4120.xic.ir.IRReturn;
 import edu.cornell.cs.cs4120.xic.ir.IRTemp;
 import edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
+import polyglot.util.SerialVersionUID;
 
 /**
  * A simple IR interpreter
@@ -134,7 +135,7 @@ public class IRSimulator {
      * @param tempName name of the register
      * @return the value at the given register
      */
-    public long get(ExecutionFrame frame, String tempName) {
+    protected long get(ExecutionFrame frame, String tempName) {
         if (isGlobalRegister(tempName)) {
             if (!regs.containsKey(tempName)) {
                 /* Referencing a temp before having written to it - initialize
@@ -152,7 +153,7 @@ public class IRSimulator {
      * @param tempName name of the register
      * @param value value to be stored
      */
-    public void put(ExecutionFrame frame, String tempName, long value) {
+    protected void put(ExecutionFrame frame, String tempName, long value) {
         if (isGlobalRegister(tempName))
             regs.put(tempName, value);
         else frame.put(tempName, value);
@@ -185,9 +186,7 @@ public class IRSimulator {
      * @return the value at {@code addr}
      */
     public long read(long addr) {
-        if (addr % Configuration.WORD_SIZE != 0)
-            throw new Trap("Unaligned memory access!");
-        return mem[(int) (addr / Configuration.WORD_SIZE)];
+        return mem[(int) getMemoryIndex(addr)];
     }
 
     /**
@@ -196,9 +195,14 @@ public class IRSimulator {
      * @param value the value to be written
      */
     public void store(long addr, long value) {
+        mem[(int) getMemoryIndex(addr)] = value;
+    }
+
+    protected long getMemoryIndex(long addr) {
         if (addr % Configuration.WORD_SIZE != 0)
-            throw new Trap("Unaligned memory access!");
-        mem[(int) (addr / Configuration.WORD_SIZE)] = value;
+            throw new Trap("Unaligned memory access: " + addr + " (word size="
+                    + Configuration.WORD_SIZE + ")");
+        return addr / Configuration.WORD_SIZE;
     }
 
     /**
@@ -229,7 +233,8 @@ public class IRSimulator {
             put(frame, Configuration.ABSTRACT_ARG_PREFIX + i, args[i]);
 
         // Simulate!
-        while (frame.advance());
+        while (frame.advance())
+            ;
 
         return get(frame, Configuration.ABSTRACT_RET_PREFIX + 0);
     }
@@ -266,15 +271,20 @@ public class IRSimulator {
                 store(ptr, len);
                 for (int i = 0; i < len; ++i)
                     store(ptr + (i + 1) * ws, line.charAt(i));
+                put(null, Configuration.ABSTRACT_RET_PREFIX + 0, ptr + ws);
                 return ptr + ws;
             }
             case "_Igetchar_i": {
-                return inReader.read();
+                long result = inReader.read();
+                put(null, Configuration.ABSTRACT_RET_PREFIX + 0, result);
+                return result;
             }
             case "_Ieof_b": {
-                return inReader.ready() ? 0 : 1;
+                long result = inReader.ready() ? 0 : 1;
+                put(null, Configuration.ABSTRACT_RET_PREFIX + 0, result);
+                return result;
             }
-            // conv declarations
+                // conv declarations
             case "_IunparseInt_aii": {
                 String line = String.valueOf(args[0]);
                 int len = line.length();
@@ -282,6 +292,7 @@ public class IRSimulator {
                 store(ptr, len);
                 for (int i = 0; i < len; ++i)
                     store(ptr + (i + 1) * ws, line.charAt(i));
+                put(null, Configuration.ABSTRACT_RET_PREFIX + 0, ptr + ws);
                 return ptr + ws;
             }
             case "_IparseInt_t2ibai": {
@@ -300,14 +311,16 @@ public class IRSimulator {
                 put(null, Configuration.ABSTRACT_RET_PREFIX + 1, success);
                 return result;
             }
-            // special declarations
+                // special declarations
             case "_I_alloc_i": {
-                return malloc(args[0]);
+                long result = malloc(args[0]);
+                put(null, Configuration.ABSTRACT_RET_PREFIX + 0, result);
+                return result;
             }
             case "_I_outOfBounds_p": {
                 throw new Trap("Out of bounds!");
             }
-            // other declarations
+                // other declarations
             case "_Iassert_pb": {
                 if (args[0] != 1) throw new Trap("Assertion error!");
                 return 0;
@@ -400,11 +413,7 @@ public class IRSimulator {
         }
         else if (frame.ip instanceof IRMem) {
             long addr = exprStack.popValue();
-            if (addr % Configuration.WORD_SIZE != 0)
-                throw new Trap("Unaligned memory access: " + addr
-                        + " (word size=" + Configuration.WORD_SIZE + ")");
-            addr /= Configuration.WORD_SIZE;
-            exprStack.pushAddr(mem[(int) addr], addr);
+            exprStack.pushAddr(read(addr), addr);
         }
         else if (frame.ip instanceof IRCall) {
             int argsCount = ((IRCall) frame.ip).args().size();
@@ -412,8 +421,10 @@ public class IRSimulator {
             for (int i = argsCount - 1; i >= 0; --i)
                 args[i] = exprStack.popValue();
             StackItem target = exprStack.pop();
-            String targetName = target.name;
-            if (target.type != StackItem.Kind.NAME) {
+            String targetName;
+            if (target.type == StackItem.Kind.NAME)
+                targetName = target.name;
+            else {
                 if (indexToInsn.containsKey(target.value)) {
                     IRNode node = indexToInsn.get(target.value);
                     if (node instanceof IRFuncDecl)
@@ -430,31 +441,31 @@ public class IRSimulator {
         }
         else if (frame.ip instanceof IRName) {
             String name = ((IRName) frame.ip).name();
-            if (libraryFunctions.contains(name))
-                exprStack.pushName(-1, name);
-            else if (nameToIndex.containsKey(name))
-                exprStack.pushName(nameToIndex.get(name), name);
-            else throw new InternalCompilerError("Invalid destination in NAME: '"
-                    + name + "'");
+            exprStack.pushName(libraryFunctions.contains(name)
+                    ? -1 : findLabel(name), name);
         }
         else if (frame.ip instanceof IRMove) {
             long r = exprStack.popValue();
             StackItem stackItem = exprStack.pop();
-            if (stackItem.type == StackItem.Kind.MEM) {
-                if (debugLevel > 0) System.out.println("mem["
-                        + stackItem.addr * Configuration.WORD_SIZE + "]=" + r);
-                mem[(int) stackItem.addr] = r;
-            }
-            else if (stackItem.type == StackItem.Kind.TEMP) {
+            switch (stackItem.type) {
+            case MEM:
+                if (debugLevel > 0)
+                    System.out.println("mem[" + stackItem.addr + "]=" + r);
+                store(stackItem.addr, r);
+                break;
+            case TEMP:
                 if (debugLevel > 0)
                     System.out.println("temp[" + stackItem.temp + "]=" + r);
                 put(frame, stackItem.temp, r);
+                break;
+            default:
+                throw new InternalCompilerError("Invalid MOVE!");
             }
-            else throw new InternalCompilerError("Invalid MOVE!");
         }
-        else if (frame.ip instanceof IRExp)
+        else if (frame.ip instanceof IRExp) {
             // Discard result.
             exprStack.pop();
+        }
         else if (frame.ip instanceof IRJump)
             frame.setIP(indexToInsn.get(exprStack.popValue()));
         else if (frame.ip instanceof IRCJump) {
@@ -467,7 +478,7 @@ public class IRSimulator {
                 label = irCJump.trueLabel();
             else throw new InternalCompilerError("Invalid value in CJUMP - expected 0/1, got "
                     + top);
-            if (label != null) frame.setIP(findLabel(label));
+            if (label != null) frame.setIP(indexToInsn.get(findLabel(label)));
         }
         else if (frame.ip instanceof IRReturn) frame.setIP(null);
     }
@@ -477,10 +488,10 @@ public class IRSimulator {
      * @param name name of the label
      * @return the IR node at the named label
      */
-    private IRNode findLabel(String name) {
+    private long findLabel(String name) {
         if (!nameToIndex.containsKey(name))
             throw new Trap("Could not find label '" + name + "'!");
-        return indexToInsn.get(nameToIndex.get(name));
+        return nameToIndex.get(name);
     }
 
     /**
@@ -544,15 +555,18 @@ public class IRSimulator {
         }
 
         public void setIP(IRNode node) {
-            if (debugLevel > 1)
-                System.out.println("Jumping to " + node.label());
+            if (debugLevel > 1) {
+                if (node == null)
+                    System.out.println("Returning");
+                else System.out.println("Jumping to " + node.label());
+            }
             ip = node;
         }
     };
 
     /**
      * While traversing the IR tree, we require a stack in order to hold
-     * a number of single-word values (e.g. to evaluate binary expressions).
+     * a number of single-word values (e.g., to evaluate binary expressions).
      * This also keeps track of whether a value was created by a TEMP
      * or MEM, or NAME reference, which is useful when executing moves.
      */
@@ -565,9 +579,9 @@ public class IRSimulator {
         }
 
         public long popValue() {
-            if (debugLevel > 1)
-                System.out.println("Popping value " + stack.peek().value);
-            return stack.pop().value;
+            long value = stack.pop().value;
+            if (debugLevel > 1) System.out.println("Popping value " + value);
+            return value;
         }
 
         public StackItem pop() {
@@ -630,7 +644,8 @@ public class IRSimulator {
     };
 
     public static class Trap extends RuntimeException {
-        private static final long serialVersionUID = 8429929900405296472L;
+        private static final long serialVersionUID =
+                SerialVersionUID.generate();
 
         public Trap(String message) {
             super(message);

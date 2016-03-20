@@ -1,11 +1,12 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
-import edu.cornell.cs.cs4120.util.InternalCompilerError;
 import java.util.ArrayList;
 
 import compiler_ww424.LabelMaker;
+import edu.cornell.cs.cs4120.util.InternalCompilerError;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
+import edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 
 /**
@@ -109,7 +110,17 @@ public class IRBinOp extends IRExpr {
         result = v.bind(result, v.visit(right));
         return result;
     }
-    
+
+    @Override
+    public boolean isConstFolded(CheckConstFoldedIRVisitor v) {
+        return !isConstant();
+    }
+
+    @Override
+    public boolean isConstant() {
+        return left.isConstant() && right.isConstant();
+    }
+
     public IRESeq IRLower() {
     	IRESeq llower = left.IRLower();
     	
@@ -120,13 +131,13 @@ public class IRBinOp extends IRExpr {
     	
     	IRTemp naiveTemp = new IRTemp(genLabel);
     	
-    	stmts.add(new IRMove(naiveTemp, llower.expr()));
+    	stmts.add(new IRMove( new IRTemp(genLabel), llower.expr()));
 
     	IRESeq rlower = right.IRLower();
     	
     	stmts.add(rlower.stmt());
     	
-    	return new IRESeq(new IRSeq(stmts), new IRBinOp(type, naiveTemp, rlower.expr()));
+    	return new IRESeq(new IRSeq(stmts), new IRBinOp(type,  new IRTemp(genLabel), rlower.expr()));
     }
 
     @Override

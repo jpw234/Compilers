@@ -128,33 +128,33 @@ public class ArrLiteralExpr extends Expr {
 	public IRExpr buildIRExpr() {
 		ArrayList<IRStmt> stmtlist = new ArrayList<IRStmt>();
 		
-		IRTemp arrpointer = new IRTemp("a");
+		
 		
 		//allocate (n+1)*8 bytes of memory and move the pointer to temp register "a"
-		stmtlist.add(new IRMove(arrpointer, new IRCall(new IRName("_I_alloc_i"), new IRConst((values.size() + 1) * 8))));
+		stmtlist.add(new IRMove(new IRTemp("a"), new IRCall(new IRName("_I_alloc_i"), new IRConst((values.size() + 1) * 8))));
 		//put the length in this spot
-		stmtlist.add(new IRMove(new IRMem(arrpointer), new IRConst(values.size())));
+		stmtlist.add(new IRMove(new IRMem(new IRTemp("a")), new IRConst(values.size())));
 		//shift the pointer to the array up 8, so length is in spot -1
-		stmtlist.add(new IRMove(arrpointer, new IRBinOp(IRBinOp.OpType.ADD,
-														arrpointer,
+		stmtlist.add(new IRMove(new IRTemp("a"), new IRBinOp(IRBinOp.OpType.ADD,
+														new IRTemp("a"),
 														new IRConst(8))));
 		//now fill the array
 		for(int a = 0; a < values.size(); a++) {
-			//add value a to position at arrpointer + (a*8)
+			//add value a to position at new IRTemp("a") + (a*8)
 			stmtlist.add(new IRMove(new IRMem(new IRBinOp(IRBinOp.OpType.ADD,
-														  arrpointer,
+														  new IRTemp("a"),
 														  new IRConst(a*8))),
 									values.get(a).buildIRExpr()));
 		}
 		
 		//Create base eseq which initializes the ArrLiteralExpr and returns it
 		//This is the result of buildIRExpr in the case of no accesses
-		IRESeq eseq = new IRESeq(new IRSeq(stmtlist), arrpointer);
+		IRESeq eseq = new IRESeq(new IRSeq(stmtlist), new IRTemp("a"));
 		
 		if(accesses.size() == 0) return eseq;
 		
 		IRESeq k = new IRESeq(new IRSeq(new ArrayList<IRStmt>()),
-				  			  arrpointer);
+				  			  new IRTemp("a"));
 
 		for(int a = 0; a < accesses.size(); a++) {
 			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
@@ -176,7 +176,7 @@ public class ArrLiteralExpr extends Expr {
 						),
 					new IRLabel(live_label)
 				),
-				ArrExpr.get_offset(a, arrpointer, accesses));
+				ArrExpr.get_offset(a, new IRTemp("a"), accesses));
 		}
 		
 		return k;

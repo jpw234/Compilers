@@ -7,6 +7,7 @@ import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
+import edu.cornell.cs.cs4120.xic.ir.visit.CheckConstFoldedIRVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
@@ -43,6 +44,10 @@ public abstract class IRNode {
     }
 
     public boolean isCanonical(CheckCanonicalIRVisitor v) {
+        return true;
+    }
+
+    public boolean isConstFolded(CheckConstFoldedIRVisitor v) {
         return true;
     }
 

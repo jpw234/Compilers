@@ -89,22 +89,22 @@ public class IRCall extends IRExpr {
     	IRESeq t = target.IRLower();
     	stmts.add(t.stmt()); 
     	IRTemp t0 = new IRTemp("_ARG0");
-    	stmts.add(new IRMove(t0, t.expr()));
+    	stmts.add(new IRMove(new IRTemp("_ARG0"), t.expr()));
     	
     	for(int a = 0; a < args.size(); a++) {
     		IRESeq k = args.get(a).IRLower();
     		IRTemp temp = new IRTemp("_ARG" + (a+1));
     		
     		stmts.add(k.stmt());
-    		stmts.add(new IRMove(temp, k.expr()));
+    		stmts.add(new IRMove(new IRTemp("_ARG" + (a+1)), k.expr()));
     		temps.add(temp);
     	}
     	
-    	IRTemp ret = new IRTemp("_CALLRET");
+    	//IRTemp ret = new IRTemp("_CALLRET");
     	
-    	stmts.add(new IRMove(ret, new IRCall(t0, temps)));
+    	stmts.add(new IRMove(new IRTemp("_CALLRET"), new IRCall(t0, temps)));
     	
-    	return new IRESeq(new IRSeq(stmts), ret);
+    	return new IRESeq(new IRSeq(stmts), new IRTemp("_CALLRET"));
     }
 
     @Override

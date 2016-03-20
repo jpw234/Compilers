@@ -61,7 +61,7 @@ public class IRMove extends IRStmt {
     	ArrayList<IRStmt> stmts = new ArrayList<IRStmt>();
     	stmts.add(targetLowered.stmt());
     	
-    	IRTemp naiveTemp = new IRTemp("_MOVENAIVE");
+    	
     	
     	if(targetLowered.expr() instanceof IRTemp) {
     		IRESeq exprLowered = expr.IRLower();
@@ -72,11 +72,11 @@ public class IRMove extends IRStmt {
     	}
     	
     	else if(targetLowered.expr() instanceof IRMem) {
-    		stmts.add(new IRMove(naiveTemp, ((IRMem) targetLowered.expr()).expr() ));
+    		stmts.add(new IRMove(new IRTemp("_MOVENAIVE"), ((IRMem) targetLowered.expr()).expr() ));
     		
     		IRESeq exprLowered = expr.IRLower();
     		stmts.add(exprLowered.stmt());
-    		stmts.add(new IRMove(new IRMem(naiveTemp), exprLowered.expr()));
+    		stmts.add(new IRMove(new IRMem(new IRTemp("_MOVENAIVE")), exprLowered.expr()));
     		
     		return new IRSeq(stmts);
     	}

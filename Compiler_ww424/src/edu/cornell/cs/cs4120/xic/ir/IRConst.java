@@ -1,7 +1,8 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
-import edu.cornell.cs.cs4120.util.SExpPrinter;
 import java.util.ArrayList;
+
+import edu.cornell.cs.cs4120.util.SExpPrinter;
 
 /**
  * An intermediate representation for a 64-bit integer constant.
@@ -26,9 +27,14 @@ public class IRConst extends IRExpr {
     public String label() {
         return "CONST(" + value + ")";
     }
-    
+
+    @Override
+    public boolean isConstant() {
+        return true;
+    }
+
     public IRESeq IRLower() {
-    	return new IRESeq(new IRSeq(new ArrayList<IRStmt>()), this);
+        return new IRESeq(new IRSeq(new ArrayList<IRStmt>()), this);
     }
 
     @Override
