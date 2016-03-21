@@ -60,7 +60,7 @@ public class Assign extends Stmt {
 		}
 		else{
 			//getDepth != 0 --> An array 
-			return new IRMove(left.buildIRExpr(), right.buildIRExpr());
+			return new IRMove(new IRMem(left.buildIRExpr_Addr()), right.buildIRExpr());
 		}
 	}
 }

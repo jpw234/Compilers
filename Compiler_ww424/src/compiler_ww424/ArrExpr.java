@@ -61,7 +61,7 @@ public class ArrExpr extends Expr {
 		return this;
 	}
 	
-	public IRExpr getAddress() {
+	public IRExpr getElement() {
 		List<IRStmt> seqList = new ArrayList<IRStmt>();
 		String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 		String _aP = LabelMaker.Generate_Unique_Label("_arrPtr");//temp address
@@ -82,6 +82,34 @@ public class ArrExpr extends Expr {
 	}
 	
 	public IRExpr buildIRExpr() {
+		if(depth > 0)
+			return this.getElement();
+		else
+			return new IRTemp(name.getName());
+	}
+	
+	//For modify memory value, e.g. x:int[] = {1,2,3,4,5}  x[2] = 7
+	public IRExpr getAddress() {
+		List<IRStmt> seqList = new ArrayList<IRStmt>();
+		String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
+		String _aP = LabelMaker.Generate_Unique_Label("_arrPtr");//temp address
+		IRTemp arrPtr = new IRTemp(_aP);
+		seqList.add(new IRMove(new IRTemp(_aP), new IRTemp(name.getName())));//get starting location
+		for(int i = 0; i < accesses.size(); i++){
+			seqList.add(new IRCJump(new IRBinOp(IRBinOp.OpType.AND,
+						new IRBinOp(IRBinOp.OpType.GEQ, accesses.get(i).buildIRExpr(), new IRConst(0)),
+						new IRBinOp(IRBinOp.OpType.LT, accesses.get(i).buildIRExpr(), new IRMem(new IRBinOp(IRBinOp.OpType.SUB, new IRTemp(_aP), new IRConst(8))))),
+						live_label));
+			seqList.add(new IRExp(new IRCall(new IRName("_I_outOfBounds_p"))));
+			seqList.add(new IRLabel(live_label));
+			seqList.add(new IRMove(new IRTemp(_aP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_aP), 
+													new IRBinOp(IRBinOp.OpType.MUL, accesses.get(i).buildIRExpr(), new IRConst(8)))));
+			if(i != accesses.size()-1) {seqList.add(new IRMove(new IRTemp(_aP), new IRMem(new IRTemp(_aP))));}
+		}
+		return new IRESeq(new IRSeq(seqList), new IRTemp(_aP));
+	}
+	
+	public IRExpr buildIRExpr_Addr() {
 		if(depth > 0)
 			return this.getAddress();
 		else

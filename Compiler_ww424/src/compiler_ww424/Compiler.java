@@ -372,7 +372,7 @@ public class Compiler {
 						// IR interpreter demo
 						{
 							IRSimulator sim = new IRSimulator(compUnit);
-							long result = sim.call("main");
+							long result = sim.call("arrayInit");
 							System.out.println("RESULT!!  " + result);
 						}
 					}
