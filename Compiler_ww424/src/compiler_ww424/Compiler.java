@@ -219,7 +219,7 @@ public class Compiler {
 			catch(IOException ioe){
 				System.err.println("No such File in Directory");
 				return;}
-			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR );
+			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR ,toRunIR);
 			if (isempty) break;
 
 			if (toLex){
@@ -372,8 +372,8 @@ public class Compiler {
 						// IR interpreter demo
 						{
 							IRSimulator sim = new IRSimulator(compUnit);
-							long result = sim.call("arrayInit");
-							System.out.println("RESULT!!  " + result);
+							long result = sim.call("main");
+							System.out.println("RESULT:  " + result);
 						}
 					}
 					fw.write(sw.toString());
@@ -398,12 +398,12 @@ public class Compiler {
 
 
 	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse,
-			Boolean toGenIR) throws IOException{
+			Boolean toGenIR,Boolean toRunIR) throws IOException{
 		FileReader fr = new FileReader(fileName);
 		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
 		if (toLex){outFile = fileName.substring(0,fileName.length()-2)+"lexed";}
 		else if (toparse){outFile = fileName.substring(0,fileName.length()-2)+"parsed";}
-		else if (toGenIR){outFile = fileName.substring(0,fileName.length()-2)+"ir";}
+		else if (toGenIR || toRunIR){outFile = fileName.substring(0,fileName.length()-2)+"ir";}
 		BufferedReader br = new BufferedReader(fr); 
 		FileWriter fw = new FileWriter(outFile); 
 		String line;

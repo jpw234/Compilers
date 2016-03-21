@@ -14,7 +14,9 @@ main(args:int[][]): bool{
 		print("yes! ") 
 		return true;
 	}
-	return false;
+	else{
+		return false;
+	}
 }
 
 

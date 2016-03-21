@@ -1,11 +1,9 @@
 use io
 
-main(args:int[][]) {
+main(args:int[][]) : int{
 
 	x:int[] = {};
-	if (length(x) == 0 ){
-		print("yes")
-	}
+	return length(x)+5;
 }
 
 

@@ -10,22 +10,17 @@ main(args:int[][]): bool[]{
 	x :int= a6[a1][a2][a5[2][3]][a1]
 	_, y:int = f(a1,a5[1][3]);
 
-	if (x+y > 10){
-		print("oh yay");
-	}
-	else{
-		print(" noooooo ");
-	}
-	b: bool[] = {true,false}
+	b: bool[2] ;
+	
+	b[0] = (x<y)
+	b[1] = (x > 10)
 	return b
 
 	
 }
-
 f(p1:int, q1:int) : bool, int {
   b: bool = false;
   if(p1 > q1) b = true;
   
-  return b, p1*>>q1
+  return b, p1+q1;
 }
-
