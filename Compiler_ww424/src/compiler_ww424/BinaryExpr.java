@@ -124,8 +124,7 @@ public class BinaryExpr extends Expr {
 				return new NumExpr(((NumExpr) left).getIntVal() % ((NumExpr) right).getIntVal(), line, column);
 			case HIGHMUL:
 				//TODO: THIS IS WRONG IMPLEMENT THIS CORRECTLY
-				return new NumExpr((int)Math.pow((double)(((NumExpr) left).getIntVal() ), 
-												 (double)((NumExpr) right).getIntVal()) ,line, column);
+				return new NumExpr(((NumExpr) left).getIntVal() * ((NumExpr) right).getIntVal(), line, column);
 			default: return this;
 			}
 		}
