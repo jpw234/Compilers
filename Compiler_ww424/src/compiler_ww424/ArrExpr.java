@@ -63,11 +63,11 @@ public class ArrExpr extends Expr {
 	
 	public IRExpr getElement() {
 		List<IRStmt> seqList = new ArrayList<IRStmt>();
-		String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 		String _aP = LabelMaker.Generate_Unique_Label("_arrPtr");//temp address
 		IRTemp arrPtr = new IRTemp(_aP);
 		seqList.add(new IRMove(new IRTemp(_aP), new IRTemp(name.getName())));//get starting location
 		for(int i = 0; i < accesses.size(); i++){
+			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 			seqList.add(new IRCJump(new IRBinOp(IRBinOp.OpType.AND,
 						new IRBinOp(IRBinOp.OpType.GEQ, accesses.get(i).buildIRExpr(), new IRConst(0)),
 						new IRBinOp(IRBinOp.OpType.LT, accesses.get(i).buildIRExpr(), new IRMem(new IRBinOp(IRBinOp.OpType.SUB, new IRTemp(_aP), new IRConst(8))))),
@@ -91,11 +91,11 @@ public class ArrExpr extends Expr {
 	//For modify memory value, e.g. x:int[] = {1,2,3,4,5}  x[2] = 7
 	public IRExpr getAddress() {
 		List<IRStmt> seqList = new ArrayList<IRStmt>();
-		String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 		String _aP = LabelMaker.Generate_Unique_Label("_arrPtr");//temp address
 		IRTemp arrPtr = new IRTemp(_aP);
 		seqList.add(new IRMove(new IRTemp(_aP), new IRTemp(name.getName())));//get starting location
 		for(int i = 0; i < accesses.size(); i++){
+			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 			seqList.add(new IRCJump(new IRBinOp(IRBinOp.OpType.AND,
 						new IRBinOp(IRBinOp.OpType.GEQ, accesses.get(i).buildIRExpr(), new IRConst(0)),
 						new IRBinOp(IRBinOp.OpType.LT, accesses.get(i).buildIRExpr(), new IRMem(new IRBinOp(IRBinOp.OpType.SUB, new IRTemp(_aP), new IRConst(8))))),

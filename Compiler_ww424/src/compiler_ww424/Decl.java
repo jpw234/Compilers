@@ -116,9 +116,10 @@ public class Decl extends Stmt {
 						new IRCall(
 								new IRName("_I_alloc_i"), new IRBinOp(IRBinOp.OpType.MUL, new IRTemp(_tD), new IRConst(8)))));
 			seqList.add(new IRMove(new IRTemp(_tmp), new IRTemp(_eI)));
-			for(int i = 0; i < accesses.size(); i++){
-				seqList.add(new IRMove(new IRMem(new IRTemp(_eI)), accesses.get(i).buildIRExpr()));//exprIdx[i] = accesses[i]
+			seqList.add(new IRMove(new IRMem(new IRTemp(_eI)), accesses.get(0).buildIRExpr()));//exprIdx[i] = accesses[i]
+			for(int i = 1; i < accesses.size(); i++){
 				seqList.add(new IRMove(new IRTemp(_eI), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_eI), new IRConst(8))));//exprIdx += 8
+				seqList.add(new IRMove(new IRMem(new IRTemp(_eI)), accesses.get(i).buildIRExpr()));//exprIdx[i] = accesses[i]
 			}
 			seqList.add(new IRMove(new IRTemp(_eI), new IRTemp(_tmp)));//reset exprIdx pointer location
 			//create registers
@@ -193,15 +194,16 @@ public class Decl extends Stmt {
 			seqList.add(new IRMove(new IRTemp(_slI), new IRConst(0)));//set subloopIdx = 0
 			seqList.add(new IRLabel(_linkLoop));
 			seqList.add(new IRCJump(new IRBinOp(IRBinOp.OpType.EQ, new IRTemp(_lI), new IRTemp(_pDN)), _checkEnd));//if loopIdx==preDimNum (finish linking), jump to checkEnd
-			seqList.add(new IRMove(new IRTemp(_pAP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_pAP), new IRConst(1))));//preArrPointer++
+			seqList.add(new IRMove(new IRTemp(_pAP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_pAP), new IRConst(8))));//preArrPointer += 8
 			seqList.add(new IRMove(new IRTemp(_slI), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_slI), new IRConst(1))));//subloopIdx++
 			seqList.add(new IRCJump(new IRBinOp(IRBinOp.OpType.NEQ, new IRTemp(_slI), new IRTemp(_cU)), _skipLenLoc));//if subloopIdx != cycleUnit, jump to _skipLenLoc
-			seqList.add(new IRMove(new IRTemp(_pAP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_pAP), new IRConst(1))));//preArrPointer++
+			seqList.add(new IRMove(new IRTemp(_pAP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_pAP), new IRConst(8))));//preArrPointer += 8
 			seqList.add(new IRMove(new IRTemp(_slI), new IRConst(0)));//set subloopIdx = 0
 			seqList.add(new IRLabel(_skipLenLoc));//label _skipLenLoc
 			seqList.add(new IRMove(new IRTemp(_aP), 
 						new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_aP), 
-						new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_cDN), new IRConst(1)))));//arrPointer = arrPointer + (curDimNum + 1)
+						new IRBinOp(IRBinOp.OpType.MUL, new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_cDN), new IRConst(1)), new IRConst(8))
+						)));//arrPointer = arrPointer + (curDimNum + 1) * 8
 			seqList.add(new IRMove(new IRMem(new IRTemp(_pAP)), new IRTemp(_aP)));//link Mem(preArrPointer) = arrPointer
 			seqList.add(new IRMove(new IRTemp(_lI), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_lI), new IRConst(1))));//loopIdx++
 			seqList.add(new IRJump(new IRName(_linkLoop)));

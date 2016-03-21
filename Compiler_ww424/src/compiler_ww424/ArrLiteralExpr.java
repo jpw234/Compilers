@@ -152,9 +152,9 @@ public class ArrLiteralExpr extends Expr {
 		//This is the result of buildIRExpr in the case of no accesses
 		IRESeq eseq = new IRESeq(new IRSeq(stmtlist), new IRTemp(_aP));
 		//get index
-		String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 		if(accesses.size() == 0) return eseq;
 		for(int i = 0; i < accesses.size(); i++){
+			String live_label = LabelMaker.Generate_Unique_Label("_ARRAY_EXPR_BOUNDS_CHECK_PASS");
 			stmtlist.add(new IRCJump(new IRBinOp(IRBinOp.OpType.AND,
 						new IRBinOp(IRBinOp.OpType.GEQ, accesses.get(i).buildIRExpr(), new IRConst(0)),
 						new IRBinOp(IRBinOp.OpType.LT, accesses.get(i).buildIRExpr(), new IRMem(new IRBinOp(IRBinOp.OpType.SUB, new IRTemp(_aP), new IRConst(8))))),
