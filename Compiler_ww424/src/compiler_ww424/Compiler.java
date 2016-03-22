@@ -346,7 +346,7 @@ public class Compiler {
 					if(toOptimize){
 						program.constantFold();
 					}
-					IRCompUnit compUnit = new IRCompUnit(p.getFileName());
+					IRCompUnit compUnit = new IRCompUnit("test");
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();

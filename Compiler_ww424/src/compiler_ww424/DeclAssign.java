@@ -2,7 +2,6 @@ package compiler_ww424;
 
 import java.util.ArrayList;
 import java.util.List;
-import compiler_ww424.ArrayInitException;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class DeclAssign extends Stmt {

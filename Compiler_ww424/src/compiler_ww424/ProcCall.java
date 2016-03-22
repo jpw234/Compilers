@@ -71,8 +71,15 @@ public class ProcCall extends Stmt {
 			String argNum = "_ARG" + i;
 			proc.add(new IRMove(new IRTemp(argNum), args.get(i).buildIRExpr()));
 		}
-		proc.add(new IRExp(new IRName(name.toString())));
-		proc.add(new IRExp(new IRName(FunCall.mangle_name(name.getName(), ft))));
+		ArrayList<IRExpr> irargs = new ArrayList<IRExpr>();
+		for(int a = 0; a < args.size(); a++) {
+			irargs.add(args.get(a).buildIRExpr());
+		}
+		//proc.add(new IRExp(new IRName(name.toString())));
+//		System.out.println("Procedure Call");
+//		System.out.println(name.getName());
+//		System.out.println(FunCall.mangle_name(name.getName(),ft));
+		proc.add(new IRExp(new IRCall(new IRName(FunCall.mangle_name(name.getName(), ft)), irargs)));
 		return new IRSeq(proc);
 	}
 	

@@ -2,11 +2,7 @@ package compiler_ww424;
 
 import java.util.List;
 import java.util.ArrayList;
-import edu.cornell.cs.cs4120.xic.ir.IRFuncDecl;
-import edu.cornell.cs.cs4120.xic.ir.IRStmt;
-import edu.cornell.cs.cs4120.xic.ir.IRMove;
-import edu.cornell.cs.cs4120.xic.ir.IRTemp;
-import edu.cornell.cs.cs4120.xic.ir.IRSeq;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class Function {
 	private IDExpr name;
@@ -175,7 +171,18 @@ public class Function {
 		for(int i = 0; i < body.size(); i++){
 			if(body.get(i).buildIRStmt() == null) {continue;}
 			seqList.add(body.get(i).buildIRStmt()); //return statement is included in body
+			if(i == body.size()-1 && !(body.get(i) instanceof ReturnStmt)){
+				seqList.add(new IRReturn());
+			}
 		}
-		return new IRFuncDecl(name.toString(), new IRSeq(seqList));
+		Tuple inputs = new Tuple(new ArrayList<Type>());
+		//handle mangle name
+		if (!args.isEmpty()){
+			for(int a = 0; a < args.size(); a++) {
+				inputs.add(args.get(a).getType());
+		}}
+		FunType ret = new FunType(inputs, retType);
+		//System.out.println("FuncDecl"+FunCall.mangle_name(name.getName(), ret));
+		return new IRFuncDecl(FunCall.mangle_name(name.getName(), ret), new IRSeq(seqList));
 	}
 }

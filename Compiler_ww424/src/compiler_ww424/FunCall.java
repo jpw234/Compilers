@@ -88,8 +88,8 @@ public class FunCall extends Expr {
 			irargs.add(args.get(a).buildIRExpr());
 		}
 
-		//return new IRCall(new IRName(mangle_name(name.getName(), ft)), irargs);
-		return new IRCall(new IRName(name.getName()), irargs);
+		//return new IRCall(new IRName(name.getName()), irargs);
+		return new IRCall(new IRName(mangle_name(name.getName(), ft)), irargs);
 	}
 
 	public Expr constantFold() {
