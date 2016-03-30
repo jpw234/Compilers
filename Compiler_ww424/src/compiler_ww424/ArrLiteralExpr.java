@@ -131,23 +131,16 @@ public class ArrLiteralExpr extends Expr {
 	public IRExpr buildIRExpr() {
 		ArrayList<IRStmt> stmtlist = new ArrayList<IRStmt>();
 		String _aP = LabelMaker.Generate_Unique_Label("_arrPtr");//temp address
-		//allocate (n+1)*8 bytes of memory and move the pointer to temp register _aP
-		stmtlist.add(new IRMove(new IRTemp(_aP), new IRCall(new IRName("_I_alloc_i"), new IRConst((values.size() + 1) * 8))));
-		//put the length in this spot
-		stmtlist.add(new IRMove(new IRMem(new IRTemp(_aP)), new IRConst(values.size())));
-		//shift the pointer to the array up 8, so length is in spot -1
-		stmtlist.add(new IRMove(new IRTemp(_aP), new IRBinOp(IRBinOp.OpType.ADD,
-														new IRTemp(_aP),
-														new IRConst(8))));
-		//now fill the array
-		for(int a = 0; a < values.size(); a++) {
-			//add value a to position at new IRTemp(_aP) + (a*8)
-			stmtlist.add(new IRMove(new IRMem(new IRBinOp(IRBinOp.OpType.ADD,
-														  new IRTemp(_aP),
-														  new IRConst(a*8))),
-									values.get(a).buildIRExpr()));
+		int curDim = values.size();
+		stmtlist.add(new IRMove(new IRTemp(_aP), new IRCall(new IRName("_I_alloc_i"), new IRConst((curDim + 1) * 8))));//allocate (curDim+1)*8
+		stmtlist.add(new IRMove(new IRMem(new IRTemp(_aP)), new IRConst(curDim)));//put length curDim
+		stmtlist.add(new IRMove(new IRTemp(_aP), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_aP), new IRConst(8))));//_aP = _aP + 8
+		for(int i = 0; i < curDim; i++){
+			String _tmp = LabelMaker.Generate_Unique_Label("_temp");//temp address
+			stmtlist.add(new IRMove(new IRTemp(_tmp), values.get(i).buildIRExpr()));
+			//link, Mem(_aP + 8*i) = _nxtAP + (curDim+1)*8*i)
+			stmtlist.add(new IRMove(new IRMem( new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_aP), new IRConst(i*8)) ), new IRTemp(_tmp) ));
 		}
-		
 		//Create base eseq which initializes the ArrLiteralExpr and returns it
 		//This is the result of buildIRExpr in the case of no accesses
 		IRESeq eseq = new IRESeq(new IRSeq(stmtlist), new IRTemp(_aP));
@@ -167,4 +160,5 @@ public class ArrLiteralExpr extends Expr {
 		}
 		return new IRESeq(new IRSeq(stmtlist), new IRTemp(_aP));
 	}
+	
 }
