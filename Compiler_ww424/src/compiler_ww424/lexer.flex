@@ -27,11 +27,11 @@ public class Token extends Symbol{
 	  left = lin;
 	  right = col;
   }
-  public Token(int symbol,int val,int lin,int col) {
+  public Token(int symbol,long val,int lin,int col) {
       super(symbol);
       column  = col;
       line    = lin;
-      value   = new Integer(val);
+      value   = new Long(val);
 	  left = lin;
 	  right = col;
   }
@@ -56,7 +56,7 @@ public class Token extends Symbol{
 			return new Token(type, value, yyline, yycolumn);
 		}
 	}
-	private Token token(int type, int value) throws IOException{
+	private Token token(int type, long value) throws IOException{
 		return new Token(type, value, yyline, yycolumn);
 	}
 	
@@ -128,7 +128,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	{WhiteSpace}					{ /* ignore */ }
 	{Comment} 						{ /* ignore */ }
 	
-	{Integer}						{ return token(sym.INTEGER, Integer.parseInt(yytext())); }
+	{Integer}						{ return token(sym.INTEGER, Long.parseLong(yytext())); }
 	{Identifier}					{ return token(sym.ID, yytext()); }
 	
 	\"								{ string.setLength(0); line = yyline; col = yycolumn; yybegin(STRING); }

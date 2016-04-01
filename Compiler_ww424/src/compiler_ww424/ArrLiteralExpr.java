@@ -101,7 +101,7 @@ public class ArrLiteralExpr extends Expr {
 		
 		else {
 			//set the return to the element specified by the access
-			Expr ret = values.get(((NumExpr) accesses.get(0)).getIntVal()); 
+			Expr ret = values.get((int) ((NumExpr) accesses.get(0)).getIntVal()); 
 			
 			//now we need to check if we're done, or if we have more nesting/accesses to do
 			if(accesses.size() == 1) return ret;

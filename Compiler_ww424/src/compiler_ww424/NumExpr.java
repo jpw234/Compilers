@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class NumExpr extends Expr {
-    private int intvalue;
+    private long intvalue;
     private char charval;
     private Boolean isChar = false;
     
    
     
-    public NumExpr(int i,int lineNum,int colNum) {
+    public NumExpr(long i,int lineNum,int colNum) {
         intvalue = i;
         line = lineNum;
         column = colNum;
@@ -18,7 +18,7 @@ public class NumExpr extends Expr {
     }
     public NumExpr(char c, int lineNum, int colNum){
         charval = c;
-        intvalue = (int) c;
+        intvalue = (long) c;
         line = lineNum;
         column = colNum;
         isChar = true;
@@ -29,7 +29,7 @@ public class NumExpr extends Expr {
         type = new Type("int");
         return type;
     }
-    public int getIntVal() {
+    public long getIntVal() {
         return intvalue;
     }
     public char getCharVal(){

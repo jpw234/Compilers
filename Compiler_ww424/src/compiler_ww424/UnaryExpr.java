@@ -60,7 +60,7 @@ public class UnaryExpr extends Expr {
 					if(!(acc.get(a) instanceof NumExpr)) { return this; }
 					
 					//if it is a simple NumExpr we follow that access to go "one deeper" into the ArrLiteral
-					curr = ((ArrLiteralExpr) curr).getValues().get(((NumExpr) acc.get(a)).getIntVal());
+					curr = ((ArrLiteralExpr) curr).getValues().get((int) ((NumExpr) acc.get(a)).getIntVal());
 					
 					//if it's the last access
 					if(a == acc.size()-1) {
@@ -93,7 +93,7 @@ public class UnaryExpr extends Expr {
 					if(!(acc.get(a) instanceof NumExpr)) { return this; }
 					
 					//if it is a simple NumExpr we follow that access to go "one deeper" into the ArrLiteral
-					curr = ((ArrLiteralExpr) curr).getValues().get(((NumExpr) acc.get(a)).getIntVal());
+					curr = ((ArrLiteralExpr) curr).getValues().get((int) ((NumExpr) acc.get(a)).getIntVal());
 					
 					//if it's the last access
 					if(a == acc.size()-1) {

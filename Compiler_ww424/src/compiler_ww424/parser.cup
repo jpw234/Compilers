@@ -83,7 +83,7 @@ parser code {:
 terminal String ID;
 terminal String STRING;
 terminal String CHARACTER;
-terminal Integer INTEGER;
+terminal Long INTEGER;
 terminal INT, BOOL;
 terminal TRUE, FALSE;
 terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, PLUS, MINUS, TIMES,
