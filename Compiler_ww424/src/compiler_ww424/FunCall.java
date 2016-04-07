@@ -6,7 +6,7 @@ import edu.cornell.cs.cs4120.xic.ir.*;
 public class FunCall extends Expr {
 	private IDExpr name;
 	private ArrayList<Expr> args;
-	private Type type;
+	//private Type type;
 
 	public static String mangle_name(String n, FunType t) {
 		String res = "_I" + n.replaceAll("_", "__") + "_";
@@ -19,7 +19,7 @@ public class FunCall extends Expr {
 				for(int b = 0; b < out.getArgs().get(a).getDepth(); b++) {
 					res = res + "a";
 				}
-				if(out.getArgs().get(a).getType() == "int") res = res + "i";
+				if(out.getArgs().get(a).getType().equals("int")) res = res + "i";
 				else res = res + "b";
 			}
 		}
@@ -28,11 +28,20 @@ public class FunCall extends Expr {
 		if (in != null){
 			for(int a = 0; a < in.getArgs().size(); a++) {
 				if (in.getArgs().get(a) == null ) continue;
-				for(int b = 0; b < in.getArgs().get(a).getDepth(); b++) {
-					res = res + "a";
+				if(in.getArgs().get(a) instanceof Tuple){
+					for(int b = 0; b < ((Tuple)(in.getArgs().get(a))).getArgs().get(0).getDepth(); b++) {
+						res = res + "a";
+					}
+					if(((Tuple)(in.getArgs().get(a))).getArgs().get(0).getType().equals("int")) res = res + "i";
+					else res = res + "b";
 				}
-				if(in.getArgs().get(a).getType() == "int") res = res + "i";
-				else res = res + "b";
+				else{
+					for(int b = 0; b < in.getArgs().get(a).getDepth(); b++) {
+						res = res + "a";
+					}
+					if(in.getArgs().get(a).getType().equals("int")) res = res + "i";
+					else res = res + "b";
+				}
 			}
 		}
 
@@ -111,5 +120,10 @@ public class FunCall extends Expr {
 		}
 		s = "( " + name.toString() + " " + s + " )";
 		return s ;
+	}
+	
+	@Override
+	public Type getType() {
+		return this.type;
 	}
 }
