@@ -14,7 +14,7 @@ import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 public class IRCJump extends IRStmt {
     private IRExpr expr;
     private String trueLabel, falseLabel;
-
+    
     /**
      * Construct a CJUMP instruction with fall-through on false.
      * @param expr the condition for the jump
@@ -24,7 +24,7 @@ public class IRCJump extends IRStmt {
     public IRCJump(IRExpr expr, String trueLabel) {
         this(expr, trueLabel, null);
     }
-
+    
     /**
      *
      * @param expr the condition for the jump
@@ -38,60 +38,79 @@ public class IRCJump extends IRStmt {
         this.trueLabel = trueLabel;
         this.falseLabel = falseLabel;
     }
-
+    
     public IRExpr expr() {
         return expr;
     }
-
+    
     public String trueLabel() {
         return trueLabel;
     }
-
+    
     public String falseLabel() {
         return falseLabel;
     }
-
+    
     public boolean hasFalseLabel() {
         return falseLabel != null;
     }
-
+    
     @Override
     public String label() {
         return "CJUMP";
     }
-
+    
     @Override
     public IRNode visitChildren(IRVisitor v) {
         IRExpr expr = (IRExpr) v.visit(this, this.expr);
-
+        
         if (expr != this.expr) return new IRCJump(expr, trueLabel, falseLabel);
-
+        
         return this;
     }
-
+    
     @Override
     public <T> T aggregateChildren(AggregateVisitor<T> v) {
         T result = v.unit();
         result = v.bind(result, v.visit(expr));
         return result;
     }
-
+    
     @Override
     public boolean isCanonical(CheckCanonicalIRVisitor v) {
         return !hasFalseLabel();
     }
     
     public IRSeq IRLower() {
-    	ArrayList<IRStmt> ret = new ArrayList<IRStmt>();
-    	
-    	IRESeq k = expr.IRLower();
-    	
-    	ret.add(k.stmt());
-    	ret.add(new IRCJump(k.expr(), trueLabel, falseLabel));
-    	
-    	return new IRSeq(ret);
+        ArrayList<IRStmt> ret = new ArrayList<IRStmt>();
+        
+        IRESeq k = expr.IRLower();
+        
+        ret.add(k.stmt());
+        ret.add(new IRCJump(k.expr(), trueLabel, falseLabel));
+        
+        return new IRSeq(ret);
     }
-
+    
+    /*
+     //CJUMP(e,l) ⇒ cmp e1, e2
+     //             [jne|je|jgt|…] l
+     public Assembly toAssembly(){
+     if(hasFalseLabel){
+     movq expr.toString() rax
+     cmpq rax 1 //True or False
+     jne falseLabel
+     trueLabel
+     jmp EndofIf
+     }else{
+     movq expr.toString() rax
+     cmpq rax 1 //True or False
+     je trueLabel
+     jmp EndofIf
+     }
+     }*/
+    
+    
     @Override
     public void printSExp(SExpPrinter p) {
         p.startList();

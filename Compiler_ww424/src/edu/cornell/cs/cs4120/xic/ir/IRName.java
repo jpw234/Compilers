@@ -10,7 +10,7 @@ import edu.cornell.cs.cs4120.util.SExpPrinter;
  */
 public class IRName extends IRExpr {
     private String name;
-
+    
     /**
      *
      * @param name name of this memory address
@@ -18,20 +18,26 @@ public class IRName extends IRExpr {
     public IRName(String name) {
         this.name = name;
     }
-
+    
     public String name() {
         return name;
     }
-
+    
     @Override
     public String label() {
         return "NAME(" + name + ")";
     }
     
     public IRESeq IRLower() {
-    	return new IRESeq(new IRSeq(new ArrayList<IRStmt>()), this);
+        return new IRESeq(new IRSeq(new ArrayList<IRStmt>()), this);
     }
-
+    
+    /*
+     LABEL(l ) ⇒ l:
+     public Assembly toAssembly(){
+     return new Assembly(name+":")
+     }*/
+    
     @Override
     public void printSExp(SExpPrinter p) {
         p.startList();
