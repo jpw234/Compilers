@@ -24,4 +24,9 @@ public class IRReturn extends IRStmt {
         p.printAtom("RETURN");
         p.endList();
     }
+    
+    /*public String makeAssembly() {
+    	//Jump to return address?
+    	//add assembly instruction "ret" 
+    }*/
 }

@@ -44,4 +44,9 @@ public class IRConst extends IRExpr {
         p.printAtom(String.valueOf(value));
         p.endList();
     }
+    
+    /*public String makeAssembly() {
+    	//$ signifies const value in assembly
+    	//so return $value
+    }*/
 }
