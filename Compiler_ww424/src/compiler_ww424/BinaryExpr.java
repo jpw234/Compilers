@@ -2,6 +2,8 @@ package compiler_ww424;
 
 import edu.cornell.cs.cs4120.xic.ir.*;
 import java.util.ArrayList;
+import java.math.BigInteger;
+
 public class BinaryExpr extends Expr {
 	private Expr left;
 	private Expr right;
@@ -123,8 +125,10 @@ public class BinaryExpr extends Expr {
 			case MOD:
 				return new NumExpr(((NumExpr) left).getIntVal() % ((NumExpr) right).getIntVal(), line, column);
 			case HIGHMUL:
+				BigInteger lb = BigInteger.valueOf(((NumExpr) left).getIntVal());
+				BigInteger rb = BigInteger.valueOf(((NumExpr) left).getIntVal());
 				//TODO: THIS IS WRONG IMPLEMENT THIS CORRECTLY
-				return new NumExpr(((NumExpr) left).getIntVal() * ((NumExpr) right).getIntVal(), line, column);
+				return new NumExpr(lb.multiply(rb).shiftRight(32).longValue(), line, column);
 			default: return this;
 			}
 		}
