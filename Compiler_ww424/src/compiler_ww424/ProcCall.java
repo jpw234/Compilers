@@ -8,6 +8,7 @@ import edu.cornell.cs.cs4120.xic.ir.*;
 public class ProcCall extends Stmt {
 	private IDExpr name;
 	private List<Expr> args;
+	private FunType ft;
 	
 	public ProcCall(IDExpr n, List<Expr> a,int lineNum,int colNum) {
 		name = n; args = a;
@@ -25,7 +26,7 @@ public class ProcCall extends Stmt {
 	
 	public Type typecheck(SymTab s) {
 		try {
-			FunType ft = (FunType) s.lookupFunction(name.getName());
+			ft = (FunType) s.lookupFunction(name.getName());
 		
 			if(args.size() != ft.getInputs().getArgs().size()) throw new Error(line + ":" + column + " error: " + "incorrect # of args to fun");
 		
@@ -64,7 +65,7 @@ public class ProcCall extends Stmt {
 		for(int a = 0; a < args.size(); a++) {
 			inputs.add(args.get(a).getType());
 		}
-		FunType ft = new FunType(inputs, null);
+		//FunType ft = new FunType(inputs, null);
 		// TODO Auto-generated method stub
 		List<IRStmt> proc = new ArrayList<IRStmt>();
 		for(int i = 0; i < args.size(); i++){
@@ -76,9 +77,9 @@ public class ProcCall extends Stmt {
 			irargs.add(args.get(a).buildIRExpr());
 		}
 		//proc.add(new IRExp(new IRName(name.toString())));
-//		System.out.println("Procedure Call");
-//		System.out.println(name.getName());
-//		System.out.println(FunCall.mangle_name(name.getName(),ft));
+		//System.out.println("Procedure Call");
+		//System.out.println(name.getName());
+		//System.out.println(FunCall.mangle_name(name.getName(),ft));
 		proc.add(new IRExp(new IRCall(new IRName(FunCall.mangle_name(name.getName(), ft)), irargs)));
 		return new IRSeq(proc);
 	}

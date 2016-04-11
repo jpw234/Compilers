@@ -110,7 +110,7 @@ public class Compiler {
 		Boolean toTypecheck = false;
 		Boolean toGenIR = false;
 		Boolean toRunIR = false;
-		Boolean toOptimize = false;
+		Boolean toOptimize = true;
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
@@ -149,7 +149,7 @@ public class Compiler {
 				toRunIR = true;
 				break;
 			case INPUT_OPTIMIZATION:
-				toOptimize = true;
+				toOptimize = false;
 				break;
 			default:
 				// This Must Be A File
@@ -357,7 +357,7 @@ public class Compiler {
 							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 						compUnit.printSExp(sp);
 					}
-					{
+					/*{
 						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 						System.out.print("Canonical?: ");
 						System.out.println(cv.visit(compUnit));
@@ -367,12 +367,12 @@ public class Compiler {
 						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
 						System.out.print("Constant-folded?: ");
 						System.out.println(cv.visit(compUnit));
-					}
+					}*/
 					if (toRunIR){
 						// IR interpreter demo
 						{
 							IRSimulator sim = new IRSimulator(compUnit);
-							long result = sim.call("main");
+							long result = sim.call("_Imain_paai");
 							System.out.println("RESULT:  " + result);
 						}
 					}
