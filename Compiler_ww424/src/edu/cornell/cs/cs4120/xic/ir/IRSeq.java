@@ -84,6 +84,14 @@ public class IRSeq extends IRStmt {
     	
     	return new IRSeq(combinedList);
     }
+    
+    public AssemInstr makeAssembly(){
+    	String data = "";
+    	for(IRStmt s : stmts){
+    		data += s.makeAssembly().getData();
+    	}
+    	return new AssemInstr(data, "");
+    }
 
     @Override
     public void printSExp(SExpPrinter p) {
