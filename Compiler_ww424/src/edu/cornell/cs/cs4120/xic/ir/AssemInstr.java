@@ -1,8 +1,8 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 public class AssemInstr {
-	String data = "";
-	String source = "";
+	private String data = "";
+	private String source = "";
 	
 	public AssemInstr(String dt, String src) {
 		data = dt;
@@ -24,5 +24,4 @@ public class AssemInstr {
 	public void setSource(String src) {
 		source = src;
 	}
-
 }
