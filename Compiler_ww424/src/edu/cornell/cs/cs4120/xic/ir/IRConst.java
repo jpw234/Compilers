@@ -45,8 +45,7 @@ public class IRConst extends IRExpr {
         p.endList();
     }
     
-    /*public String makeAssembly() {
-    	//$ signifies const value in assembly
-    	//so return $value
-    }*/
+    public AssemInstr makeAssembly() {
+    	return new AssemInstr("", "$" + String.valueOf(value), 0);
+    }
 }

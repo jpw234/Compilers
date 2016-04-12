@@ -68,4 +68,8 @@ public abstract class IRNode {
         }
         return sw.toString();
     }
+    
+    public AssemInstr makeAssembly() {
+    	return new AssemInstr("", "", 0);
+    }
 }

@@ -85,6 +85,15 @@ public class IRMove extends IRStmt {
     		throw new Error("left side of MOVE is not MEM or TEMP");
     	}		
     }
+    
+    public AssemInstr makeAssembly(){
+    	AssemInstr target_Assem = target.makeAssembly();
+    	AssemInstr expr_Assem = expr.makeAssembly();
+    	String data = expr_Assem.getData() +
+    				  target_Assem.getData() +
+    				  "movq" + expr_Assem.getSource() + " " + target_Assem.getSource() + "\n";
+    	return new AssemInstr(data, "", target.makeAssembly().getCost() + expr.makeAssembly().getCost() + 1);
+    }
 
     @Override
     public void printSExp(SExpPrinter p) {

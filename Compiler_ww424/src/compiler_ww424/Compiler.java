@@ -28,11 +28,13 @@ public class Compiler {
 	public static final String INPUT_PARSE = "--parse";
 	public static final String INPUT_TYPECHECK = "--typecheck";
 	public static final String INPUT_SOURCEPATH = "-sourcepath";
-	public static final String INPUT_DIAGNOSIS_PATH = "-d";
+	public static final String INPUT_DIAGNOSIS_PATH = "-D";
+	public static final String INPUT_ASSEMBLY_PATH = "-d";
 	public static final String INPUT_LIBRARY_PATH = "-libpath";
 	public static final String INPUT_IRGEN = "--irgen";
 	public static final String INPUT_IRRUN = "--irrun";
 	public static final String INPUT_OPTIMIZATION = "-O";
+	public static final String INPUT_TARGET = "-target";
 	public static int MINIMUM_ARG_COUNT = 2; 
 
 
@@ -104,6 +106,8 @@ public class Compiler {
 		String sourceRoot = null;
 		String libRoot = null;
 		String diagnosisRoot = null;
+		String assemblyRoot = null;
+		String target = null;
 		Boolean toLex = false;
 		Boolean useHelp = false;
 		Boolean toParse = false;
@@ -111,6 +115,7 @@ public class Compiler {
 		Boolean toGenIR = false;
 		Boolean toRunIR = false;
 		Boolean toOptimize = true;
+		Boolean toAssembly = false;
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
@@ -122,6 +127,10 @@ public class Compiler {
 			case INPUT_DIAGNOSIS_PATH :
 				i++;
 				if(i < args.length) diagnosisRoot = args[i];
+				break;
+			case INPUT_ASSEMBLY_PATH:
+				i++;
+				if(i < args.length) assemblyRoot = args[i];
 				break;
 			case INPUT_LIBRARY_PATH :
 				i++;
@@ -151,15 +160,20 @@ public class Compiler {
 			case INPUT_OPTIMIZATION:
 				toOptimize = false;
 				break;
+			case INPUT_TARGET:
+				toAssembly = true;
+				i++;
+				if(i < args.length) target = args[i];
+				break;
 			default:
 				// This Must Be A File
 				pathArgs.add(new CodePath(currentRoot, args[i]));
 				break;
 			}
 		}
-		if ((toLex || toParse || toTypecheck || toGenIR || toRunIR || toOptimize) && !useHelp){
-			lex_parse(toLex, toParse,toTypecheck,toGenIR,toRunIR,toOptimize,
-					pathArgs,codeToCompile,sourceRoot,diagnosisRoot,libRoot);
+		if ((toLex || toParse || toTypecheck || toGenIR || toRunIR || toOptimize || toAssembly) && !useHelp){
+			lex_parse(toLex, toParse,toTypecheck,toGenIR,toRunIR,toOptimize,toAssembly,
+					pathArgs,codeToCompile,sourceRoot,diagnosisRoot,assemblyRoot,libRoot);
 		}
 
 
@@ -167,16 +181,12 @@ public class Compiler {
 	}
 	public static void lex_parse(
 			Boolean toLex, Boolean toParse,Boolean toTypecheck,
-			Boolean toGenIR, Boolean toRunIR, Boolean toOptimize,
+			Boolean toGenIR, Boolean toRunIR, Boolean toOptimize,Boolean toAssembly,
 			ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
-			String sourceRoot,String diagnosisRoot,String libRoot) throws Exception{
+			String sourceRoot,String diagnosisRoot,String assemblyRoot, String libRoot) throws Exception{
 		
 		if(pathArgs.size() < 1) {
-			// Attempt To Compile All the Codes
 			pathArgs.add(new CodePath(sourceRoot, "."));
-
-			// Display What's Going To Go Down
-			//System.out.println("\nAttempting To Compile All Files");
 		}
 		// Expand All The Possible Codes
 		for(CodePath p : pathArgs) {
@@ -212,15 +222,23 @@ public class Compiler {
 		//System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
 
 		for (CodePath p: codeToCompile){
-			//DETECT IF THIS EXISTS 
+			
+			 ////////////////////////////////////////////////		
+			 /* check if file exists or file empty or not */
+			 ///////////////////////////////////////////////	
 			try {
 				Reader abc = new FileReader(p.getFile());
 				abc.close();}
 			catch(IOException ioe){
 				System.err.println("No such File in Directory");
 				return;}
+			
 			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR ,toRunIR);
 			if (isempty) break;
+			
+			 //////////////////////////////////////		
+			 /* to Lex and generate lexed files */
+			 /////////////////////////////////////	
 
 			if (toLex){
 				String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
@@ -247,8 +265,13 @@ public class Compiler {
 				}
 				fw.close();
 			}
+
+			 /////////////////////////////////////////		
+			 /* to Parse and generate parsed files */
+			 ////////////////////////////////////////	
 			if(toParse){
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
+				if(diagnosisRoot != null){fN = diagnosisRoot + "/" +fN;}
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
 				FileWriter fw = new FileWriter(fN);
@@ -267,8 +290,13 @@ public class Compiler {
 				fw.close();
 			}
 
+			 //////////////////////////////////////////		
+			 /* Type Check and generate typed files */
+			 /////////////////////////////////////////			
+
 			if(toTypecheck) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"typed";
+				if(diagnosisRoot != null){fN = diagnosisRoot + "/" +fN;}
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
 				FileWriter fw = new FileWriter(fN);
@@ -309,10 +337,13 @@ public class Compiler {
 				}
 				fw.close();
 			}
-
-
+			 ////////////////////////////////////////////		
+			 /* Generate IR File and Run IR Simulator
+			  *  and generate .ir file*/
+			 ///////////////////////////////////////////
 			if(toGenIR || toRunIR) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"ir";
+				if(diagnosisRoot != null){fN = diagnosisRoot + "/" +fN;}
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
 				FileWriter fw = new FileWriter(fN);
@@ -357,7 +388,7 @@ public class Compiler {
 							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 						compUnit.printSExp(sp);
 					}
-					/*{
+					{
 						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 						System.out.print("Canonical?: ");
 						System.out.println(cv.visit(compUnit));
@@ -367,7 +398,7 @@ public class Compiler {
 						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
 						System.out.print("Constant-folded?: ");
 						System.out.println(cv.visit(compUnit));
-					}*/
+					}
 					if (toRunIR){
 						// IR interpreter demo
 						{
@@ -385,20 +416,101 @@ public class Compiler {
 				catch(ArrayInitException ex) {
 					fw.write(ex.getMessage());
 				}
-				//System.out.println("IRGEN file(s) generated!"); XIC should not send anything to STDOUT IF THERE ARE NO ERRORS
 				fw.close();
 			}
 
+			 /////////////////////////////////////
+			/* Run Target and generate .s file */
+			/////////////////////////////////////
+			if(toGenIR || toRunIR) {
+				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"s";
+				if(assemblyRoot != null){fN = diagnosisRoot + "/" +fN;}
+				Reader fr = new FileReader(p.getFile());
+				Lexer lexer = new Lexer(fr);
+				FileWriter fw = new FileWriter(fN);
+				parser par = new parser(lexer);
 
+				SymTab table = new SymTab(null);
+				if(libRoot ==null)
+				{
+					libRoot = new String("");
+				}
+				try{
+					Program program = (Program) par.parse().value;
+					for(int a = 0; a < program.getImports().size(); a++) {
+						Reader impReader = null;
+						try {
+							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
+						}
+						catch(Exception excp) {
+							throw new Error("Interface file " + libRoot + program.getImports().get(a).getString()+".ixi not found.");
+						}
+						Lexer impLexer = new Lexer(impReader);
+						parser impPar = new parser(impLexer);
+						impPar.setState(true);
+						Program impProgram = (Program) impPar.parse().value;
+						impProgram.firstPass(table);
+						impReader.close();
+					}
+					program.firstPass(table);
+					program.secondPass(table);
+					program.returnPass();
+					if(toOptimize){
+						program.constantFold();
+					}
+					//IRCompUnit compUnit = new IRCompUnit("test");
+					String assembly= "";
+					for (Function f: program.getFunctions()){
+						IRFuncDecl F = f.buildIR();
+						F.IRLower();
+						assembly += F.makeAssembly().getData();
+						//compUnit.appendFunc(F);
+					}
+//					StringWriter sw = new StringWriter();
+//					try (PrintWriter pw = new PrintWriter(sw);
+//							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+//						compUnit.printSExp(sp);
+//					}
+//					{
+//						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
+//						System.out.print("Canonical?: ");
+//						System.out.println(cv.visit(compUnit));
+//					}
+//					// IR constant-folding checker demo
+//					{
+//						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
+//						System.out.print("Constant-folded?: ");
+//						System.out.println(cv.visit(compUnit));
+//					}
+//					if (toRunIR){
+//						// IR interpreter demo
+//						{
+//							IRSimulator sim = new IRSimulator(compUnit);
+//							long result = sim.call("_Imain_paaiii");
+//							System.out.println("RESULT:  " + result);
+//						}
+//					}
+					fw.write(assembly);
+				}
+				catch(Error e) {
+					System.out.println(e.getMessage());
+					fw.write(e.getMessage()+"\r\n");
+				}
+				catch(ArrayInitException ex) {
+					fw.write(ex.getMessage());
+				}
+				fw.close();
+			}
 		}
-
 	}
 
 
-
+	 ///////////////////////////////////////
+	/* Empty file checker helper function */
+	///////////////////////////////////////
 
 	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse,
-			Boolean toGenIR,Boolean toRunIR) throws IOException{
+		Boolean toGenIR,Boolean toRunIR) throws IOException{
 		FileReader fr = new FileReader(fileName);
 		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
 		if (toLex){outFile = fileName.substring(0,fileName.length()-2)+"lexed";}
@@ -441,5 +553,8 @@ public class Compiler {
 		System.out.println("-libpath <path>: specify the file path of the library interfaces files that will be used");
 		System.out.println("-D <path>: specify the file path where diagnostic files will be generated");
 		System.out.println("-O: Turn off optimizations.");
+		System.out.println("-d <path>: Specify where to place generated assembly output files");
+		System.out.println("-target <OS>: Specify the operating system for which to generate code.");
+		System.out.println("OS may be one of linux, windows, and macos.");
 	}
 }

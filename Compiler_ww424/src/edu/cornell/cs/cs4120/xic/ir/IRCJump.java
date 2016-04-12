@@ -92,24 +92,6 @@ public class IRCJump extends IRStmt {
         return new IRSeq(ret);
     }
     
-    /*
-     //CJUMP(e,l) ⇒ cmp e1, e2
-     //             [jne|je|jgt|…] l
-     public Assembly toAssembly(){
-     if(hasFalseLabel){
-     movq expr.toString() rax
-     cmpq rax 1 //True or False
-     jne falseLabel
-     trueLabel
-     jmp EndofIf
-     }else{
-     movq expr.toString() rax
-     cmpq rax 1 //True or False
-     je trueLabel
-     jmp EndofIf
-     }
-     }*/
-    
     
     @Override
     public void printSExp(SExpPrinter p) {
@@ -120,4 +102,72 @@ public class IRCJump extends IRStmt {
         if (hasFalseLabel()) p.printAtom(falseLabel);
         p.endList();
     }
+
+	@Override
+    /*
+    //CJUMP(e,l) ⇒ cmp e1, e2
+    //             [jne|je|jgt|…] l
+   */
+	public AssemInstr makeAssembly() {
+		
+		String data = "";
+		data = "testq " + expr.makeAssembly().getSource() + "\n";
+		data += "jnz " + trueLabel ;  
+		return new AssemInstr(data ,"",expr.makeAssembly().getCost() + 2);
+		// TODO Auto-generated method stub
+		/* Binary Operation */ 
+//		String data = "";
+//		if (expr instanceof IRBinOp){
+//			IRBinOp e = (IRBinOp)expr;
+//			IRBinOp.OpType type = e.opType();
+////			IRExpr e1 = e.left();
+////			IRExpr e2 = e.right();
+////			String data = "cmpq " + e1.makeAssembly().getData() +" "
+////								  + e2.makeAssembly().getData() +"\n";
+//			if (type == IRBinOp.OpType.GEQ){
+//				data += "jge " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//			else if (type == IRBinOp.OpType.EQ){
+//				data += "je " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//			else if (type == IRBinOp.OpType.GT){
+//				data += "jg " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//			else if (type == IRBinOp.OpType.LEQ){
+//				data += "jlq " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//			else if (type == IRBinOp.OpType.LT){
+//				data += "jl " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//			else if (type == IRBinOp.OpType.NEQ){
+//				data += "jnq " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//			else if (type == IRBinOp.OpType.OR){
+//				data += "or " + e1.makeAssembly().getData() +" "
+//						  	 + e2.makeAssembly().getData() +"\n";
+//				data += "jnz " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//			else if (type == IRBinOp.OpType.AND){
+//				data += "and " + e1.makeAssembly().getData() +" "
+//						  	 + e2.makeAssembly().getData() +"\n";
+//				data += "jnz " + trueLabel + " \n";
+//				return new AssemInstr(data,"");
+//			}
+//
+//		}
+//		//This is for boolean expression
+//		else {
+//			data = "testq " + expr.makeAssembly().getSource();
+//			data += "jnz " + trueLabel + " \n";
+//			return new AssemInstr(data,"");
+//		}
+//		return null;
+	}
 }

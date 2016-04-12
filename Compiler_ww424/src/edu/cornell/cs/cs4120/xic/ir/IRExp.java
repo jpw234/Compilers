@@ -49,6 +49,10 @@ public class IRExp extends IRStmt {
     	return new IRSeq(expr.IRLower().stmt());
     }
 
+    public AssemInstr makeAssembly(){
+    	return null;
+    }
+
     @Override
     public void printSExp(SExpPrinter p) {
         p.startList();
