@@ -73,7 +73,21 @@ public class ArrLiteralExpr extends Expr {
 	@Override
 	public String toString(){
 		String s = "";
-		if(isString){s = "\"" + str + "\"";}
+		if(isString){
+			String unparsedString = "";
+			for (char unparseChar : str.toCharArray()) {
+				if(unparseChar == '\t') {
+					unparsedString += "\\t";
+				}
+				else if(unparseChar == '\n') {
+					unparsedString += "\\n";
+				}
+				else {
+					unparsedString += unparseChar;
+				}
+			}
+			s = "\"" + unparsedString + "\"";
+		}
 		else{//tuple
 			for(int i = 0; i < values.size(); i++){s = s + " " + values.get(i).toString();}
 			s = "( " + s + " )";
