@@ -37,7 +37,7 @@ public class IRName extends IRExpr {
 	@Override
 	public AssemInstr makeAssembly() {
 		// TODO Auto-generated method stub
-		return new AssemInstr(name+":","");
+		return new AssemInstr(name,"");
 	}
     
     @Override
