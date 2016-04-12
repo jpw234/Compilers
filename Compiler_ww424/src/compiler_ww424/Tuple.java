@@ -20,7 +20,7 @@ public class Tuple extends Type {
 	
 	@Override
 	public boolean equals(Type t) {
-		if(args.size() == 1 && t.getType() == args.get(0).getType()) return true;
+		if(args.size() == 1 && t.equals(args.get(0))) return true;
 		else if(args.size() == 1 && t.getType() == "empty" &&  args.get(0).getDepth() >= 1) return true;
 		else if(t.getType() != "tuple") return false;
 		

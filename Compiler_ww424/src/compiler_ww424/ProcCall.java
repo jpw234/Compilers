@@ -67,11 +67,11 @@ public class ProcCall extends Stmt {
 		}
 		//FunType ft = new FunType(inputs, null);
 		// TODO Auto-generated method stub
-		List<IRStmt> proc = new ArrayList<IRStmt>();
+		/*List<IRStmt> proc = new ArrayList<IRStmt>();
 		for(int i = 0; i < args.size(); i++){
 			String argNum = "_ARG" + i;
 			proc.add(new IRMove(new IRTemp(argNum), args.get(i).buildIRExpr()));
-		}
+		}*/
 		ArrayList<IRExpr> irargs = new ArrayList<IRExpr>();
 		for(int a = 0; a < args.size(); a++) {
 			irargs.add(args.get(a).buildIRExpr());
@@ -80,8 +80,8 @@ public class ProcCall extends Stmt {
 		//System.out.println("Procedure Call");
 		//System.out.println(name.getName());
 		//System.out.println(FunCall.mangle_name(name.getName(),ft));
-		proc.add(new IRExp(new IRCall(new IRName(FunCall.mangle_name(name.getName(), ft)), irargs)));
-		return new IRSeq(proc);
+		//proc.add();
+		return new IRExp(new IRCall(new IRName(FunCall.mangle_name(name.getName(), ft)), irargs));
 	}
 	
 }

@@ -160,7 +160,7 @@ public class BinaryExpr extends Expr {
 	public IRExpr buildIRExpr() {
 		switch(op) {
 		case PLUS: {
-			if(left.getType() != null && left.getType().equals(new Type("int"))){
+			if(left.getType() != null && left.getType().equals(new Type("int",0))){
 				return new IRBinOp(IRBinOp.OpType.ADD,
 								   left.buildIRExpr(),
 								   right.buildIRExpr());
