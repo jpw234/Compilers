@@ -45,6 +45,7 @@ public class BinaryExpr extends Expr {
 		String ltypeVal = ltype.getType();
 		if(ltypeVal == "tuple") {
 			ltypeVal = ((Tuple) ltype).getArgs().get(0).getType();
+			ltype = ((Tuple) ltype).getArgs().get(0);
 		}
 		
 		if(ltype.getDepth() > 0) {
@@ -165,19 +166,27 @@ public class BinaryExpr extends Expr {
 								   right.buildIRExpr());
 			}
 			ArrayList <IRStmt> sequence = new ArrayList<IRStmt>();
+			String leftside = LabelMaker.Generate_Unique_Label("_STRING_CONCAT_LEFT");
+			String rightside = LabelMaker.Generate_Unique_Label("_STRING_CONCAT_RIGHT");
+			sequence.add(new IRMove(
+							new IRTemp(leftside),
+							left.buildIRExpr()));
+			sequence.add(new IRMove(
+							new IRTemp(rightside),
+							right.buildIRExpr()));
 			sequence.add(new IRMove(
 							new IRTemp("_STRING_CONCAT_LLEN"),
 							new IRMem(
 								new IRBinOp(
 									IRBinOp.OpType.SUB,
-									left.buildIRExpr(),
+									new IRTemp(leftside),
 									new IRConst(8)))));
 			sequence.add(new IRMove(
 							new IRTemp("_STRING_CONCAT_RLEN"),
 							new IRMem(
 								new IRBinOp(
 									IRBinOp.OpType.SUB,
-									right.buildIRExpr(),
+									new IRTemp(rightside),
 									new IRConst(8)))));
 			sequence.add(new IRMove(
 							new IRTemp("_STRING_CONCAT_LENGTH"),
@@ -195,6 +204,7 @@ public class BinaryExpr extends Expr {
 													new IRTemp("_STRING_CONCAT_LENGTH"),
 													new IRConst(1)),
 										new IRConst(8)))));
+										
 			sequence.add(new IRMove(
 							new IRMem(
 								new IRTemp("_STRING_CONCAT_LOC")),
@@ -222,15 +232,17 @@ public class BinaryExpr extends Expr {
 								new IRMem(
 									new IRBinOp(
 										IRBinOp.OpType.ADD,
-										left.buildIRExpr(),
+										new IRTemp(leftside),
 										new IRBinOp(
 											IRBinOp.OpType.MUL,
 											new IRTemp("_STRING_CONCAT_LCOUNTER"),
 											new IRConst(8))))));
+			
 			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_COUNTER"),new IRBinOp(
 																			IRBinOp.OpType.ADD,
 																			new IRTemp("_STRING_CONCAT_COUNTER"),
 																			new IRConst(8))));
+
 			sequence.add(new IRMove(new IRTemp("_STRING_CONCAT_LCOUNTER"),new IRBinOp(
 																			IRBinOp.OpType.ADD,
 																			new IRTemp("_STRING_CONCAT_LCOUNTER"),
@@ -241,8 +253,8 @@ public class BinaryExpr extends Expr {
 			sequence.add(new IRCJump(
 							new IRBinOp(
 								IRBinOp.OpType.GEQ,
-								new IRTemp("_STRING_CONCAT_LCOUNTER"),
-								new IRTemp("_STRING_CONCAT_LLEN")),
+								new IRTemp("_STRING_CONCAT_RCOUNTER"),
+								new IRTemp("_STRING_CONCAT_RLEN")),
 							udone_label));
 			sequence.add(new IRMove(
 								new IRMem(
@@ -253,7 +265,7 @@ public class BinaryExpr extends Expr {
 								new IRMem(
 									new IRBinOp(
 										IRBinOp.OpType.ADD,
-										right.buildIRExpr(),
+										new IRTemp(rightside),
 										new IRBinOp(
 											IRBinOp.OpType.MUL,
 											new IRTemp("_STRING_CONCAT_RCOUNTER"),

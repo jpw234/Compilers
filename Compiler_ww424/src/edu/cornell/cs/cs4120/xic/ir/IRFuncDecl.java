@@ -96,4 +96,12 @@ public class IRFuncDecl extends IRNode {
         }
         return unwrapS;
     }
+
+	@Override
+	public AssemInstr makeAssembly() {
+		// TODO Auto-generated method stub
+		String data = name + ":" + "\n"+
+							body.makeAssembly().getData();
+		return new AssemInstr(data,"");
+	}
 }

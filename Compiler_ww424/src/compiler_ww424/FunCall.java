@@ -6,9 +6,9 @@ import edu.cornell.cs.cs4120.xic.ir.*;
 public class FunCall extends Expr {
 	private IDExpr name;
 	private ArrayList<Expr> args;
-	//private Type type;
+	private FunType ft;
 
-	public static String mangle_name(String n, FunType t) {
+	public static String mangle_name(String n, FunType t){
 		String res = "_I" + n.replaceAll("_", "__") + "_";
 		Tuple out = t.getOutputs();
 		if(out == null || out.getArgs() == null||out.getArgs().size() == 0 ) res = res + "p";
@@ -33,18 +33,18 @@ public class FunCall extends Expr {
 						res = res + "a";
 					}
 					if(((Tuple)(in.getArgs().get(a))).getArgs().get(0).getType().equals("int")) res = res + "i";
-					else res = res + "b";
+					else if(((Tuple)(in.getArgs().get(a))).getArgs().get(0).getType().equals("bool")) res = res + "b";
 				}
 				else{
 					for(int b = 0; b < in.getArgs().get(a).getDepth(); b++) {
 						res = res + "a";
 					}
 					if(in.getArgs().get(a).getType().equals("int")) res = res + "i";
-					else res = res + "b";
+					else if(in.getArgs().get(a).getType().equals("bool")) res = res + "b";
 				}
 			}
 		}
-
+		//System.out.println(res);
 		return res;
 	} 
 
@@ -64,7 +64,7 @@ public class FunCall extends Expr {
 
 	public Type typecheck(SymTab s) {
 		try {
-			FunType ft = (FunType) s.lookupFunction(name.getName());
+			ft = (FunType) s.lookupFunction(name.getName());
 
 			if(args.size() != ft.getInputs().getArgs().size()) throw new Error(line + ":" + column + " error: " + "incorrect # of args to fun");
 
@@ -90,7 +90,7 @@ public class FunCall extends Expr {
 			inputs.add(args.get(a).getType());
 		}
 
-		FunType ft = new FunType(inputs, (Tuple) type);
+		//FunType ft = new FunType(inputs, (Tuple) type);
 
 		ArrayList<IRExpr> irargs = new ArrayList<IRExpr>();
 		for(int a = 0; a < args.size(); a++) {

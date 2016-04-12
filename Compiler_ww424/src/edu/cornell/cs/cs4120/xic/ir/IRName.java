@@ -33,10 +33,12 @@ public class IRName extends IRExpr {
     }
     
     /*
-     LABEL(l ) ⇒ l:
-     public Assembly toAssembly(){
-     return new Assembly(name+":")
-     }*/
+     LABEL(l ) ⇒ l*/
+	@Override
+	public AssemInstr makeAssembly() {
+		// TODO Auto-generated method stub
+		return new AssemInstr(name,"");
+	}
     
     @Override
     public void printSExp(SExpPrinter p) {
@@ -45,4 +47,5 @@ public class IRName extends IRExpr {
         p.printAtom(name);
         p.endList();
     }
+
 }

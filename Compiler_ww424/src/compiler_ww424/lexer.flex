@@ -140,9 +140,9 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 									  return token(sym.STRING, string.toString()); }
 									  
 	[^\n\r\"\\]+					{ string.append(yytext()); }
-	\\t 							{ string.append("\\t"); }
-	\\n 							{ string.append("\\n"); }
-	\\r 							{ string.append("\\r"); }
+	\\t 							{ string.append("\t"); }
+	\\n 							{ string.append("\n"); }
+	\\r 							{ string.append("\r"); }
 	\\\" 							{ string.append("\""); }
 	\\\\							{ string.append('\\'); }
 	\\0x {HexNumber}				{ int k = Integer.parseInt(yytext().substring(3), 16);
@@ -162,9 +162,9 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 									  return token(sym.CHARACTER, string.toString()); }
 	
 	[^\n\r\'\\]+					{ string.append(yytext()); }
-	\\t								{ string.append("\\t"); }
-	\\n 							{ string.append("\\n"); }
-	\\r 							{ string.append("\\r"); }
+	\\t								{ string.append("\t"); }
+	\\n 							{ string.append("\n"); }
+	\\r 							{ string.append("\r"); }
 	\\\" 							{ string.append("\""); }
 	\\\' 							{ string.append("\'"); }
 	\\								{ string.append('\\'); }
