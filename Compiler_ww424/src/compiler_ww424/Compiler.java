@@ -403,7 +403,7 @@ public class Compiler {
 						// IR interpreter demo
 						{
 							IRSimulator sim = new IRSimulator(compUnit);
-							long result = sim.call("_Imain_paaiii");
+							long result = sim.call("_Imain_paai");
 							System.out.println("RESULT:  " + result);
 						}
 					}

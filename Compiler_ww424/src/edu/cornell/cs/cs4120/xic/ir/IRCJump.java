@@ -113,7 +113,7 @@ public class IRCJump extends IRStmt {
 		String data = "";
 		data = "testq " + expr.makeAssembly().getSource() + "\n";
 		data += "jnz " + trueLabel ;  
-		return new AssemInstr(data ,"");
+		return new AssemInstr(data ,"",expr.makeAssembly().getCost() + 2);
 		// TODO Auto-generated method stub
 		/* Binary Operation */ 
 //		String data = "";

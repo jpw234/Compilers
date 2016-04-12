@@ -58,8 +58,6 @@ public abstract class IRNode {
      * @param p the S-expression printer
      */
     public abstract void printSExp(SExpPrinter p);
-    
-    public abstract AssemInstr makeAssembly();
 
     @Override
     public String toString() {
@@ -72,6 +70,6 @@ public abstract class IRNode {
     }
     
     public AssemInstr makeAssembly() {
-    	return new AssemInstr("", "");
+    	return new AssemInstr("", "", 0);
     }
 }

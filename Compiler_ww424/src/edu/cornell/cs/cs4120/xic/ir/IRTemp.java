@@ -39,4 +39,9 @@ public class IRTemp extends IRExpr {
         p.printAtom(name);
         p.endList();
     }
+    
+    public AssemInstr makeAssembly() {
+    	//TODO: implement correctly
+    	return new AssemInstr("", "", 0);
+    }
 }

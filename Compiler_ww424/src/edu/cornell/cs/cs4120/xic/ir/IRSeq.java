@@ -87,10 +87,12 @@ public class IRSeq extends IRStmt {
     
     public AssemInstr makeAssembly(){
     	String data = "";
+    	int cost = 0;
     	for(IRStmt s : stmts){
     		data += s.makeAssembly().getData();
+    		cost += s.makeAssembly().getCost();
     	}
-    	return new AssemInstr(data, "");
+    	return new AssemInstr(data, "", cost);
     }
 
     @Override

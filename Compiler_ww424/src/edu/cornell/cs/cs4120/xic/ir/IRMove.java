@@ -92,7 +92,7 @@ public class IRMove extends IRStmt {
     	String data = expr_Assem.getData() +
     				  target_Assem.getData() +
     				  "movq" + expr_Assem.getSource() + " " + target_Assem.getSource() + "\n";
-    	return new AssemInstr(data, "");
+    	return new AssemInstr(data, "", target.makeAssembly().getCost() + expr.makeAssembly().getCost() + 1);
     }
 
     @Override

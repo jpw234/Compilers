@@ -63,9 +63,9 @@ public class IRJump extends IRStmt {
         p.endList();
     }
     
-    /*public String makeAssembly() {
-    	//jmp has three possible args: label, a register, or a memory location
-    	//but jmp is the instruction for all 3
-    	//may need to check what form target.makeAssembly() has
-    }*/
+    public AssemInstr makeAssembly() {
+    	AssemInstr child = target.makeAssembly();
+    	return new AssemInstr(child.getData() + "\n jmp " + child.getSource(), "", 
+    						  child.getCost() + 1);
+    }
 }

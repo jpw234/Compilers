@@ -99,9 +99,9 @@ public class IRFuncDecl extends IRNode {
 
 	@Override
 	public AssemInstr makeAssembly() {
-		// TODO Auto-generated method stub
+		AssemInstr child = body.makeAssembly();
 		String data = name + ":" + "\n"+
-							body.makeAssembly().getData();
-		return new AssemInstr(data,"");
+							child.getData();
+		return new AssemInstr(data,"",child.getCost());
 	}
 }
