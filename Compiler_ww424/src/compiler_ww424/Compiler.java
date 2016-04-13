@@ -388,7 +388,7 @@ public class Compiler {
 							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 						compUnit.printSExp(sp);
 					}
-					{
+					/*{
 						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 						System.out.print("Canonical?: ");
 						System.out.println(cv.visit(compUnit));
@@ -398,13 +398,13 @@ public class Compiler {
 						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
 						System.out.print("Constant-folded?: ");
 						System.out.println(cv.visit(compUnit));
-					}
+					}*/
 					if (toRunIR){
 						// IR interpreter demo
 						{
 							IRSimulator sim = new IRSimulator(compUnit);
-							long result = sim.call("_Imain_paaiii");
-							System.out.println("RESULT:  " + result);
+							long result = sim.call("_Imain_paai");
+							//System.out.println("RESULT:  " + result);
 						}
 					}
 					fw.write(sw.toString());
@@ -422,7 +422,7 @@ public class Compiler {
 			 /////////////////////////////////////
 			/* Run Target and generate .s file */
 			/////////////////////////////////////
-			if(toGenIR || toRunIR) {
+			if(toAssembly) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"s";
 				if(assemblyRoot != null){fN = diagnosisRoot + "/" +fN;}
 				Reader fr = new FileReader(p.getFile());
@@ -458,38 +458,12 @@ public class Compiler {
 					if(toOptimize){
 						program.constantFold();
 					}
-					//IRCompUnit compUnit = new IRCompUnit("test");
 					String assembly= "";
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						//assembly += F.makeAssembly().getData();
-						//compUnit.appendFunc(F);
+						assembly += F.makeAssembly().getData();
 					}
-//					StringWriter sw = new StringWriter();
-//					try (PrintWriter pw = new PrintWriter(sw);
-//							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
-//						compUnit.printSExp(sp);
-//					}
-//					{
-//						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
-//						System.out.print("Canonical?: ");
-//						System.out.println(cv.visit(compUnit));
-//					}
-//					// IR constant-folding checker demo
-//					{
-//						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
-//						System.out.print("Constant-folded?: ");
-//						System.out.println(cv.visit(compUnit));
-//					}
-//					if (toRunIR){
-//						// IR interpreter demo
-//						{
-//							IRSimulator sim = new IRSimulator(compUnit);
-//							long result = sim.call("_Imain_paaiii");
-//							System.out.println("RESULT:  " + result);
-//						}
-//					}
 					fw.write(assembly);
 				}
 				catch(Error e) {
