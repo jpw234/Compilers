@@ -233,7 +233,7 @@ public class Compiler {
 				System.err.println("No such File in Directory");
 				return;}
 			
-			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR ,toRunIR);
+			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR ,toRunIR,toAssembly);
 			if (isempty) break;
 			
 			 //////////////////////////////////////		
@@ -256,38 +256,10 @@ public class Compiler {
 					else if (tok.sym == sym.CHARACTER) { lineVal = "character"+" "+ tok.value;}
 					else if (tok.sym == sym.ID) {lineVal = "id"+" "+ tok.value;}
 					else if (tok.sym == sym.error){lineVal = (String) tok.value;
-					//UNPARSING STRINGS
-					String unparsedString = "";
-					for (char unparseChar : lineVal.toCharArray()) {
-						if(unparseChar == '\t') {
-							unparsedString += "\\t";
-						}
-						else if(unparseChar == '\n') {
-							unparsedString += "\\n";
-						}
-						else {
-							unparsedString += unparseChar;
-						}
-					}
-					lineVal = unparsedString;
 					fw.write(String.format("%d:%d %s\n", numLine, numCol, lineVal));
 					break;}
 					else{lineVal = lexer.yytext();}
 					//WRITE IN THE FILES
-					//UNPARSING STRINGS
-					String unparsedString = "";
-					for (char unparseChar : lineVal.toCharArray()) {
-						if(unparseChar == '\t') {
-							unparsedString += "\\t";
-						}
-						else if(unparseChar == '\n') {
-							unparsedString += "\\n";
-						}
-						else {
-							unparsedString += unparseChar;
-						}
-					}
-					lineVal = unparsedString;
 					String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
 					fw.write(s);	
 				}
@@ -416,7 +388,7 @@ public class Compiler {
 							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 						compUnit.printSExp(sp);
 					}
-					/*{
+					{
 						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
 						System.out.print("Canonical?: ");
 						System.out.println(cv.visit(compUnit));
@@ -426,13 +398,13 @@ public class Compiler {
 						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
 						System.out.print("Constant-folded?: ");
 						System.out.println(cv.visit(compUnit));
-					}*/
+					}
 					if (toRunIR){
 						// IR interpreter demo
 						{
 							IRSimulator sim = new IRSimulator(compUnit);
-							long result = sim.call("_Imain_paai");
-							//System.out.println("RESULT:  " + result);
+							long result = sim.call("_Imain_paaiii");
+							System.out.println("RESULT:  " + result);
 						}
 					}
 					fw.write(sw.toString());
@@ -450,7 +422,7 @@ public class Compiler {
 			 /////////////////////////////////////
 			/* Run Target and generate .s file */
 			/////////////////////////////////////
-			if(toAssembly) {
+			if(toGenIR || toRunIR) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"s";
 				if(assemblyRoot != null){fN = diagnosisRoot + "/" +fN;}
 				Reader fr = new FileReader(p.getFile());
@@ -486,12 +458,38 @@ public class Compiler {
 					if(toOptimize){
 						program.constantFold();
 					}
+					//IRCompUnit compUnit = new IRCompUnit("test");
 					String assembly= "";
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						assembly += F.makeAssembly().getData();
+						//assembly += F.makeAssembly().getData();
+						//compUnit.appendFunc(F);
 					}
+//					StringWriter sw = new StringWriter();
+//					try (PrintWriter pw = new PrintWriter(sw);
+//							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+//						compUnit.printSExp(sp);
+//					}
+//					{
+//						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
+//						System.out.print("Canonical?: ");
+//						System.out.println(cv.visit(compUnit));
+//					}
+//					// IR constant-folding checker demo
+//					{
+//						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
+//						System.out.print("Constant-folded?: ");
+//						System.out.println(cv.visit(compUnit));
+//					}
+//					if (toRunIR){
+//						// IR interpreter demo
+//						{
+//							IRSimulator sim = new IRSimulator(compUnit);
+//							long result = sim.call("_Imain_paaiii");
+//							System.out.println("RESULT:  " + result);
+//						}
+//					}
 					fw.write(assembly);
 				}
 				catch(Error e) {
@@ -512,12 +510,13 @@ public class Compiler {
 	///////////////////////////////////////
 
 	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse,
-		Boolean toGenIR,Boolean toRunIR) throws IOException{
+		Boolean toGenIR,Boolean toRunIR,Boolean toAssembly) throws IOException{
 		FileReader fr = new FileReader(fileName);
 		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
 		if (toLex){outFile = fileName.substring(0,fileName.length()-2)+"lexed";}
 		else if (toparse){outFile = fileName.substring(0,fileName.length()-2)+"parsed";}
 		else if (toGenIR || toRunIR){outFile = fileName.substring(0,fileName.length()-2)+"ir";}
+		else if (toAssembly) {outFile = fileName.substring(0,fileName.length()-2)+"s";}
 		BufferedReader br = new BufferedReader(fr); 
 		FileWriter fw = new FileWriter(outFile); 
 		String line;
