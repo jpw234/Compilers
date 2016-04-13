@@ -40,8 +40,12 @@ public class IRTemp extends IRExpr {
         p.endList();
     }
     
-    public AssemInstr makeAssembly() {
-    	//TODO: implement correctly
-    	return new AssemInstr("", "", 0);
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		//TODO: implement correctly
+    		bestTile = new AssemInstr("", "", 0);
+    		return 0;
+    	}
     }
 }

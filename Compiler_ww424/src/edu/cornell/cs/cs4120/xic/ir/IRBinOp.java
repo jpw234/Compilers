@@ -146,4 +146,12 @@ public class IRBinOp extends IRExpr {
         right.printSExp(p);
         p.endList();
     }
+    
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		return 0;
+    		//TODO: implement correctly
+    	}
+    }
 }

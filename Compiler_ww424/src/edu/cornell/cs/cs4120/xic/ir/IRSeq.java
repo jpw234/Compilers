@@ -84,16 +84,6 @@ public class IRSeq extends IRStmt {
     	
     	return new IRSeq(combinedList);
     }
-    
-    public AssemInstr makeAssembly(){
-    	String data = "";
-    	int cost = 0;
-    	for(IRStmt s : stmts){
-    		data += s.makeAssembly().getData();
-    		cost += s.makeAssembly().getCost();
-    	}
-    	return new AssemInstr(data, "", cost);
-    }
 
     @Override
     public void printSExp(SExpPrinter p) {
@@ -102,5 +92,20 @@ public class IRSeq extends IRStmt {
         for (IRStmt stmt : stmts)
             stmt.printSExp(p);
         p.endList();
+    }
+    
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		String data = "";
+    		int cost = 0;
+    		for(IRStmt s : stmts) {
+    			AssemInstr temp = s.getBestTile();
+    			data += temp.getData() + "\n";
+    			cost += temp.getCost();
+    		}
+    		bestTile = new AssemInstr(data, "", cost);
+    		return bestTile.getCost();
+    	}
     }
 }

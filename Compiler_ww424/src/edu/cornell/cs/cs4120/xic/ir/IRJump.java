@@ -63,9 +63,13 @@ public class IRJump extends IRStmt {
         p.endList();
     }
     
-    public AssemInstr makeAssembly() {
-    	AssemInstr child = target.makeAssembly();
-    	return new AssemInstr(child.getData() + "\n jmp " + child.getSource(), "", 
-    						  child.getCost() + 1);
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		AssemInstr child = target.getBestTile();
+    		bestTile = new AssemInstr(child.getData() + "\n jmp " + child.getSource(), "",
+    							  child.getCost() + 1);
+    		return bestTile.getCost();
+    	}
     }
 }

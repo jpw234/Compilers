@@ -32,14 +32,6 @@ public class IRName extends IRExpr {
         return new IRESeq(new IRSeq(new ArrayList<IRStmt>()), this);
     }
     
-    /*
-     LABEL(l ) ⇒ l*/
-	@Override
-	public AssemInstr makeAssembly() {
-		// TODO Auto-generated method stub
-		return new AssemInstr(name,"",0);
-	}
-    
     @Override
     public void printSExp(SExpPrinter p) {
         p.startList();
@@ -48,4 +40,12 @@ public class IRName extends IRExpr {
         p.endList();
     }
 
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		//TODO: check if this is right
+    		bestTile = new AssemInstr(name, "", 0);
+    		return 0;
+    	}
+    }
 }

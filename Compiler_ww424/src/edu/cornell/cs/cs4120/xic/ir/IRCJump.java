@@ -102,18 +102,23 @@ public class IRCJump extends IRStmt {
         if (hasFalseLabel()) p.printAtom(falseLabel);
         p.endList();
     }
+    
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		AssemInstr child = expr.getBestTile();
+    		
+    		String data = child.getData() + "\ntestq " + child.getSource() + "\n";
+    		data += "jnz " + trueLabel;
+    		bestTile = new AssemInstr(data, "", child.getCost() + 2);
+    		return bestTile.getCost();
+    	}
+    }
 
-	@Override
     /*
     //CJUMP(e,l) ⇒ cmp e1, e2
     //             [jne|je|jgt|…] l
    */
-	public AssemInstr makeAssembly() {
-		
-		String data = "";
-		data = "testq " + expr.makeAssembly().getSource() + "\n";
-		data += "jnz " + trueLabel ;  
-		return new AssemInstr(data ,"",expr.makeAssembly().getCost() + 2);
 		// TODO Auto-generated method stub
 		/* Binary Operation */ 
 //		String data = "";
@@ -169,5 +174,4 @@ public class IRCJump extends IRStmt {
 //			return new AssemInstr(data,"");
 //		}
 //		return null;
-	}
 }

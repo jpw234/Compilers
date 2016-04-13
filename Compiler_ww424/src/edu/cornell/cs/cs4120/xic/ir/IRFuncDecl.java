@@ -96,12 +96,14 @@ public class IRFuncDecl extends IRNode {
         }
         return unwrapS;
     }
-
-	@Override
-	public AssemInstr makeAssembly() {
-		AssemInstr child = body.makeAssembly();
-		String data = name + ":" + "\n"+
-							child.getData();
-		return new AssemInstr(data,"",child.getCost());
-	}
+    
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		AssemInstr child = body.getBestTile();
+    		String data = name + ":\n" + child.getData();
+    		bestTile = new AssemInstr(data, "", child.getCost());
+    		return bestTile.getCost();
+    	}
+    }
 }

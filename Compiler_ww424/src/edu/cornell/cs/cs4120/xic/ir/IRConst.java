@@ -45,7 +45,11 @@ public class IRConst extends IRExpr {
         p.endList();
     }
     
-    public AssemInstr makeAssembly() {
-    	return new AssemInstr("", "$" + String.valueOf(value), 0);
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		bestTile = new AssemInstr("", "$" + String.valueOf(value), 0);
+    		return 0;
+    	}
     }
 }

@@ -86,15 +86,6 @@ public class IRMove extends IRStmt {
     	}		
     }
     
-    public AssemInstr makeAssembly(){
-    	AssemInstr target_Assem = target.makeAssembly();
-    	AssemInstr expr_Assem = expr.makeAssembly();
-    	String data = expr_Assem.getData() +
-    				  target_Assem.getData() +
-    				  "movq" + expr_Assem.getSource() + " " + target_Assem.getSource() + "\n";
-    	return new AssemInstr(data, "", target.makeAssembly().getCost() + expr.makeAssembly().getCost() + 1);
-    }
-
     @Override
     public void printSExp(SExpPrinter p) {
         p.startList();
@@ -102,5 +93,17 @@ public class IRMove extends IRStmt {
         target.printSExp(p);
         expr.printSExp(p);
         p.endList();
+    }
+    
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		AssemInstr targetAssem = target.getBestTile();
+    		AssemInstr exprAssem = expr.getBestTile();
+    		String data = exprAssem.getData() + "\n" + targetAssem.getData() + "\n" +
+    					  "movq " + exprAssem.getSource() + ", " + targetAssem.getSource() + "\n";
+    		bestTile = new AssemInstr(data, "", targetAssem.getCost() + exprAssem.getCost() + 1);
+    		return bestTile.getCost();
+    	}
     }
 }

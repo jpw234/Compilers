@@ -16,6 +16,8 @@ import edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
  */
 public abstract class IRNode {
 
+	protected AssemInstr bestTile = null;
+
     /**
      * Visit the children of this IR node.
      * @param v the visitor
@@ -69,7 +71,13 @@ public abstract class IRNode {
         return sw.toString();
     }
     
-    public AssemInstr makeAssembly() {
-    	return new AssemInstr("", "", 0);
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else return 0;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile == null) this.bestCost();
+    	return bestTile;
     }
 }

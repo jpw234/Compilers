@@ -25,7 +25,11 @@ public class IRReturn extends IRStmt {
         p.endList();
     }
     
-    public AssemInstr makeAssembly() {
-    	return new AssemInstr("ret", "", 1); 
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		bestTile = new AssemInstr("ret", "", 1);
+    		return 1;
+    	}
     }
 }

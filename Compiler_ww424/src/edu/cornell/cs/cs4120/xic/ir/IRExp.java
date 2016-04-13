@@ -49,8 +49,13 @@ public class IRExp extends IRStmt {
     	return new IRSeq(expr.IRLower().stmt());
     }
 
-    public AssemInstr makeAssembly(){
-    	return null;
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		AssemInstr child = expr.getBestTile();
+    		bestTile = new AssemInstr(child.getData(), "", child.getCost());
+    		return bestTile.getCost();
+    	}
     }
 
     @Override

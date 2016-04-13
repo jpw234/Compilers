@@ -83,4 +83,15 @@ public class IRMem extends IRExpr {
         expr.printSExp(p);
         p.endList();
     }
+    
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		AssemInstr child = expr.getBestTile();
+    		
+    		bestTile = new AssemInstr(child.getData() + "\n movq " + child.getSource() + " , %r10",
+    								  "%r10", child.getCost() + 2);
+    		return bestTile.getCost();
+    	}
+    }
 }
