@@ -462,7 +462,7 @@ public class Compiler {
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						assembly += F.makeAssembly().getData();
+						assembly += F.getBestTile().getData();
 					}
 					fw.write(assembly);
 				}
