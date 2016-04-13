@@ -109,11 +109,45 @@ public class IRCJump extends IRStmt {
     		bestTileNum = 0;
     		bestCost = 2 + expr.bestCost();
     	}
-    	if(/*check for tile matching*/) {//say here what the tile is
+    	if(expr instanceof IRBinOp) {//say here what the tile is
     		//calc cost
-    		if(/*cost < bestCost*/) {
-    			bestCost = cost;
-    			bestTileNum = 1;
+			IRBinOp e = (IRBinOp) expr;
+			IRBinOp.OpType type = e.opType();
+    		if(type == IRBinOp.OpType.EQ) {
+    			if (bestCost > 2 ){
+    				bestCost = 2;
+    				bestTileNum = 1;
+    			}
+    		}
+    		if(type == IRBinOp.OpType.NEQ){
+    			if (bestCost > 2 ){
+    				bestCost = 2;
+    				bestTileNum = 2;
+    			}
+    		}
+    		if (type == IRBinOp.OpType.LT){
+    			if (bestCost > 2 ){
+    				bestCost = 2;
+    				bestTileNum = 3;
+    			}
+    		}
+    		if (type == IRBinOp.OpType.GT){
+    			if (bestCost > 2 ){
+    				bestCost = 2;
+    				bestTileNum = 4;
+    			}
+    		}
+    		if (type == IRBinOp.OpType.LEQ){
+    			if (bestCost > 2 ){
+    				bestCost = 2;
+    				bestTileNum = 5;
+    			}
+    		}
+    		if (type == IRBinOp.OpType.GEQ){
+    			if (bestCost > 2 ){
+    				bestCost = 2;
+    				bestTileNum = 6;
+    			}
     		}
     	}
     	return bestCost;
@@ -126,76 +160,66 @@ public class IRCJump extends IRStmt {
     		switch(bestTileNum) {
     		case 0: {//mintile
     			AssemInstr child = expr.getBestTile();
-        		
         		String data = child.getData() + "\ntestq " + child.getSource() + "\n";
         		data += "jnz " + trueLabel;
         		bestTile = new AssemInstr(data, "", child.getCost() + 2);
     		}
-    		case 1: {//whatever tile 1 is
-    			
+    		case 1: {//IRCJUMP(IRBinOp(EQ, IRNode(x), IRNode(y)), truelabel)
+    			IRExpr e1 = ((IRBinOp)expr).left();
+    			IRExpr e2 = ((IRBinOp)expr).right();
+				String data =   "movq " + e1.getBestTile().getSource() + ", %10 \n"
+ 					   		+   "movq " + e2.getBestTile().getSource() + ", %11 \n"
+ 					   		+ "cmpq	%11, %10"
+ 					   		+ "je   " + trueLabel;
+				bestTile = new AssemInstr(data, "", 2);	
+    		}
+    		case 2: {//IRCJUMP(IRBinOp(NEQ, IRNode(x), IRNode(y)), truelabel)
+    			IRExpr e1 = ((IRBinOp)expr).left();
+    			IRExpr e2 = ((IRBinOp)expr).right();
+				String data =   "movq " + e1.getBestTile().getSource() + ", %10 \n"
+ 					   		+   "movq " + e2.getBestTile().getSource() + ", %11 \n"
+ 					   		+ "cmpq	%11, %10"
+ 					   		+ "jne  " + trueLabel;
+				bestTile = new AssemInstr(data, "", 2);	
+    		}
+    		case 3: {//IRCJUMP(IRBinOp(LT, IRNode(x), IRNode(y)), truelabel)
+    			IRExpr e1 = ((IRBinOp)expr).left();
+    			IRExpr e2 = ((IRBinOp)expr).right();
+				String data =   "movq " + e1.getBestTile().getSource() + ", %10 \n"
+ 					   		+   "movq " + e2.getBestTile().getSource() + ", %11 \n"
+ 					   		+ "cmpq	%11, %10"
+ 					   		+ "jl   " + trueLabel;
+				bestTile = new AssemInstr(data, "", 2);	
+    		}
+    		case 4: {//IRCJUMP(IRBinOp(GT, IRNode(x), IRNode(y)), truelabel)
+    			IRExpr e1 = ((IRBinOp)expr).left();
+    			IRExpr e2 = ((IRBinOp)expr).right();
+				String data =   "movq " + e1.getBestTile().getSource() + ", %10 \n"
+ 					   		+   "movq " + e2.getBestTile().getSource() + ", %11 \n"
+ 					   		+ "cmpq	%11, %10"
+ 					   		+ "jg   " + trueLabel;
+				bestTile = new AssemInstr(data, "", 2);	
+    		}
+    		case 5: {// IRCJUMP(IRBinOp(LEQ, IRNode(x), IRNode(y)), truelabel)
+    			IRExpr e1 = ((IRBinOp)expr).left();
+    			IRExpr e2 = ((IRBinOp)expr).right();
+				String data =   "movq " + e1.getBestTile().getSource() + ", %10 \n"
+ 					   		+   "movq " + e2.getBestTile().getSource() + ", %11 \n"
+ 					   		+ "cmpq	%11, %10"
+ 					   		+ "jle   " + trueLabel;
+				bestTile = new AssemInstr(data, "", 2);	
+    		}
+    		case 6: {//IRCJUMP(IRBinOp(GEQ, IRNode(x), IRNode(y)), truelabel)
+    			IRExpr e1 = ((IRBinOp)expr).left();
+    			IRExpr e2 = ((IRBinOp)expr).right();
+				String data =   "movq " + e1.getBestTile().getSource() + ", %10 \n"
+ 					   		+   "movq " + e2.getBestTile().getSource() + ", %11 \n"
+ 					   		+ "cmpq	%11, %10"
+ 					   		+ "jge   " + trueLabel;
+				bestTile = new AssemInstr(data, "", 2);	
     		}
     		}
     	}
     	return bestTile;
     }
-
-    /*
-    //CJUMP(e,l) ⇒ cmp e1, e2
-    //             [jne|je|jgt|…] l
-   */
-		// TODO Auto-generated method stub
-		/* Binary Operation */ 
-//		String data = "";
-//		if (expr instanceof IRBinOp){
-//			IRBinOp e = (IRBinOp)expr;
-//			IRBinOp.OpType type = e.opType();
-////			IRExpr e1 = e.left();
-////			IRExpr e2 = e.right();
-////			String data = "cmpq " + e1.makeAssembly().getData() +" "
-////								  + e2.makeAssembly().getData() +"\n";
-//			if (type == IRBinOp.OpType.GEQ){
-//				data += "jge " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//			else if (type == IRBinOp.OpType.EQ){
-//				data += "je " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//			else if (type == IRBinOp.OpType.GT){
-//				data += "jg " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//			else if (type == IRBinOp.OpType.LEQ){
-//				data += "jlq " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//			else if (type == IRBinOp.OpType.LT){
-//				data += "jl " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//			else if (type == IRBinOp.OpType.NEQ){
-//				data += "jnq " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//			else if (type == IRBinOp.OpType.OR){
-//				data += "or " + e1.makeAssembly().getData() +" "
-//						  	 + e2.makeAssembly().getData() +"\n";
-//				data += "jnz " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//			else if (type == IRBinOp.OpType.AND){
-//				data += "and " + e1.makeAssembly().getData() +" "
-//						  	 + e2.makeAssembly().getData() +"\n";
-//				data += "jnz " + trueLabel + " \n";
-//				return new AssemInstr(data,"");
-//			}
-//
-//		}
-//		//This is for boolean expression
-//		else {
-//			data = "testq " + expr.makeAssembly().getSource();
-//			data += "jnz " + trueLabel + " \n";
-//			return new AssemInstr(data,"");
-//		}
-//		return null;
 }
