@@ -4,6 +4,7 @@ import edu.cornell.cs.cs4120.util.InternalCompilerError;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
+import compiler_ww424.LabelMaker;
 
 /**
  * An intermediate representation for a memory location
@@ -100,9 +101,12 @@ public class IRMem extends IRExpr {
     		switch(bestTileNum) {
     		case 0: {//mintile
     			AssemInstr child = expr.getBestTile();
+    			
+    			String newData = "\n movq " + child.getSource() + ", %r10\n";
+    			String store = StackAssigner.getLocation(LabelMaker.Generate_Unique_Label("_MEM_TEMP"));
+    			newData += "movq %r10, " + store;
         		
-        		bestTile = new AssemInstr(child.getData() + "\n movq " + child.getSource() + " , %r10",
-        								  "(%r10)", child.getCost() + 2);
+        		bestTile = new AssemInstr(child.getData() + newData, store, child.getCost() + 2);
     		}
     		}
     	}
