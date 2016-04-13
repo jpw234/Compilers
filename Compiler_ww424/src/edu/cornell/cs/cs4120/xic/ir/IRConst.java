@@ -48,8 +48,21 @@ public class IRConst extends IRExpr {
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {
-    		bestTile = new AssemInstr("", "$" + String.valueOf(value), 0);
-    		return 0;
+    		bestTileNum = 0;
+    		bestCost = 0;
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0:
+    			bestTile = new AssemInstr("", "$" + String.valueOf(value), 0);
+    		}
+    	}
+    	return bestTile;
     }
 }

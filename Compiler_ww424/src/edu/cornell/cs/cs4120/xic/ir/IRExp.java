@@ -51,11 +51,25 @@ public class IRExp extends IRStmt {
 
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
-    	else {
-    		AssemInstr child = expr.getBestTile();
-    		bestTile = new AssemInstr(child.getData(), "", child.getCost());
-    		return bestTile.getCost();
+    	else {//min tiling
+    		bestTileNum = 0;
+    		bestCost = expr.bestCost();
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			AssemInstr child = expr.getBestTile();
+    			bestTile = new AssemInstr(child.getData(), "", child.getCost());
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 
     @Override

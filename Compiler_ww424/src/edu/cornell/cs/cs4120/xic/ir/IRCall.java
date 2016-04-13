@@ -91,7 +91,7 @@ public class IRCall extends IRExpr {
     	stmts.add(t.stmt()); 
     	
     	for(int a = 0; a < args.size(); a++) {
-    		String lab = LabelMaker.Generate_Unique_Label("_PASSARG");
+    		String lab = "_ARG" + a;
     		
     		IRESeq k = args.get(a).IRLower();
     		stmts.add(k.stmt());

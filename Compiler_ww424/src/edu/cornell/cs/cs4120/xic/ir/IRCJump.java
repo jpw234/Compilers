@@ -105,14 +105,38 @@ public class IRCJump extends IRStmt {
     
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
-    	else {
-    		AssemInstr child = expr.getBestTile();
-    		
-    		String data = child.getData() + "\ntestq " + child.getSource() + "\n";
-    		data += "jnz " + trueLabel;
-    		bestTile = new AssemInstr(data, "", child.getCost() + 2);
-    		return bestTile.getCost();
+    	else {//min tiling
+    		bestTileNum = 0;
+    		bestCost = 2 + expr.bestCost();
     	}
+    	if(/*check for tile matching*/) {//say here what the tile is
+    		//calc cost
+    		if(/*cost < bestCost*/) {
+    			bestCost = cost;
+    			bestTileNum = 1;
+    		}
+    	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			AssemInstr child = expr.getBestTile();
+        		
+        		String data = child.getData() + "\ntestq " + child.getSource() + "\n";
+        		data += "jnz " + trueLabel;
+        		bestTile = new AssemInstr(data, "", child.getCost() + 2);
+    		}
+    		case 1: {//whatever tile 1 is
+    			
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 
     /*

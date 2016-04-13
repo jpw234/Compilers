@@ -97,15 +97,33 @@ public class IRSeq extends IRStmt {
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {
-    		String data = "";
+    		bestTileNum = 0;
     		int cost = 0;
     		for(IRStmt s : stmts) {
-    			AssemInstr temp = s.getBestTile();
-    			data += temp.getData() + "\n";
-    			cost += temp.getCost();
+    			cost += s.bestCost();
     		}
-    		bestTile = new AssemInstr(data, "", cost);
-    		return bestTile.getCost();
+    		bestCost = cost;
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			String data = "";
+        		int cost = 0;
+        		for(IRStmt s : stmts) {
+        			AssemInstr temp = s.getBestTile();
+        			data += temp.getData() + "\n";
+        			cost += temp.getCost();
+        		}
+        		bestTile = new AssemInstr(data, "", cost);
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 }

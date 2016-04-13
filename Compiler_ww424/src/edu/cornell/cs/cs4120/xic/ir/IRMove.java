@@ -98,12 +98,26 @@ public class IRMove extends IRStmt {
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {
-    		AssemInstr targetAssem = target.getBestTile();
-    		AssemInstr exprAssem = expr.getBestTile();
-    		String data = exprAssem.getData() + "\n" + targetAssem.getData() + "\n" +
-    					  "movq " + exprAssem.getSource() + ", " + targetAssem.getSource() + "\n";
-    		bestTile = new AssemInstr(data, "", targetAssem.getCost() + exprAssem.getCost() + 1);
-    		return bestTile.getCost();
+    		bestTileNum = 0;
+    		bestCost = target.bestCost() + expr.bestCost() + 1;
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			AssemInstr targetAssem = target.getBestTile();
+        		AssemInstr exprAssem = expr.getBestTile();
+        		String data = exprAssem.getData() + "\n" + targetAssem.getData() + "\n" +
+        					  "movq " + exprAssem.getSource() + ", " + targetAssem.getSource() + "\n";
+        		bestTile = new AssemInstr(data, "", targetAssem.getCost() + exprAssem.getCost() + 1);
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 }

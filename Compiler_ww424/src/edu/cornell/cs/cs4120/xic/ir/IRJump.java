@@ -66,10 +66,24 @@ public class IRJump extends IRStmt {
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {
-    		AssemInstr child = target.getBestTile();
-    		bestTile = new AssemInstr(child.getData() + "\n jmp " + child.getSource(), "",
-    							  child.getCost() + 1);
-    		return bestTile.getCost();
+    		bestTileNum = 0;
+    		bestCost = target.bestCost() + 1;
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			AssemInstr child = target.getBestTile();
+        		bestTile = new AssemInstr(child.getData() + "\n jmp " + child.getSource(), "",
+        							  child.getCost() + 1);
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 }

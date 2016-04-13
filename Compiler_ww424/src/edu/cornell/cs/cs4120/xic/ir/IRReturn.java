@@ -28,8 +28,22 @@ public class IRReturn extends IRStmt {
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {
-    		bestTile = new AssemInstr("ret", "", 1);
-    		return 1;
+    		bestTileNum = 0;
+    		bestCost = 1;
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			bestTile = new AssemInstr("ret", "", 1);
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 }

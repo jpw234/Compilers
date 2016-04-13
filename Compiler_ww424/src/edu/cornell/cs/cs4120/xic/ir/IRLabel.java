@@ -50,8 +50,22 @@ public class IRLabel extends IRStmt {
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {
-    		bestTile = new AssemInstr(name+":\n", "", 0);
-    		return bestTile.getCost();
+    		bestTileNum = 0;
+    		bestCost = 0;
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			bestTile = new AssemInstr(name+":\n", "", 0);
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 }

@@ -43,9 +43,23 @@ public class IRTemp extends IRExpr {
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {
-    		//TODO: implement correctly
-    		bestTile = new AssemInstr("", "", 0);
-    		return 0;
+    		bestTileNum = 0;
+    		bestCost = 0;
     	}
+    	return bestCost;
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			//TODO: implement correctly
+        		bestTile = new AssemInstr("", "", 0);
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 }
