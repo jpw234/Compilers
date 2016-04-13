@@ -256,10 +256,38 @@ public class Compiler {
 					else if (tok.sym == sym.CHARACTER) { lineVal = "character"+" "+ tok.value;}
 					else if (tok.sym == sym.ID) {lineVal = "id"+" "+ tok.value;}
 					else if (tok.sym == sym.error){lineVal = (String) tok.value;
+					//UNPARSING STRINGS
+					String unparsedString = "";
+					for (char unparseChar : lineVal.toCharArray()) {
+						if(unparseChar == '\t') {
+							unparsedString += "\\t";
+						}
+						else if(unparseChar == '\n') {
+							unparsedString += "\\n";
+						}
+						else {
+							unparsedString += unparseChar;
+						}
+					}
+					lineVal = unparsedString;
 					fw.write(String.format("%d:%d %s\n", numLine, numCol, lineVal));
 					break;}
 					else{lineVal = lexer.yytext();}
 					//WRITE IN THE FILES
+					//UNPARSING STRINGS
+					String unparsedString = "";
+					for (char unparseChar : lineVal.toCharArray()) {
+						if(unparseChar == '\t') {
+							unparsedString += "\\t";
+						}
+						else if(unparseChar == '\n') {
+							unparsedString += "\\n";
+						}
+						else {
+							unparsedString += unparseChar;
+						}
+					}
+					lineVal = unparsedString;
 					String s = String.format("%d:%d %s\n", numLine, numCol, lineVal);
 					fw.write(s);	
 				}
