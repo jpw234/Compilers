@@ -90,7 +90,7 @@ public class IRMem extends IRExpr {
     		AssemInstr child = expr.getBestTile();
     		
     		bestTile = new AssemInstr(child.getData() + "\n movq " + child.getSource() + " , %r10",
-    								  "%r10", child.getCost() + 2);
+    								  "(%r10)", child.getCost() + 2);
     		return bestTile.getCost();
     	}
     }
