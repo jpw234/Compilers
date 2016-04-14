@@ -334,4 +334,4 @@ binaryexpr     ::=   expr:e1 PLUS expr:e2           {: RESULT = new BinaryExpr(e
 unaryexpr      ::=  MINUS expr:e1               {: RESULT = new UnaryExpr(UnaryOp.ARITHNEG, e1,e1left+1,e1right+1); :}
         %prec UMINUS                  
                 | NOT expr:e1                   {: RESULT = new UnaryExpr(UnaryOp.BOOLNEG, e1,e1left+1,e1right+1); :}
-                ;                  
+                ;

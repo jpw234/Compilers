@@ -2,6 +2,7 @@ package edu.cornell.cs.cs4120.xic.ir;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import compiler_ww424.LabelMaker;
@@ -100,7 +101,7 @@ public class IRCall extends IRExpr {
     	}
     	
     	//IRTemp ret = new IRTemp("_CALLRET");
-    	
+    	Collections.reverse(temps);
     	stmts.add(new IRMove(new IRTemp("_CALLRET"), new IRCall(t.expr(), temps)));
     	
     	return new IRESeq(new IRSeq(stmts), new IRTemp("_CALLRET"));
