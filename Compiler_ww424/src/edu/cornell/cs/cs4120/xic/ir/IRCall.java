@@ -132,7 +132,7 @@ public class IRCall extends IRExpr {
     		AssemInstr targetAssem = target.getBestTile();
     		switch(bestTileNum) {
     		case 0: {//mintile
-    			bestTile = new AssemInstr(targetAssem.getData() + "\ncall " + targetAssem.getSource(), "", 
+    			bestTile = new AssemInstr(targetAssem.getData() + "\ncall " + targetAssem.getSource(), "%rax", 
     									  targetAssem.getCost() + 1);
     		}
     		}

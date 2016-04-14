@@ -205,7 +205,8 @@ public class IRBinOp extends IRExpr {
     				String data = "\nmovq %rax, %r11"
     							+ "\nmovq %rdx, %r12"
     							+ "\nmovq " + leftData.getSource() + ", %rax"
-    							+ "\nimulq " + rightData.getSource()
+    							+ "\nmovq " + rightData.getSource() + ", %r15"
+    							+ "\nimulq %r15"
     							+ "\nmovq %rax, " + store
     							+ "\nmovq %r11, %rax"
     							+ "\nmovq %r12, %rdx";
@@ -216,7 +217,8 @@ public class IRBinOp extends IRExpr {
     				String data = "\nmovq %rax, %r11"
 								+ "\nmovq %rdx, %r12"
 								+ "\nmovq " + leftData.getSource() + ", %rax"
-								+ "\nimulq " + rightData.getSource()
+								+ "\nmovq " + rightData.getSource() + ", %r15"
+								+ "\nimulq %r15"
 								+ "\nmovq %rdx, " + store
 								+ "\nmovq %r11, %rax"
 								+ "\nmovq %r12, %rdx";
@@ -228,7 +230,8 @@ public class IRBinOp extends IRExpr {
     							+ "\nmovq %rdx, %r12"
     							+ "\nxorq %rdx, %rdx"
     							+ "\nmovq " + leftData.getSource() + ", %rax"
-    							+ "\nidivq " + rightData.getSource()
+    							+ "\nmovq " + rightData.getSource() + ", %r15"
+    							+ "\nidivq %r15"
     							+ "\nmovq %rax, " + store
     							+ "\nmovq %r11, %rax"
     							+ "\nmovq %r12, %rdx";
@@ -240,7 +243,8 @@ public class IRBinOp extends IRExpr {
 								+ "\nmovq %rdx, %r12"
 								+ "\nxorq %rdx, %rdx"
 								+ "\nmovq " + leftData.getSource() + ", %rax"
-								+ "\nidivq " + rightData.getSource()
+								+ "\nmovq " + rightData.getSource() + ", %r15"
+								+ "\nidivq %r15"
 								+ "\nmovq %rdx, " + store
 								+ "\nmovq %r11, %rax"
 								+ "\nmovq %r12, %rdx";
