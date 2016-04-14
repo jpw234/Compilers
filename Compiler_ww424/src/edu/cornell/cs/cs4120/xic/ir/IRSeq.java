@@ -117,7 +117,7 @@ public class IRSeq extends IRStmt {
         		int cost = 0;
         		for(IRStmt s : stmts) {
         			AssemInstr temp = s.getBestTile();
-        			data += temp.getData() + "\n";
+        			data += temp.getData();
         			cost += temp.getCost();
         		}
         		bestTile = new AssemInstr(data, "", cost);

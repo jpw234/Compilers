@@ -114,7 +114,7 @@ public class IRMove extends IRStmt {
         		AssemInstr exprAssem = expr.getBestTile();
         		String data = exprAssem.getData() + "\n" + targetAssem.getData() + "\n" +
         					  "movq " + exprAssem.getSource() + ", %r10 \n" + 
-        					  "movq %r10, " + targetAssem.getSource() + "\n";
+        					  "movq %r10, " + targetAssem.getSource();
         		bestTile = new AssemInstr(data, "", targetAssem.getCost() + exprAssem.getCost() + 1);
     		}
     		}

@@ -168,7 +168,7 @@ public class IRCJump extends IRStmt {
     		case 1: {//IRCJUMP(IRBinOp(EQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "je   " + trueLabel;
@@ -178,7 +178,7 @@ public class IRCJump extends IRStmt {
     		case 2: {//IRCJUMP(IRBinOp(NEQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jne  " + trueLabel;
@@ -188,7 +188,7 @@ public class IRCJump extends IRStmt {
     		case 3: {//IRCJUMP(IRBinOp(LT, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jl   " + trueLabel;
@@ -198,7 +198,7 @@ public class IRCJump extends IRStmt {
     		case 4: {//IRCJUMP(IRBinOp(GT, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jg   " + trueLabel;
@@ -208,7 +208,7 @@ public class IRCJump extends IRStmt {
     		case 5: {// IRCJUMP(IRBinOp(LEQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jle   " + trueLabel;
@@ -218,7 +218,7 @@ public class IRCJump extends IRStmt {
     		case 6: {//IRCJUMP(IRBinOp(GEQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jge   " + trueLabel;

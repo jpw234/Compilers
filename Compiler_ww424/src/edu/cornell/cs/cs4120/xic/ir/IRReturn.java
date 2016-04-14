@@ -40,7 +40,7 @@ public class IRReturn extends IRStmt {
     		this.bestCost();
     		switch(bestTileNum) {
     		case 0: {//mintile
-    			bestTile = new AssemInstr("leave\nretq", "", 2);
+    			bestTile = new AssemInstr("\npopq %rbp\nretq\n", "", 2);
     		}
     		}
     	}
