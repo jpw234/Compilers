@@ -16,7 +16,7 @@ import edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
  */
 public abstract class IRNode {
 
-	protected int bestTileNum = 0;
+	protected int bestTileNum = -1;
 	protected int bestCost = -1;
 	protected AssemInstr bestTile = null;
 

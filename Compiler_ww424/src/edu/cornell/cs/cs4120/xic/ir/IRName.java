@@ -55,7 +55,7 @@ public class IRName extends IRExpr {
     		this.bestCost();
     		switch(bestTileNum) {
     		case 0: {//mintile
-    			bestTile = new AssemInstr(name, "", 0);
+    			bestTile = new AssemInstr("", name, 0);
     		}
     		}
     	}

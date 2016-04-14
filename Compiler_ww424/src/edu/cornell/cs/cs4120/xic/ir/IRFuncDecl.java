@@ -109,13 +109,14 @@ public class IRFuncDecl extends IRNode {
     public AssemInstr getBestTile() {
     	if(bestTile != null) return bestTile;
     	else {
+    		StackAssigner.clear();
     		this.bestCost();
     		switch(bestTileNum) {
     		case 0: {//mintile
     			AssemInstr child = body.getBestTile();
-        		String data = "FUNC(" + name + "): \n"+
-        					  "pushq	%rbp \n"+
-        					  "movq		%rsp, %rbp \n";
+        		String data = "\n\n" + name + ": \n"+
+        					  "pushq %rbp \n"+
+        					  "movq %rsp, %rbp \n";
         		data += child.getData();
         		bestTile = new AssemInstr(data, "", child.getCost() + 2);
     		}

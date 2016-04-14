@@ -56,7 +56,7 @@ public class IRTemp extends IRExpr {
     		this.bestCost();
     		switch(bestTileNum) {
     		case 0: {
-    			if(name.substring(0,4) == "_ARG") {
+    			if(name.length() > 4 && name.substring(0,4).equals("_ARG")) {
     				int num = Integer.parseInt(name.substring(4));
     				switch(num) {
     				case 0: bestTile = new AssemInstr("", "%rdi", 0); break;
@@ -68,7 +68,7 @@ public class IRTemp extends IRExpr {
     				default: bestTile = new AssemInstr("", ((num-5)*8) + "(%rbp)", 0);
     				}
     			}
-    			else if(name.substring(0,4) == "_RET") {
+    			else if(name.length() > 4 && name.substring(0,4).equals("_RET")) {
     				int num = Integer.parseInt(name.substring(4));
     				switch(num) {
     				case 0: bestTile = new AssemInstr("", "%rax", 0); break;
@@ -77,7 +77,7 @@ public class IRTemp extends IRExpr {
     				default: bestTile = new AssemInstr("", "%rax", 0);
     				}
     			}
-    			else if(name.substring(0,8) == "_PASSARG") {
+    			else if(name.length() > 8 && name.substring(0,8).equals("_PASSARG")) {
     				int num = Integer.parseInt(name.substring(8));
     				switch(num) {
     				case 0: bestTile = new AssemInstr("", "%rdi", 0); break;
@@ -90,7 +90,7 @@ public class IRTemp extends IRExpr {
     						StackAssigner.getLocation(LabelMaker.Generate_Unique_Label(name)), 0);
     				}
     			}
-    			else if(name == "_CALLRET") bestTile = new AssemInstr("", "%rax", 0);
+    			else if(name.equals("_CALLRET")) bestTile = new AssemInstr("", "%rax", 0);
     			else {
     				bestTile = new AssemInstr("\nsubq $8, %rsp", StackAssigner.getLocation(name), 0);
     			}
