@@ -300,7 +300,9 @@ public class IRMem extends IRExpr {
                 String store = StackAssigner.getLocation(LabelMaker.Generate_Unique_Label("_MEM_TEMP"));
                 String newData = "\n movq " + x.getBestTile().getSource() + ", %r10\n";
                 newData += "movq " + y.getBestTile().getSource() + ", %r11\n";
-                newData += "subq $8, %rsp\nmovq (%r10, %r11), " + store;
+                newData += "subq $8, %rsp\n";
+                newData += "movq (%r10, %r11), %r12\n";
+                newData += "movq %r12, " + store;
                 
                 bestTile = new AssemInstr(newData, store, this.bestCost); break;
             }
@@ -310,8 +312,10 @@ public class IRMem extends IRExpr {
                  * AssemInstr source field =___
                  */
                 String store = StackAssigner.getLocation(LabelMaker.Generate_Unique_Label("_MEM_TEMP"));
-                String newData = "\n movq " + x.getBestTile().getSource()+", %r10 \n"+ "subq $8, %rsp\n" + 
-                                 "movq " + k + "(%r10), " +store;
+                String newData = "\n movq " + x.getBestTile().getSource()+", %r10 \n";
+                newData += "subq $8, %rsp\n";
+                newData += "movq " + k + "(%r10), %r11\n";
+                newData += "movq %r12, " + store;
 
                 bestTile = new AssemInstr(newData, store, bestCost); break;
             }
@@ -321,9 +325,11 @@ public class IRMem extends IRExpr {
                 movq (%10,%11,w), ____
                 AssemInstr source field = ____*/
                 String store = StackAssigner.getLocation(LabelMaker.Generate_Unique_Label("_MEM_TEMP"));
-                String newData = "\n movq " + x.getBestTile().getSource()+", %r10 \n"+
-                                 "movq " + y.getBestTile().getSource()+", %r11 \n"+ "subq $8, %rsp\n" + 
-                                 "movq (%r10, %r11, " + w +"), " +store;
+                String newData = "\n movq " + x.getBestTile().getSource() + ", %r10\n";
+                newData += "movq " + y.getBestTile().getSource() + ", %r11\n";
+                newData += "subq $8, %rsp\n";
+                newData += "movq (%r10, %r11, "+ w + "), %r12\n";
+                newData += "movq %r12, " + store;
 
                 bestTile = new AssemInstr(newData, store, bestCost); break;
             }
@@ -333,9 +339,11 @@ public class IRMem extends IRExpr {
                     movq k(%10,%11,w), ____
                     AssemInstr source field =____*/
                 String store = StackAssigner.getLocation(LabelMaker.Generate_Unique_Label("_MEM_TEMP"));
-                String newData = "\n movq " + x.getBestTile().getSource()+", %r10 \n"+
-                                 "movq " + y.getBestTile().getSource()+", %r11 \n"+ "subq $8, %rsp\n" + 
-                                 "movq " + k + "(%r10, %r11, " + w +"), " +store;
+                String newData = "\n movq " + x.getBestTile().getSource() + ", %r10\n";
+                newData += "movq " + y.getBestTile().getSource() + ", %r11\n";
+                newData += "subq $8, %rsp\n";
+                newData += "movq " + k + "(%r10, %r11, "+ w + "), %r12\n";
+                newData += "movq %r12, " + store;
 
                 bestTile = new AssemInstr(newData, store, bestCost); break;
 
