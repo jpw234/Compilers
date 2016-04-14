@@ -2,6 +2,7 @@ package edu.cornell.cs.cs4120.xic.ir;
 
 import java.util.ArrayList;
 
+import compiler_ww424.LabelMaker;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 
 /**
@@ -74,6 +75,19 @@ public class IRTemp extends IRExpr {
     				case 1: bestTile = new AssemInstr("", "%rdx", 0); break;
     				//TODO: THIS IS WRONG
     				default: bestTile = new AssemInstr("", "%rax", 0);
+    				}
+    			}
+    			else if(name.substring(0,8) == "_PASSARG") {
+    				int num = Integer.parseInt(name.substring(8));
+    				switch(num) {
+    				case 0: bestTile = new AssemInstr("", "%rdi", 0); break;
+    				case 1: bestTile = new AssemInstr("", "%rsi", 0); break;
+    				case 2: bestTile = new AssemInstr("", "%rdx", 0); break;
+    				case 3: bestTile = new AssemInstr("", "%rcx", 0); break;
+    				case 4: bestTile = new AssemInstr("", "%r8", 0); break;
+    				case 5: bestTile = new AssemInstr("", "%r9", 0); break;
+    				default: bestTile = new AssemInstr("\nsubq $8, %rsp", 
+    						StackAssigner.getLocation(LabelMaker.Generate_Unique_Label(name)), 0);
     				}
     			}
     			else if(name == "_CALLRET") bestTile = new AssemInstr("", "%rax", 0);

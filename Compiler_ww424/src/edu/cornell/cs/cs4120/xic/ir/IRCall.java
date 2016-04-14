@@ -90,7 +90,7 @@ public class IRCall extends IRExpr {
     	IRESeq t = target.IRLower();
     	stmts.add(t.stmt()); 
     	
-    	for(int a = 0; a < args.size(); a++) {
+    	for(int a = args.size() - 1; a >= 0; a--) {
     		String lab = "_PASSARG" + a;
     		
     		IRESeq k = args.get(a).IRLower();
@@ -120,17 +120,20 @@ public class IRCall extends IRExpr {
     	if(bestTile != null) return bestTile.getCost();
     	else {
     		bestTileNum = 0;
-    		
+    		bestCost = 1;
     	}
+    	return bestCost;
     }
     
     public AssemInstr getBestTile() {
     	if(bestTile != null) return bestTile;
     	else {
     		this.bestCost();
+    		AssemInstr targetAssem = target.getBestTile();
     		switch(bestTileNum) {
     		case 0: {//mintile
-    			
+    			bestTile = new AssemInstr(targetAssem.getData() + "\ncall " + targetAssem.getSource(), "", 
+    									  targetAssem.getCost() + 1);
     		}
     		}
     	}
