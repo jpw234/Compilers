@@ -1,10 +1,16 @@
 use io
 use conv
 
+// first to test functions with more than 7 arguments
+// also testing the literal array declaration and concatination
+
+
+//Merge is to take 7 seperate integer array and combine together to get a bigger array
 merge(a:int[] , b:int[], c:int[],d:int[],e:int[],f:int[],g:int[]) : int[] {
 	return a+b+c+d+e+f+g
 }
 
+//compute the mean of an array
 mean(a:int[]): int{
 	n :int = length(a)
 	N :int = n 
@@ -15,7 +21,9 @@ mean(a:int[]): int{
 	}
 	return sum/N
 }
-
+// Define 7 integer arrays by literal declaration
+// And merge them together for computation of mean 
+// Print out the average at the last
 main(args:int[][]) {
 	a : int [] = {2,3,4,5,6} 
 	b : int [] = {1,2,3,4}

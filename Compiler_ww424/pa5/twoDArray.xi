@@ -1,6 +1,8 @@
 use io
 use conv
 
+//Testing two-d array by calling the length on the (a[0])
+
 findOne(a:int[][]) : int {
 	M: int = length(a)
 	N: int = length(a[0])
