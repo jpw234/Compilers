@@ -484,7 +484,7 @@ public class Compiler {
 					if(toOptimize){
 						program.constantFold();
 					}
-					String assembly= "";
+					String assembly= ".text";
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
