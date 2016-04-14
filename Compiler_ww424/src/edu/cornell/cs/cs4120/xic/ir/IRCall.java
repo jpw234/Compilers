@@ -91,7 +91,7 @@ public class IRCall extends IRExpr {
     	stmts.add(t.stmt()); 
     	
     	for(int a = 0; a < args.size(); a++) {
-    		String lab = "_ARG" + a;
+    		String lab = "_PASSARG" + a;
     		
     		IRESeq k = args.get(a).IRLower();
     		stmts.add(k.stmt());
@@ -114,5 +114,26 @@ public class IRCall extends IRExpr {
         for (IRExpr arg : args)
             arg.printSExp(p);
         p.endList();
+    }
+    
+    public int bestCost() {
+    	if(bestTile != null) return bestTile.getCost();
+    	else {
+    		bestTileNum = 0;
+    		
+    	}
+    }
+    
+    public AssemInstr getBestTile() {
+    	if(bestTile != null) return bestTile;
+    	else {
+    		this.bestCost();
+    		switch(bestTileNum) {
+    		case 0: {//mintile
+    			
+    		}
+    		}
+    	}
+    	return bestTile;
     }
 }

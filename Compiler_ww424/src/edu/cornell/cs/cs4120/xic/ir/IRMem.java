@@ -104,7 +104,7 @@ public class IRMem extends IRExpr {
     			
     			String newData = "\n movq " + child.getSource() + ", %r10\n";
     			String store = StackAssigner.getLocation(LabelMaker.Generate_Unique_Label("_MEM_TEMP"));
-    			newData += "movq %r10, " + store;
+    			newData += "subq $8, %rsp\nmovq %r10, " + store;
         		
         		bestTile = new AssemInstr(child.getData() + newData, store, child.getCost() + 2);
     		}

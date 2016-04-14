@@ -78,7 +78,7 @@ public class IRTemp extends IRExpr {
     			}
     			else if(name == "_CALLRET") bestTile = new AssemInstr("", "%rax", 0);
     			else {
-    				bestTile = new AssemInstr("", StackAssigner.getLocation(name), 0);
+    				bestTile = new AssemInstr("\nsubq $8, %rsp", StackAssigner.getLocation(name), 0);
     			}
     		}
     		}
