@@ -161,7 +161,7 @@ public class IRCJump extends IRStmt {
     		case 0: {//mintile
     			AssemInstr child = expr.getBestTile();
         		String data = child.getData();
-        		data += "\n movq " + child.getSource() + ", %r10\n";
+        		data += "\nmovq " + child.getSource() + ", %r10\n";
         		data += "testq %r10, %r10\n";
         		data += "jnz " + trueLabel;
         		bestTile = new AssemInstr(data, "", child.getCost() + 2);

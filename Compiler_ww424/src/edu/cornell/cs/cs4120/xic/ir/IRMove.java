@@ -110,12 +110,23 @@ public class IRMove extends IRStmt {
     		this.bestCost();
     		switch(bestTileNum) {
     		case 0: {//mintile
-    			AssemInstr targetAssem = target.getBestTile();
         		AssemInstr exprAssem = expr.getBestTile();
-        		String data = exprAssem.getData() + "\n" + targetAssem.getData() + "\n" +
-        					  "movq " + exprAssem.getSource() + ", %r10 \n" + 
-        					  "movq %r10, " + targetAssem.getSource();
-        		bestTile = new AssemInstr(data, "", targetAssem.getCost() + exprAssem.getCost() + 1);
+        		if(target instanceof IRMem){
+        			AssemInstr targetChildAssem = ((IRMem) target).expr().getBestTile();
+        			String data1 = exprAssem.getData();
+        			data1 += targetChildAssem.getData();
+        			data1 += "\nmovq " + exprAssem.getSource() + ", %r10";
+        			data1 += "\nmovq " + targetChildAssem.getSource() + ", %r11";
+        			data1 += "\nmovq %r10, (%r11)";
+        			bestTile = new AssemInstr(data1, "", targetChildAssem.getCost() + exprAssem.getCost() + 1);
+        		}
+        		else{
+        			AssemInstr targetAssem = target.getBestTile();
+	        		String data = exprAssem.getData() + targetAssem.getData() +
+	        					  "\nmovq " + exprAssem.getSource() + ", %r10 \n" + 
+	        					  "movq %r10, " + targetAssem.getSource();
+	        		bestTile = new AssemInstr(data, "", targetAssem.getCost() + exprAssem.getCost() + 1);
+        		}
     		}
     		}
     	}
