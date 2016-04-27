@@ -402,6 +402,7 @@ public class Compiler {
 					program.returnPass();
 					if(toOptimize){
 						program.constantFold();
+						program.unreachableCodeRemove();
 					}
 					IRCompUnit compUnit = new IRCompUnit("test");
 					for (Function f: program.getFunctions()){
@@ -483,6 +484,7 @@ public class Compiler {
 					program.returnPass();
 					if(toOptimize){
 						program.constantFold();
+						program.unreachableCodeRemove();
 					}
 					String assembly= ".text";
 					for (Function f: program.getFunctions()){

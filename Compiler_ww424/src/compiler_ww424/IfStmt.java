@@ -73,4 +73,14 @@ public class IfStmt extends Stmt {
 		
 		return new IRSeq(ifstmts);
 	}
+	
+	public void unreachableCodeRemove() {
+		Function.unreachableCodeRemoveHelper(body);
+	}
+	public void constantFold() {
+		condition = condition.constantFold();
+		for(int a = 0; a < body.size(); a++) {
+			body.get(a).constantFold();
+		}
+	}
 }
