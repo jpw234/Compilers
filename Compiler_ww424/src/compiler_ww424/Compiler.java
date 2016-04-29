@@ -256,7 +256,13 @@ public class Compiler {
 					else if (tok.sym == sym.CHARACTER) { lineVal = "character"+" "+ tok.value;}
 					else if (tok.sym == sym.ID) {lineVal = "id"+" "+ tok.value;}
 					else if (tok.sym == sym.error){lineVal = (String) tok.value;
+<<<<<<< HEAD
+<<<<<<< HEAD
 					//UNPARSING STRINGS
+=======
+>>>>>>> b73d3ad14595aadfd65c024192668e2f60449dbf
+=======
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
 					String unparsedString = "";
 					for (char unparseChar : lineVal.toCharArray()) {
 						if(unparseChar == '\t') {
@@ -274,7 +280,13 @@ public class Compiler {
 					break;}
 					else{lineVal = lexer.yytext();}
 					//WRITE IN THE FILES
+<<<<<<< HEAD
+<<<<<<< HEAD
 					//UNPARSING STRINGS
+=======
+>>>>>>> b73d3ad14595aadfd65c024192668e2f60449dbf
+=======
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
 					String unparsedString = "";
 					for (char unparseChar : lineVal.toCharArray()) {
 						if(unparseChar == '\t') {
