@@ -92,7 +92,10 @@ public class IRTemp extends IRExpr {
     			}
     			else if(name.equals("_CALLRET")) bestTile = new AssemInstr("", "%rax", 0);
     			else {
-    				bestTile = new AssemInstr("\nsubq $8, %rsp", StackAssigner.getLocation(name), 0);
+    				if(StackAssigner.getMap().containsKey(name)){bestTile = new AssemInstr("", StackAssigner.getLocation(name), 0);}
+    				else{
+    					bestTile = new AssemInstr("\nsubq $8, %rsp", StackAssigner.getLocation(name), 0);
+    				}
     			}
     		}
     		}

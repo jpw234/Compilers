@@ -28,4 +28,8 @@ public class StackAssigner {
 	public static void setCounter(int s) {
 		counter = s;
 	}
+	
+	public static HashMap<String, String> getMap(){
+		return map;
+	}
 }

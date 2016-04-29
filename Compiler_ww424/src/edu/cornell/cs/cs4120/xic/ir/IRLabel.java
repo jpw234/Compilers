@@ -62,7 +62,7 @@ public class IRLabel extends IRStmt {
     		this.bestCost();
     		switch(bestTileNum) {
     		case 0: {//mintile
-    			bestTile = new AssemInstr(name+":\n", "", 0);
+    			bestTile = new AssemInstr("\n"+name+":", "", 0);
     		}
     		}
     	}

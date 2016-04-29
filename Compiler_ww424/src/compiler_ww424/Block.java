@@ -92,4 +92,8 @@ public class Block extends Stmt {
 		}
 		return new IRSeq(stmts);
 	}
+	
+	public void unreachableCodeRemove() {
+		Function.unreachableCodeRemoveHelper(body);
+	}
 }

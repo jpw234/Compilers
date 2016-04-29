@@ -1,17 +1,17 @@
 use conv
 use io
+//testing the string concatination 
 
-addName (name : int[] , i : int ): int[] {
-	
+// add prefix before a name with given gender (0-> female, 1-> male)
+addName (name : int[] , i : int ): int[] {	
 	if (i == 0){
 		return "Ms. " + name
 	}else{
 		return "Mr. " + name
 	}
-
-
 }
 
+// Running addName and print out the result from addName
 main(args:int[][]) {
 
     gender : int[] = { 1,0,0,1 }

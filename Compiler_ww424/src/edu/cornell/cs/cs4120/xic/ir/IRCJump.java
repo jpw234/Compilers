@@ -160,63 +160,100 @@ public class IRCJump extends IRStmt {
     		switch(bestTileNum) {
     		case 0: {//mintile
     			AssemInstr child = expr.getBestTile();
-        		String data = child.getData() + "\ntestq " + child.getSource() + "\n";
+        		String data = child.getData();
+        		data += "\nmovq " + child.getSource() + ", %r10\n";
+        		data += "testq %r10, %r10\n";
         		data += "jnz " + trueLabel;
+<<<<<<< HEAD
         		bestTile = new AssemInstr(data, "", child.getCost() + 2); break;
+=======
+        		bestTile = new AssemInstr(data, "", child.getCost() + 2);
+        		break;
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
     		}
     		case 1: {//IRCJUMP(IRBinOp(EQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "je   " + trueLabel;
+<<<<<<< HEAD
 				bestTile = new AssemInstr(data, "", 2);	break;
+=======
+				bestTile = new AssemInstr(data, "", 2);	
+				break;
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
     		}
     		case 2: {//IRCJUMP(IRBinOp(NEQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jne  " + trueLabel;
+<<<<<<< HEAD
 				bestTile = new AssemInstr(data, "", 2);	break;
+=======
+				bestTile = new AssemInstr(data, "", 2);	
+				break;
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
     		}
     		case 3: {//IRCJUMP(IRBinOp(LT, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jl   " + trueLabel;
+<<<<<<< HEAD
 				bestTile = new AssemInstr(data, "", 2);	break;
+=======
+				bestTile = new AssemInstr(data, "", 2);	
+				break;
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
     		}
     		case 4: {//IRCJUMP(IRBinOp(GT, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jg   " + trueLabel;
+<<<<<<< HEAD
 				bestTile = new AssemInstr(data, "", 2);	break;
+=======
+				bestTile = new AssemInstr(data, "", 2);	
+				break;
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
     		}
     		case 5: {// IRCJUMP(IRBinOp(LEQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jle   " + trueLabel;
+<<<<<<< HEAD
 				bestTile = new AssemInstr(data, "", 2);	break;
+=======
+				bestTile = new AssemInstr(data, "", 2);	
+				break;
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
     		}
     		case 6: {//IRCJUMP(IRBinOp(GEQ, IRNode(x), IRNode(y)), truelabel)
     			IRExpr e1 = ((IRBinOp)expr).left();
     			IRExpr e2 = ((IRBinOp)expr).right();
-				String data =   "movq " + e1.getBestTile().getSource() + ", %r10 \n"
+				String data =   "\nmovq " + e1.getBestTile().getSource() + ", %r10 \n"
  					   		+   "movq " + e2.getBestTile().getSource() + ", %r11 \n"
  					   		+ "cmpq	%r11, %r10\n"
  					   		+ "jge   " + trueLabel;
+<<<<<<< HEAD
 				bestTile = new AssemInstr(data, "", 2);	 break;
+=======
+				bestTile = new AssemInstr(data, "", 2);	
+				break;
+>>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
     		}
     		}
     	}

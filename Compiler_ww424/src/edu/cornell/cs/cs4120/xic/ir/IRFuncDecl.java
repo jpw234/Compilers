@@ -114,9 +114,11 @@ public class IRFuncDecl extends IRNode {
     		switch(bestTileNum) {
     		case 0: {//mintile
     			AssemInstr child = body.getBestTile();
-        		String data = "\n\n" + name + ": \n"+
+        		String data = "\n.global " + name + "\n"+
+        					  ".align 4\n" + 
+        					  name + ": \n"+
         					  "pushq %rbp \n"+
-        					  "movq %rsp, %rbp \n";
+        					  "movq %rsp, %rbp";
         		data += child.getData();
         		bestTile = new AssemInstr(data, "", child.getCost() + 2);
     		}

@@ -79,4 +79,16 @@ public class WhileStmt extends Stmt {
 		
 		return new IRSeq(stmts);
 	}
+	
+	@Override
+	public void constantFold() {
+		condition = condition.constantFold();
+		for(int a = 0; a < body.size(); a++) {
+			body.get(a).constantFold();
+		}
+	}
+	
+	public void unreachableCodeRemove() {
+		Function.unreachableCodeRemoveHelper(body);
+	}
 }

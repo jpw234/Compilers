@@ -54,6 +54,12 @@ public class Program {
 			funcs.get(a).constantFold();
 		}
 	}
+	
+	public void unreachableCodeRemove() {
+		for(int a = 0; a < funcs.size(); a++) {
+			funcs.get(a).unreachableCodeRemove();
+		}
+	}
 
 	public String toString(){
 

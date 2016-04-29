@@ -86,7 +86,6 @@ public class BinaryExpr extends Expr {
 	public Expr constantFold() {
 		left = left.constantFold();
 		right = right.constantFold();
-		
 		if((left instanceof BoolExpr) && (right instanceof BoolExpr)) {
 			switch(op) {
 			case EQEQ: 

@@ -191,14 +191,14 @@ public class IRBinOp extends IRExpr {
     				String data = "\nmovq " + leftData.getSource() + ", %r11" +
     							  "\naddq " + rightData.getSource() + ", %r11" +
     							  "\nmovq %r11, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
     										  leftData.getCost() + rightData.getCost() + 3); break;
     			}
     			case SUB: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11" +
 							      "\nsubq " + rightData.getSource() + ", %r11" +
 							      "\nmovq %r11, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 										      leftData.getCost() + rightData.getCost() + 3); break;
     			}
     			case MUL: {
@@ -210,7 +210,7 @@ public class IRBinOp extends IRExpr {
     							+ "\nmovq %rax, " + store
     							+ "\nmovq %r11, %rax"
     							+ "\nmovq %r12, %rdx";
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 										      leftData.getCost() + rightData.getCost() + 7); break;
     			}
     			case HMUL: {
@@ -222,7 +222,7 @@ public class IRBinOp extends IRExpr {
 								+ "\nmovq %rdx, " + store
 								+ "\nmovq %r11, %rax"
 								+ "\nmovq %r12, %rdx";
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 									      	  leftData.getCost() + rightData.getCost() + 7); break;
     			}
     			case DIV: {
@@ -235,7 +235,7 @@ public class IRBinOp extends IRExpr {
     							+ "\nmovq %rax, " + store
     							+ "\nmovq %r11, %rax"
     							+ "\nmovq %r12, %rdx";
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
     										  leftData.getCost() + rightData.getCost() + 8); break;
     			}
     			case MOD: {
@@ -248,28 +248,28 @@ public class IRBinOp extends IRExpr {
 								+ "\nmovq %rdx, " + store
 								+ "\nmovq %r11, %rax"
 								+ "\nmovq %r12, %rdx";
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 										      leftData.getCost() + rightData.getCost() + 8); break;
     			}
     			case AND: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
     							+ "\nandq " + rightData.getSource() + ", %r11"
     							+ "\nmovq %r11, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
     										  leftData.getCost() + rightData.getCost() + 3); break;
     			}
     			case OR: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
 								+ "\norq " + rightData.getSource() + ", %r11"
 								+ "\nmovq %r11, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
     										  leftData.getCost() + rightData.getCost() + 3); break;
     			}
     			case XOR: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
 								+ "\nxorq " + rightData.getSource() + ", %r11"
 								+ "\nmovq %r11, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 										      leftData.getCost() + rightData.getCost() + 3); break;
     			}
     			case LSHIFT: {
@@ -291,7 +291,7 @@ public class IRBinOp extends IRExpr {
     							+ "\nandq %r13, %r12"
     							+ "\nsarq $6, %r12"
     							+ "\nmovq %r12, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push +  data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push +  data, store,
 						      				  leftData.getCost() + rightData.getCost() + 8); break;
     			}
     			case NEQ: {
@@ -304,7 +304,7 @@ public class IRBinOp extends IRExpr {
 								+ "\nsarq $6, %r12" //same as EQ but XOR with 1 at the end
 								+ "\nxorq $1, %r12"
 								+ "\nmovq %r12, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 					      				  	  leftData.getCost() + rightData.getCost() + 9); break;
     			}
     			case LT: {
@@ -316,7 +316,7 @@ public class IRBinOp extends IRExpr {
 								+ "\nandq %r13, %r12"
 								+ "\nsarq $7, %r12"
 								+ "\nmovq %r12, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 					      				      leftData.getCost() + rightData.getCost() + 8); break;
     			}
     			case GEQ: {
@@ -329,7 +329,7 @@ public class IRBinOp extends IRExpr {
 								+ "\nsarq $7, %r12" //same as LT but flipped (XOR with 1)
 								+ "\nxorq $1, %r12"
 								+ "\nmovq %r12, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 					      				      leftData.getCost() + rightData.getCost() + 9); break;
     			}
     			case LEQ: {
@@ -346,7 +346,7 @@ public class IRBinOp extends IRExpr {
     							+ "\nandq %r13, %r12"
     							+ "\nsarq $6, %r12"
     							+ "\nmovq %r12, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
     										  leftData.getCost() + rightData.getCost() + 13); break;
     			}
     			case GT: {
@@ -364,7 +364,7 @@ public class IRBinOp extends IRExpr {
 								+ "\nsarq $6, %r12" //same as LEQ but flipped (XOR with 1)
 								+ "\nxorq $1, %r12"
 								+ "\nmovq %r12, " + store;
-    				bestTile = new AssemInstr(leftData.getData() + "\n" + rightData.getData() + push + data, store,
+    				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
 										      leftData.getCost() + rightData.getCost() + 14); break;
     			}
     			}; break;

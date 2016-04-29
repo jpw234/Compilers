@@ -99,7 +99,7 @@ public class IRCall extends IRExpr {
     		stmts.add(new IRMove(new IRTemp(lab), k.expr()));
     		temps.add(new IRTemp(lab));
     	}
-    	
+    	Collections.reverse(temps);
     	//IRTemp ret = new IRTemp("_CALLRET");
     	Collections.reverse(temps);
     	stmts.add(new IRMove(new IRTemp("_CALLRET"), new IRCall(t.expr(), temps)));
@@ -133,7 +133,7 @@ public class IRCall extends IRExpr {
     		AssemInstr targetAssem = target.getBestTile();
     		switch(bestTileNum) {
     		case 0: {//mintile
-    			bestTile = new AssemInstr(targetAssem.getData() + "\ncall " + targetAssem.getSource(), "%rax", 
+    			bestTile = new AssemInstr(targetAssem.getData() + "\ncallq " + targetAssem.getSource(), "%rax", 
     									  targetAssem.getCost() + 1);
     		}
     		}

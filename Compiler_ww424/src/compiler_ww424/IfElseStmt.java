@@ -151,4 +151,20 @@ public class IfElseStmt extends Stmt {
 		
 		return new IRSeq(stmts);
 	}
+	
+	public void unreachableCodeRemove() {
+		Function.unreachableCodeRemoveHelper(ifbody);
+		Function.unreachableCodeRemoveHelper(elsebody);
+	}
+	
+	@Override
+	public void constantFold() {
+		condition = condition.constantFold();
+		for(int a = 0; a < ifbody.size(); a++) {
+			ifbody.get(a).constantFold();
+		}
+		for(int a = 0; a < elsebody.size(); a++) {
+			elsebody.get(a).constantFold();
+		}
+	}
 }

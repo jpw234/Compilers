@@ -129,6 +129,74 @@ public class Function {
 			throw new Error(bline + ":" + bcolumn + " error: Missing return statement!");
 		}
 	}
+	public void unreachableCodeRemove() {
+		Function.unreachableCodeRemoveHelper(body);
+	}
+	static public void unreachableCodeRemoveHelper(List<Stmt> b) {
+		List<Stmt> tempbody = new ArrayList<Stmt>();
+		for(Stmt statement : b) {
+			if(statement instanceof Block) {
+				((Block)statement).unreachableCodeRemove();
+				tempbody.add(statement);
+				if(((Block)statement).returncheck()) {
+					break;
+				}
+			}
+			else if (statement instanceof IfStmt) {
+				((IfStmt)statement).unreachableCodeRemove();
+				if(((IfStmt)statement).getCond() instanceof BoolExpr) {
+					if( ((BoolExpr)((IfStmt)statement).getCond()).getVal() == true) {
+						Block newblock = new Block(((IfStmt)statement).getBody(),0,0);
+						tempbody.add(newblock);
+						if(newblock.returncheck()) {
+							break;
+						}
+					}
+				}
+				else {
+					tempbody.add(statement);
+				}
+			}
+			else if (statement instanceof IfElseStmt) {
+				((IfElseStmt)statement).unreachableCodeRemove();
+				if(((IfElseStmt)statement).getCond() instanceof BoolExpr) {
+					if( ((BoolExpr)((IfElseStmt)statement).getCond()).getVal() == true) {
+						Block newblock = new Block(((IfElseStmt)statement).getIfBody(),0,0);
+						tempbody.add(newblock);
+						if(newblock.returncheck()) {
+							break;
+						}
+					}
+					else {
+						Block newblock = new Block(((IfElseStmt)statement).getElseBody(),0,0);
+						tempbody.add(newblock);
+						if(newblock.returncheck()) {
+							break;
+						}
+					}
+				}
+				else {
+					tempbody.add(statement);
+					if(((IfElseStmt)statement).returncheck()) {
+						
+						break;
+					}
+				}
+			}
+			else if( statement instanceof WhileStmt) {
+				((WhileStmt)statement).unreachableCodeRemove();
+				if(!(((WhileStmt)statement).getCond() instanceof BoolExpr) || ((BoolExpr)((WhileStmt)statement).getCond()).getVal() == true)
+				{
+					tempbody.add(statement);
+				}
+			}
+			else {
+				tempbody.add(statement);
+			}
+		}
+		b.clear();
+		b.addAll(tempbody);
+	}
 	
 	public void constantFold() {
 		for(int a = 0; a < args.size(); a++) {
