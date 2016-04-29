@@ -185,7 +185,10 @@ public class Function {
 			}
 			else if( statement instanceof WhileStmt) {
 				((WhileStmt)statement).unreachableCodeRemove();
-				tempbody.add(statement);
+				if(!(((WhileStmt)statement).getCond() instanceof BoolExpr) || ((BoolExpr)((WhileStmt)statement).getCond()).getVal() == true)
+				{
+					tempbody.add(statement);
+				}
 			}
 			else {
 				tempbody.add(statement);
