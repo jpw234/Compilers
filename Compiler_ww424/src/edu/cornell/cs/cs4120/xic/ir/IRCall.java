@@ -101,7 +101,7 @@ public class IRCall extends IRExpr {
     	}
     	Collections.reverse(temps);
     	//IRTemp ret = new IRTemp("_CALLRET");
-    	Collections.reverse(temps);
+    	
     	stmts.add(new IRMove(new IRTemp("_CALLRET"), new IRCall(t.expr(), temps)));
     	
     	return new IRESeq(new IRSeq(stmts), new IRTemp("_CALLRET"));

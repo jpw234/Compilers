@@ -233,7 +233,7 @@ public class Compiler {
 				System.err.println("No such File in Directory");
 				return;}
 			
-			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR ,toRunIR);
+			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR ,toRunIR,toAssembly);
 			if (isempty) break;
 			
 			 //////////////////////////////////////		
@@ -256,13 +256,6 @@ public class Compiler {
 					else if (tok.sym == sym.CHARACTER) { lineVal = "character"+" "+ tok.value;}
 					else if (tok.sym == sym.ID) {lineVal = "id"+" "+ tok.value;}
 					else if (tok.sym == sym.error){lineVal = (String) tok.value;
-<<<<<<< HEAD
-<<<<<<< HEAD
-					//UNPARSING STRINGS
-=======
->>>>>>> b73d3ad14595aadfd65c024192668e2f60449dbf
-=======
->>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
 					String unparsedString = "";
 					for (char unparseChar : lineVal.toCharArray()) {
 						if(unparseChar == '\t') {
@@ -280,13 +273,6 @@ public class Compiler {
 					break;}
 					else{lineVal = lexer.yytext();}
 					//WRITE IN THE FILES
-<<<<<<< HEAD
-<<<<<<< HEAD
-					//UNPARSING STRINGS
-=======
->>>>>>> b73d3ad14595aadfd65c024192668e2f60449dbf
-=======
->>>>>>> 3206298fb7d6e8db8349addbe7a3b5d94dc74d04
 					String unparsedString = "";
 					for (char unparseChar : lineVal.toCharArray()) {
 						if(unparseChar == '\t') {
@@ -526,12 +512,13 @@ public class Compiler {
 	///////////////////////////////////////
 
 	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse,
-		Boolean toGenIR,Boolean toRunIR) throws IOException{
+		Boolean toGenIR,Boolean toRunIR,Boolean toAssembly) throws IOException{
 		FileReader fr = new FileReader(fileName);
 		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
 		if (toLex){outFile = fileName.substring(0,fileName.length()-2)+"lexed";}
 		else if (toparse){outFile = fileName.substring(0,fileName.length()-2)+"parsed";}
 		else if (toGenIR || toRunIR){outFile = fileName.substring(0,fileName.length()-2)+"ir";}
+		else if (toAssembly) {outFile = fileName.substring(0,fileName.length()-2)+"s";}
 		BufferedReader br = new BufferedReader(fr); 
 		FileWriter fw = new FileWriter(outFile); 
 		String line;
