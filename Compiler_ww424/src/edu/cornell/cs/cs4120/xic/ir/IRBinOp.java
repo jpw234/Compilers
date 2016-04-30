@@ -281,88 +281,63 @@ public class IRBinOp extends IRExpr {
     			}
     			case EQ: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
-    							+ "\ncmpq " + rightData.getSource() + ", %r11"
-    	    					+ "\npushf"
-    							+ "\nmovq $64, %r12"
-    							+ "\npopq %r13"
-    							+ "\nandq %r13, %r12"
-    							+ "\nsarq $6, %r12"
-    							+ "\nmovq %r12, " + store;
+							+ "\nmovq $0, %r10"
+    						+ "\nmovq $1, %r12"
+							+ "\ncmpq " + rightData.getSource() + ", %r11"
+							+ "\ncmove %r12, %r10"
+							+ "\nmovq %r10, " + store;
     				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push +  data, store,
-						      				  leftData.getCost() + rightData.getCost() + 8); break;
+						      				  leftData.getCost() + rightData.getCost() + 6); break;
     			}
     			case NEQ: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
-								+ "\ncmpq " + rightData.getSource() + ", %r11"
-								+ "\npushf"
-								+ "\nmovq $64, %r12"
-								+ "\npopq %r13"
-								+ "\nandq %r13, %r12"
-								+ "\nsarq $6, %r12" //same as EQ but XOR with 1 at the end
-								+ "\nxorq $1, %r12"
-								+ "\nmovq %r12, " + store;
+							+ "\nmovq $0, %r10"
+    						+ "\nmovq $1, %r12"
+							+ "\ncmpq " + rightData.getSource() + ", %r11"
+							+ "\ncmovne %r12, %r10"
+							+ "\nmovq %r10, " + store;
     				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
-					      				  	  leftData.getCost() + rightData.getCost() + 9); break;
+					      				  	  leftData.getCost() + rightData.getCost() + 6); break;
     			}
     			case LT: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
-								+ "\ncmpq " + rightData.getSource() + ", %r11"
-								+ "\npushf"
-								+ "\nmovq $128, %r12"
-								+ "\npopq %r13"
-								+ "\nandq %r13, %r12"
-								+ "\nsarq $7, %r12"
-								+ "\nmovq %r12, " + store;
+							+ "\nmovq $0, %r10"
+    						+ "\nmovq $1, %r12"
+							+ "\ncmpq " + rightData.getSource() + ", %r11"
+							+ "\ncmovl %r12, %r10"
+							+ "\nmovq %r10, " + store;
     				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
-					      				      leftData.getCost() + rightData.getCost() + 8); break;
+					      				      leftData.getCost() + rightData.getCost() + 6); break;
     			}
     			case GEQ: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
-								+ "\ncmpq " + rightData.getSource() + ", %r11"
-								+ "\npushf"
-								+ "\nmovq $128, %r12"
-								+ "\npopq %r13"
-								+ "\nandq %r13, %r12"
-								+ "\nsarq $7, %r12" //same as LT but flipped (XOR with 1)
-								+ "\nxorq $1, %r12"
-								+ "\nmovq %r12, " + store;
+							+ "\nmovq $0, %r10"
+    						+ "\nmovq $1, %r12"
+							+ "\ncmpq " + rightData.getSource() + ", %r11"
+							+ "\ncmovge %r12, %r10"
+							+ "\nmovq %r10, " + store;
     				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
-					      				      leftData.getCost() + rightData.getCost() + 9); break;
+					      				      leftData.getCost() + rightData.getCost() + 6); break;
     			}
     			case LEQ: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
-    							+ "\ncmpq " + rightData.getSource() + ", %r11"
-    							+ "\npushf"
-    							+ "\nmovq $192, %r12"
-    							+ "\npopq %r13"
-    							+ "\nandq %r13, %r12"
-    							+ "\ncmpq $192, %r12"
-    							+ "\npushf"
-    							+ "\npopq %r13"
-    							+ "\nmovq $64, %r12"
-    							+ "\nandq %r13, %r12"
-    							+ "\nsarq $6, %r12"
-    							+ "\nmovq %r12, " + store;
+							+ "\nmovq $0, %r10"
+    						+ "\nmovq $1, %r12"
+							+ "\ncmpq " + rightData.getSource() + ", %r11"
+							+ "\ncmovle %r12, %r10"
+							+ "\nmovq %r10, " + store;
     				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
-    										  leftData.getCost() + rightData.getCost() + 13); break;
+    										  leftData.getCost() + rightData.getCost() + 6); break;
     			}
     			case GT: {
     				String data = "\nmovq " + leftData.getSource() + ", %r11"
-								+ "\ncmpq " + rightData.getSource() + ", %r11"
-								+ "\npushf"
-								+ "\nmovq $192, %r12"
-								+ "\npopq %r13"
-								+ "\nandq %r13, %r12"
-								+ "\ncmpq $192, %r12"
-								+ "\npushf"
-								+ "\npopq %r13"
-								+ "\nmovq $64, %r12"
-								+ "\nandq %r13, %r12"
-								+ "\nsarq $6, %r12" //same as LEQ but flipped (XOR with 1)
-								+ "\nxorq $1, %r12"
-								+ "\nmovq %r12, " + store;
+							+ "\nmovq $0, %r10"
+    						+ "\nmovq $1, %r12"
+							+ "\ncmpq " + rightData.getSource() + ", %r11"
+							+ "\ncmovg %r12, %r10"
+							+ "\nmovq %r10, " + store;
     				bestTile = new AssemInstr(leftData.getData() + rightData.getData() + push + data, store,
-										      leftData.getCost() + rightData.getCost() + 14); break;
+										      leftData.getCost() + rightData.getCost() + 6); break;
     			}
     			}; break;
     		} //end case 0 (mintile)
