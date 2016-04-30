@@ -60,25 +60,25 @@ public class IRMove extends IRStmt {
     	
     	ArrayList<IRStmt> stmts = new ArrayList<IRStmt>();
     	stmts.add(targetLowered.stmt());
-    	
-    	
-    	
+    	IRESeq exprLowered = expr.IRLower();
+    	//if dest is IRTemp, don't need to move to new IRTemp, because it will be replaced by expr in the end
     	if(targetLowered.expr() instanceof IRTemp) {
-    		IRESeq exprLowered = expr.IRLower();
+    		
     		stmts.add(exprLowered.stmt());
     		stmts.add(new IRMove(targetLowered.expr(), exprLowered.expr()));
-    		
     		return new IRSeq(stmts);
     	}
-    	
     	else if(targetLowered.expr() instanceof IRMem) {
-    		stmts.add(new IRMove(new IRTemp("_MOVENAIVE"), ((IRMem) targetLowered.expr()).expr() ));
-    		
-    		IRESeq exprLowered = expr.IRLower();
-    		stmts.add(exprLowered.stmt());
-    		stmts.add(new IRMove(new IRMem(new IRTemp("_MOVENAIVE")), exprLowered.expr()));
-    		
-    		return new IRSeq(stmts);
+    		if(exprLowered.stmt() instanceof IRSeq && ((IRSeq)exprLowered.stmt()).stmts().isEmpty()){
+    			stmts.add(new IRMove(targetLowered.expr(), exprLowered.expr()));
+    			return new IRSeq(stmts);
+    		}
+    		else{
+	    		stmts.add(new IRMove(new IRTemp("_MOVENAIVE"), ((IRMem) targetLowered.expr()).expr() ));
+	    		stmts.add(exprLowered.stmt());
+	    		stmts.add(new IRMove(new IRMem(new IRTemp("_MOVENAIVE")), exprLowered.expr()));
+	    		return new IRSeq(stmts);
+    		}
     	}
     	
     	else {

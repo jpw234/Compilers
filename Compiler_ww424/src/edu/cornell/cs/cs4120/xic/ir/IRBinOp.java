@@ -122,19 +122,16 @@ public class IRBinOp extends IRExpr {
     }
 
     public IRESeq IRLower() {
-    	IRESeq llower = left.IRLower();
-    	
     	ArrayList<IRStmt> stmts = new ArrayList<IRStmt>();
-    	stmts.add(llower.stmt());
-    	
-    	String genLabel = LabelMaker.Generate_Unique_Label("_BINOPNAIVE");
-    	
-    	stmts.add(new IRMove( new IRTemp(genLabel), llower.expr()));
-
+    	IRESeq llower = left.IRLower();
     	IRESeq rlower = right.IRLower();
-    	
+    	stmts.add(llower.stmt());
+    	if(rlower.stmt() instanceof IRSeq && ((IRSeq)rlower.stmt()).stmts().isEmpty()){
+    		return new IRESeq(new IRSeq(stmts), new IRBinOp(type,  llower.expr(), rlower.expr()));
+    	}
+    	String genLabel = LabelMaker.Generate_Unique_Label("_BINOPNAIVE");
+    	stmts.add(new IRMove( new IRTemp(genLabel), llower.expr()));
     	stmts.add(rlower.stmt());
-    	
     	return new IRESeq(new IRSeq(stmts), new IRBinOp(type,  new IRTemp(genLabel), rlower.expr()));
     }
 
