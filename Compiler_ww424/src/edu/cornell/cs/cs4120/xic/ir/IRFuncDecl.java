@@ -373,7 +373,9 @@ public class IRFuncDecl extends IRNode {
 		return value;
 	}
 
-
+	public ArrayList<String> getTemps() {
+		return body.getTemps();
+	}
 
 	public List<IRStmt> unwrapIRStmt(IRStmt s){
 		List<IRStmt> unwrapS = new ArrayList<IRStmt>();
