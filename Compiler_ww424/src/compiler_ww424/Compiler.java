@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import compiler_ww424.Lexer.Token;
 import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
@@ -408,6 +409,8 @@ public class Compiler {
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
+						List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+						F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
 						compUnit.appendFunc(F);
 					}
 					StringWriter sw = new StringWriter();
@@ -490,6 +493,8 @@ public class Compiler {
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
+						List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+						F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
 						assembly += F.getBestTile().getData();
 					}
 					fw.write(assembly);
