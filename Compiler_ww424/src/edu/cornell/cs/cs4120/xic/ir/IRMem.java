@@ -4,6 +4,9 @@ import edu.cornell.cs.cs4120.util.InternalCompilerError;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
+
+import java.util.ArrayList;
+
 import compiler_ww424.LabelMaker;
 
 /**
@@ -88,6 +91,11 @@ public class IRMem extends IRExpr {
         p.printAtom(memType.toString());
         expr.printSExp(p);
         p.endList();
+    }
+    
+    @Override
+    public ArrayList<String> getTemps() {
+    	return expr.getTemps();
     }
 
     public int bestCost() {

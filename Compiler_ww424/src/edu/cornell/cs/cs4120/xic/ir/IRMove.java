@@ -95,6 +95,18 @@ public class IRMove extends IRStmt {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	return expr.getTemps();
+    }
+    
+    public String getDefinedTemp() {
+    	if(target instanceof IRTemp) {
+    		return ((IRTemp) target).name();
+    	}
+    	else return null;
+    }
+    
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {

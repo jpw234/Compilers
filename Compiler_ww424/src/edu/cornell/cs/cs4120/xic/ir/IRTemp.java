@@ -41,6 +41,13 @@ public class IRTemp extends IRExpr {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	ArrayList<String> temps = new ArrayList<String>();
+    	temps.add(name);
+    	return temps;
+    }
+    
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {

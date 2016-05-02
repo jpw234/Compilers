@@ -1,6 +1,8 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 import edu.cornell.cs.cs4120.util.SExpPrinter;
+
+import java.util.ArrayList;
 import java.util.List;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.CheckCanonicalIRVisitor;
@@ -78,5 +80,14 @@ public class IRESeq extends IRExpr {
         stmt.printSExp(p);
         expr.printSExp(p);
         p.endList();
+    }
+    
+    @Override
+    public ArrayList<String> getTemps() {
+    	ArrayList<String> stmtTemps = stmt.getTemps();
+    	ArrayList<String> exprTemps = expr.getTemps();
+    	stmtTemps.removeAll(exprTemps);
+    	stmtTemps.addAll(exprTemps);
+    	return stmtTemps;
     }
 }

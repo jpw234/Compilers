@@ -63,6 +63,11 @@ public class IRJump extends IRStmt {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	return target.getTemps();
+    }
+    
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {

@@ -2,6 +2,7 @@ package edu.cornell.cs.cs4120.xic.ir;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
@@ -81,5 +82,9 @@ public abstract class IRNode {
     public AssemInstr getBestTile() {
     	if(bestTile == null) this.bestCost();
     	return bestTile;
+    }
+    
+    public ArrayList<String> getTemps() {
+    	return new ArrayList<String>();
     }
 }

@@ -70,6 +70,11 @@ public class IRFuncDecl extends IRNode {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	return body.getTemps();
+    }
+    
     public void IRLower(){
         IRStmt stmtLow = body.IRLower();
         List<IRStmt> listLow = unwrapIRStmt(stmtLow);

@@ -144,6 +144,19 @@ public class IRBinOp extends IRExpr {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	ArrayList<String> l = left.getTemps(); 
+    	ArrayList<String> r = right.getTemps();
+    	
+    	//this is "union": remove all terms in r from l, then add all of r to l
+    	//just adding r to l causes duplicates i.e.: l = [1,2,3], r = [2,3,4], l.addAll(r) = [1,2,3,2,3,4]
+    	//this way we get [1,2,3,4]
+    	l.removeAll(r);
+    	l.addAll(r);
+    	return l;
+    }
+    
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {

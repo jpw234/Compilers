@@ -103,6 +103,11 @@ public class IRCJump extends IRStmt {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	return expr.getTemps();
+    }
+    
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {//min tiling

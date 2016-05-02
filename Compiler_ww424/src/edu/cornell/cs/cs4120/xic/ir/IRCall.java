@@ -117,6 +117,19 @@ public class IRCall extends IRExpr {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	ArrayList<String> ret = target.getTemps();
+    	
+    	for(int a = 0; a < args.size(); a++) {
+    		ArrayList<String> temp = args.get(a).getTemps();
+    		ret.removeAll(temp);
+    		ret.addAll(temp);
+    	}
+    	
+    	return ret;
+    }
+    
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {

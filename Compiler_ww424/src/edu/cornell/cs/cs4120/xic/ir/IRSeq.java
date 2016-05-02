@@ -94,6 +94,19 @@ public class IRSeq extends IRStmt {
         p.endList();
     }
     
+    @Override
+    public ArrayList<String> getTemps() {
+    	ArrayList<String> ret = new ArrayList<String>();
+    	
+    	for(int a = 0; a < stmts.size(); a++) {
+    		ArrayList<String> temp = stmts.get(a).getTemps();
+    		ret.removeAll(temp);
+    		ret.addAll(temp);
+    	}
+    	
+    	return ret;
+    }
+    
     public int bestCost() {
     	if(bestTile != null) return bestTile.getCost();
     	else {

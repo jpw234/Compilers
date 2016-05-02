@@ -1,5 +1,7 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
+import java.util.ArrayList;
+
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
@@ -47,6 +49,11 @@ public class IRExp extends IRStmt {
     
     public IRSeq IRLower() {
     	return new IRSeq(expr.IRLower().stmt());
+    }
+    
+    @Override
+    public ArrayList<String> getTemps() {
+    	return expr.getTemps();
     }
 
     public int bestCost() {
