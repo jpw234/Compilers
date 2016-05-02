@@ -409,8 +409,12 @@ public class Compiler {
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						List<IRStmt> a = ((IRSeq)(F.body())).stmts();
-						F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
+						if(toOptimize){
+							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
+							a = ((IRSeq)(F.body())).stmts();
+							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
+						}
 						compUnit.appendFunc(F);
 					}
 					StringWriter sw = new StringWriter();
@@ -493,8 +497,12 @@ public class Compiler {
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						List<IRStmt> a = ((IRSeq)(F.body())).stmts();
-						F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
+						if(toOptimize){
+							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
+							a = ((IRSeq)(F.body())).stmts();
+							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
+						}
 						assembly += F.getBestTile().getData();
 					}
 					fw.write(assembly);
