@@ -442,6 +442,9 @@ public class Compiler {
 							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
 						}
+						if(toOptimize && toCSE){
+							F.CSE();
+						}
 						compUnit.appendFunc(F);
 					}
 					StringWriter sw = new StringWriter();
@@ -532,6 +535,9 @@ public class Compiler {
 						if(toOptimize && toVN){
 							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
+						}
+						if(toOptimize && toCSE){
+							F.CSE();
 						}
 						compUnit.appendFunc(F);
 						assembly += F.getBestTile().getData();
