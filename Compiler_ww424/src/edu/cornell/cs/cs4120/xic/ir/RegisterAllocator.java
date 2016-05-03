@@ -1,6 +1,7 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
 
@@ -144,6 +145,60 @@ public class RegisterAllocator {
 	}
 	
 	private static void liveVariableAnalysis() {
+		//we'll used a LinkedList as our FIFO queue for the worklist algorithm
+		LinkedList<CFGNode> queue = new LinkedList<CFGNode>();
 		
+		//first add all the nodes to the queue
+		for(int a = 0; a < nodeSet.size(); a++) {
+			queue.offer(nodeSet.get(a));
+		}
+		
+		//worklist alg: http://www.cs.cornell.edu/courses/cs4120/2016sp/lectures/19livevars/lec19-sp16.pdf slide 19
+		while(queue.peek() != null) {
+			//n = w.pop()
+			CFGNode curr = queue.remove();
+			
+			//out[n] = union of all in[n']
+			ArrayList<String> out = new ArrayList<String>();
+			for(int a = 0; a < curr.getChildren().size(); a++) {
+				//basic union
+				out.removeAll(curr.getChildren().get(a).getInSet());
+				out.addAll(curr.getChildren().get(a).getInSet());
+			}
+			curr.setOutSet(out);
+			
+			//in[n] = use[n] U (out[n] - def[n]):
+			//in[n] = out[n]
+			ArrayList<String> in = new ArrayList<String>(curr.getOutSet());
+			//in[n] = out[n]-def[n]
+			in.removeAll(curr.getDefSet());
+			//in[n] = use[n] U (out[n]-def[n])
+			in.removeAll(curr.getUseSet());
+			in.addAll(curr.getUseSet());
+			
+			//if change to in[n], push predecessors of n
+			if(!(in.containsAll(curr.getInSet()) && curr.getInSet().containsAll(in))) {
+				ArrayList<CFGNode> preds = getPredecessors(curr);
+				for(int a = 0; a < preds.size(); a++) {
+					queue.offer(preds.get(a));
+				}
+			}
+			
+			//update in[n]
+			curr.setInSet(in);
+		}
+	}
+	
+	private static ArrayList<CFGNode> getPredecessors(CFGNode n) {
+		ArrayList<CFGNode> ret = new ArrayList<CFGNode>();
+		
+		for(int a = 0; a < nodeSet.size(); a++) {
+			CFGNode curr = nodeSet.get(a);
+			if(curr.hasChild(n.getUniqueNum())){
+				ret.add(curr);
+			}
+		}
+		
+		return ret;
 	}
 }

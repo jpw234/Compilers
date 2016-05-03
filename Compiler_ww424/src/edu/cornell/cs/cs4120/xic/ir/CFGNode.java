@@ -59,9 +59,9 @@ public class CFGNode {
 		outSet = o;
 	}
 	
-	//helper function which checks current successor set for the given node #
-	//returns true if the given # is in the successor set or is this node's own number
-	private boolean hasChild(int k) {
+	//helper function which checks current child set for the given node #
+	//returns true if the given # is in the child set
+	public boolean hasChild(int k) {
 		for(int a = 0; a < children.size(); a++) {
 			if(children.get(a).getUniqueNum() == k) return true;
 		}
