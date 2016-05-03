@@ -25,10 +25,16 @@ public class RegisterAllocator {
 	//Inputs: the IRSeq the allocator is analyzing
 	//Assumes StackAssigner was cleared (or is in the desired other state) before call
 	//Invariant: IRSeq flow is non-empty
-	public static void generateAssignment(IRSeq flow) {
+	public static CFGNode generateAssignment(IRSeq flow) {
 		reset();
 		
+		//generate basic CFG with edges, node definitions
 		CFGNode head = generateCFG(flow);
+		
+		//fill out CFG with successor information
+		generateSuccessors();
+		
+		return head;
 	}
 	
 	//takes an IRSeq and returns the CFGNode representing the head of the CFG
@@ -137,5 +143,13 @@ public class RegisterAllocator {
 		}
 		
 		return head;
+	}
+	
+	//operates on nodeSet
+	//presumes nodeSet has been constructed
+	private static void generateSuccessors() {
+		for(int a = 0; a < nodeSet.size(); a++) {
+			nodeSet.get(a).generateSuccessors();
+		}
 	}
 }
