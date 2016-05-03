@@ -95,7 +95,7 @@ public class RegisterAllocator {
 				defs = new ArrayList<String>();
 				construct = new CFGNode(uses, defs, nextNumber());
 				
-				//IRCJump has a LABEL in trueLabel and null in falseLabel in lowered IR tree
+				//IRCJump has a string in trueLabel and null in falseLabel in lowered IR tree
 				String targetName = ((IRCJump) stmt).trueLabel();
 				if(labelStore.containsKey(targetName)) {
 					construct.addChild(labelStore.get(targetName));
