@@ -37,6 +37,11 @@ public class Compiler {
 	public static final String INPUT_OPTIMIZATION = "-O";
 	public static final String INPUT_TARGET = "-target";
 	public static int MINIMUM_ARG_COUNT = 2; 
+	private static Boolean toCF = false;
+	private static Boolean toCSE = false;
+	private static Boolean toUCE = false;
+	private static Boolean toCP = false;
+	private static Boolean toVN = false;
 
 
 	public static class CodePath {
@@ -118,6 +123,7 @@ public class Compiler {
 		Boolean toOptimize = true;
 		Boolean toAssembly = false;
 
+
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
 			switch(args[i]) {
@@ -159,7 +165,19 @@ public class Compiler {
 				toRunIR = true;
 				break;
 			case INPUT_OPTIMIZATION:
-				toOptimize = false;
+				
+				i++;
+				String ss = "";
+				if(i < args.length){
+					ss = args[i];
+					if(ss.equals("cf")) {toCF = true;}
+					else if(ss.equals("cse")) {toCSE = true;}
+					else if(ss.equals("uce")) {toUCE = true;}
+					else if(ss.equals("cp")) {toCP = true;}
+					else if(ss.equals("vn")) {toVN = true;}
+					else {i--; toOptimize = false;}
+				}
+				else{i--; toOptimize = false;}
 				break;
 			case INPUT_TARGET:
 				toAssembly = true;
@@ -401,18 +419,27 @@ public class Compiler {
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
-					if(toOptimize){
+					Boolean toCF = false;
+					Boolean toCSE = false;
+					Boolean toUCE = false;
+					Boolean toCP = false;
+					Boolean toVN = false;
+					if(toOptimize && toCF){
 						program.constantFold();
+					}
+					if(toOptimize && toUCE){
 						program.unreachableCodeRemove();
 					}
 					IRCompUnit compUnit = new IRCompUnit("test");
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						if(toOptimize){
+						if(toOptimize && toCP){
 							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
-							a = ((IRSeq)(F.body())).stmts();
+						}
+						if(toOptimize && toVN){
+							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
 						}
 						compUnit.appendFunc(F);
@@ -494,15 +521,19 @@ public class Compiler {
 						program.unreachableCodeRemove();
 					}
 					String assembly= ".text";
+					IRCompUnit compUnit = new IRCompUnit("test");
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						if(toOptimize){
+						if(toOptimize && toCP){
 							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
-							a = ((IRSeq)(F.body())).stmts();
+						}
+						if(toOptimize && toVN){
+							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
 						}
+						compUnit.appendFunc(F);
 						assembly += F.getBestTile().getData();
 					}
 					fw.write(assembly);
