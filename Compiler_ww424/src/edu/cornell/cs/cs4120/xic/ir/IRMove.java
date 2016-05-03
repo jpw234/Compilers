@@ -144,4 +144,8 @@ public class IRMove extends IRStmt {
     	}
     	return bestTile;
     }
+    
+    public void CSE_modifyExpr(IRExpr cse){
+        this.expr = cse;
+    }
 }
