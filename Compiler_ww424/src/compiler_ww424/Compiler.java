@@ -25,6 +25,7 @@ import java_cup.runtime.*;
 
 public class Compiler {
 	public static final String INPUT_HELPER = "--help";
+	public static final String INPUT_REPORTOPT = "--report-opts";
 	public static final String INPUT_LEX = "--lex";
 	public static final String INPUT_PARSE = "--parse";
 	public static final String INPUT_TYPECHECK = "--typecheck";
@@ -34,14 +35,22 @@ public class Compiler {
 	public static final String INPUT_LIBRARY_PATH = "-libpath";
 	public static final String INPUT_IRGEN = "--irgen";
 	public static final String INPUT_IRRUN = "--irrun";
+	public static final String INPUT_OPTIR = "--optir";
 	public static final String INPUT_OPTIMIZATION = "-O";
 	public static final String INPUT_TARGET = "-target";
+	public static final String NO_CF = "-O-no-cf";
+	public static final String NO_CSE = "-O-no-cse";
+	public static final String NO_UCE = "-O-no-uce";
+	public static final String NO_CP = "-O-no-cp";
+	public static final String NO_VN = "-O-no-vn";
 	public static int MINIMUM_ARG_COUNT = 2; 
-	private static Boolean toCF = false;
-	private static Boolean toCSE = false;
-	private static Boolean toUCE = false;
-	private static Boolean toCP = false;
-	private static Boolean toVN = false;
+	public static String optir_phase =null;
+	public static Boolean toCF = true;
+	public static Boolean toCSE = true;
+	public static Boolean toUCE = true;
+	public static Boolean toCP = true;
+	public static Boolean toVN = true;
+
 
 
 	public static class CodePath {
@@ -122,7 +131,7 @@ public class Compiler {
 		Boolean toRunIR = false;
 		Boolean toOptimize = true;
 		Boolean toAssembly = false;
-
+		
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
@@ -148,6 +157,12 @@ public class Compiler {
 				useHelp = true;
 				printUsage();
 				break;
+			case INPUT_REPORTOPT :
+				//help function
+				useHelp = true;
+				System.out.println("% xic --report-opts");
+				System.out.println(" reg \n uce \n cse \n cf \n cp \n vn \n%");
+				break;
 			case INPUT_LEX:
 				// Use The CWD
 				toLex = true;
@@ -164,17 +179,47 @@ public class Compiler {
 			case INPUT_IRRUN:
 				toRunIR = true;
 				break;
+			case INPUT_OPTIR:
+				i ++;
+				toRunIR = true;
+				if(i < args.length) optir_phase = args[i];
 			case INPUT_OPTIMIZATION:
-				
 				i++;
 				String ss = "";
 				if(i < args.length){
 					ss = args[i];
-					if(ss.equals("cf")) {toCF = true;}
-					else if(ss.equals("cse")) {toCSE = true;}
-					else if(ss.equals("uce")) {toUCE = true;}
-					else if(ss.equals("cp")) {toCP = true;}
-					else if(ss.equals("vn")) {toVN = true;}
+					if(ss.equals("cf")) {
+						toCF = true;
+						toCSE = false;
+						toUCE = false;
+						toCP = false;
+						toVN = false;}
+					else if(ss.equals("cse")) {
+						toCSE = true;
+						toCF = false;
+						toUCE = false;
+						toCP = false;
+						toVN = false;}
+					else if(ss.equals("uce")) {
+						toUCE = true;
+						toCSE = false;
+						toCF = false;
+						toCP = false;
+						toVN = false;}
+					else if(ss.equals("cp")) {
+						toCP = true;
+						toUCE = false;
+						toCSE = false;
+						toCF = false;
+						toVN = false;
+						}
+					else if(ss.equals("vn")) {
+						toVN = true;
+						toCP = true;
+						toUCE = false;
+						toCSE = false;
+						toCF = false;}
+					
 					else {i--; toOptimize = false;}
 				}
 				else{i--; toOptimize = false;}
@@ -183,6 +228,21 @@ public class Compiler {
 				toAssembly = true;
 				i++;
 				if(i < args.length) target = args[i];
+				break;
+			case NO_CF:
+				toCF = false;
+				break;
+			case NO_CSE:
+				toCSE = false;
+				break;
+			case NO_UCE:
+				toUCE = false;
+				break;
+			case NO_CP:
+				toCP = false;
+				break;
+			case NO_VN:
+				toVN = false;
 				break;
 			default:
 				// This Must Be A File
@@ -389,6 +449,11 @@ public class Compiler {
 			if(toGenIR || toRunIR) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"ir";
 				if(diagnosisRoot != null){fN = diagnosisRoot + "/" +fN;}
+				if(optir_phase != null && optir_phase.equals("initial")){
+					fN = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_initial.ir";
+				}else if (optir_phase != null && optir_phase.equals("final")){
+					fN = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_final.ir";
+				}
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
 				FileWriter fw = new FileWriter(fN);
@@ -419,31 +484,38 @@ public class Compiler {
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
-					Boolean toCF = false;
-					Boolean toCSE = false;
-					Boolean toUCE = false;
-					Boolean toCP = false;
-					Boolean toVN = false;
-					if(toOptimize && toCF){
+
+					if(optir_phase != null && optir_phase.equals("final")){
 						program.constantFold();
-					}
-					if(toOptimize && toUCE){
 						program.unreachableCodeRemove();
 					}
+
+					if(optir_phase == null && toOptimize){
+						if (toCF) program.constantFold();
+						if (toUCE) program.unreachableCodeRemove();
+					}
+
 					IRCompUnit compUnit = new IRCompUnit("test");
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						if(toOptimize && toCP){
+						if(optir_phase != null &&optir_phase.equals("final")){ //Do all the optimizations
+							F.CSE();
 							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
+							a = ((IRSeq)(F.body())).stmts();
+							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
 						}
-						if(toOptimize && toVN){
-							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
-							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
-						}
-						if(toOptimize && toCSE){
-							F.CSE();
+						if(optir_phase == null && toOptimize){
+							if (toCSE) {F.CSE();}
+							if (toCP) {
+								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
+							}
+							if (toVN) {
+								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
+							}
 						}
 						compUnit.appendFunc(F);
 					}
@@ -452,17 +524,12 @@ public class Compiler {
 							SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 						compUnit.printSExp(sp);
 					}
-					/*{
-						CheckCanonicalIRVisitor cv = new CheckCanonicalIRVisitor();
-						System.out.print("Canonical?: ");
-						System.out.println(cv.visit(compUnit));
-					}
-					// IR constant-folding checker demo
 					{
 						CheckConstFoldedIRVisitor cv = new CheckConstFoldedIRVisitor();
 						System.out.print("Constant-folded?: ");
 						System.out.println(cv.visit(compUnit));
-					}*/
+					}
+
 					if (toRunIR){
 						// IR interpreter demo
 						{
@@ -476,9 +543,11 @@ public class Compiler {
 				catch(Error e) {
 					System.out.println(e.getMessage());
 					fw.write(e.getMessage()+"\r\n");
+
 				}
 				catch(ArrayInitException ex) {
 					fw.write(ex.getMessage());
+
 				}
 				fw.close();
 			}
@@ -519,25 +588,25 @@ public class Compiler {
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
-					if(toOptimize){
-						program.constantFold();
-						program.unreachableCodeRemove();
+					if(optir_phase == null && toOptimize){
+						if (toCF) program.constantFold();
+						if (toUCE) program.unreachableCodeRemove();
 					}
 					String assembly= ".text";
 					IRCompUnit compUnit = new IRCompUnit("test");
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						if(toOptimize && toCP){
-							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
-							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
-						}
-						if(toOptimize && toVN){
-							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
-							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));	
-						}
-						if(toOptimize && toCSE){
-							F.CSE();
+						if(optir_phase == null && toOptimize){
+							if (toCSE) F.CSE();
+							if (toCP) {
+								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
+							}
+							if (toVN) {
+								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
+							}
 						}
 						compUnit.appendFunc(F);
 						assembly += F.getBestTile().getData();
@@ -610,4 +679,5 @@ public class Compiler {
 		System.out.println("-target <OS>: Specify the operating system for which to generate code.");
 		System.out.println("OS may be one of linux, windows, and macos.");
 	}
+
 }
