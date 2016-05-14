@@ -96,6 +96,12 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	"false"							{ return token(sym.FALSE,"false"); }
 	"int"							{ return token(sym.INT,"int"); }
 	"bool" 							{ return token(sym.BOOL,"bool"); }
+	"class"							{ return token(sym.CLASS, "class"); }
+	"new"							{ return token(sym.NEW, "new"); }
+	"this"							{ return token(sym.THIS, "this"); }
+	"extends"						{ return token(sym.EXTENDS, "extends"); }
+	"null"							{ return token(sym.NULL, "null"); }
+	"break"							{ return token(sym.BREAK, "break"); }
 	
 	/*symbols*/
 	"="								{ return token(sym.EQ,"="); }
@@ -124,6 +130,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	"_"								{ return token(sym.UNDERSCORE,"_"); }
 	","								{ return token(sym.COMMA,","); }
 	"*>>"							{ return token(sym.HIGHMUL,"*>>");}
+	"."								{ return token(sym.DOT, "."); }
 	
 	{WhiteSpace}					{ /* ignore */ }
 	{Comment} 						{ /* ignore */ }
