@@ -149,7 +149,7 @@ public class IRFuncDecl extends IRNode {
 				else if (left instanceof IRTemp && right instanceof IRTemp 
 						&& ((IRTemp)right).name().equals(x) ){
 					stmts.remove(j);
-					stmts.add(j, new IRMove(left, new IRConst(c)));
+					stmts.add(j, new IRMove(new IRTemp(((IRTemp)left).name()), new IRConst(c)));
 				}
 				else if (left instanceof IRTemp && right instanceof IRBinOp){
 					if(!((IRTemp)left).name().equals(x)){
@@ -158,12 +158,12 @@ public class IRFuncDecl extends IRNode {
 						IRExpr binright= ((IRBinOp)right).right();
 						if ((binleft instanceof IRTemp && ((IRTemp)binleft).name().equals(x))){
 							IRStmt t = stmts.remove(j);
-							stmts.add(j, new IRMove(left, new IRBinOp(type, new IRConst(c),
+							stmts.add(j, new IRMove(new IRTemp(((IRTemp)left).name()), new IRBinOp(type, new IRConst(c),
 									((IRBinOp)(((IRMove)t).expr())).right())));
 						}
 						if (binright instanceof IRTemp && ((IRTemp)binright).name().equals(x))  {
 							IRStmt t = stmts.remove(j);
-							stmts.add(j, new IRMove(left, 
+							stmts.add(j, new IRMove(new IRTemp(((IRTemp)left).name()), 
 									new IRBinOp(type, 
 											((IRBinOp)(((IRMove)t).expr())).left(),
 											new IRConst(c))));
@@ -181,7 +181,7 @@ public class IRFuncDecl extends IRNode {
 						IRStmt t = stmts.remove(j);
 						stmts.add(j, new IRCJump(
 								new IRBinOp( ((IRBinOp)((IRCJump)t).expr()).opType(),
-										new IRBinOp(((IRBinOp)templ).opType(), ((IRBinOp)templ).left(), new IRConst(c)), 
+										new IRBinOp(((IRBinOp)templ).opType(), new IRTemp(((IRTemp)((IRBinOp)templ).left()).name()), new IRConst(c)), 
 										tempr   ),
 								((IRCJump)t).trueLabel()
 								));}
