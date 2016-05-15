@@ -52,13 +52,15 @@ public class CFGNodeAE {
 		//flow function Fn()
 		//compute exprs(n)
 		String selfExprPrint = "";
-		if(s instanceof IRMove && !(((IRMove)s).expr() instanceof IRCall) && !(((IRMove)s).expr() instanceof IRTemp)){
+		if(s instanceof IRMove && !(((IRMove)s).expr() instanceof IRCall) && 
+				!(((IRMove)s).expr() instanceof IRTemp) && 
+				!(((IRMove)s).expr() instanceof IRConst)){
 			StringWriter sw = new StringWriter();
 	        try (PrintWriter pw = new PrintWriter(sw);
 	             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 	        	((IRMove)s).expr().printSExp(sp);
 	        }
-	        selfExprPrint = new String(sw.toString());
+	        selfExprPrint = new String(sw.toString().trim());
 		}
 		else if(s instanceof IRCJump && !(((IRCJump)s).expr() instanceof IRCall) && !(((IRCJump)s).expr() instanceof IRTemp)){
 			StringWriter sw = new StringWriter();
@@ -66,10 +68,10 @@ public class CFGNodeAE {
 	             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 	        	((IRCJump)s).expr().printSExp(sp);
 	        }
-	        selfExprPrint = new String(sw.toString());
+	        selfExprPrint = new String(sw.toString().trim());
 		}
 		//union with exprs(n)
-		if(!(in.contains(selfExprPrint))){in.add(selfExprPrint);}
+		if(!selfExprPrint.equals("") && !(in.contains(selfExprPrint))){in.add(selfExprPrint);}
 		//kill(n)
 		if(s instanceof IRMove){
 			StringWriter sw = new StringWriter();
@@ -77,7 +79,7 @@ public class CFGNodeAE {
 	             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
 	        	((IRMove)s).target().printSExp(sp);
 	        }
-	        String targetStr = new String(sw.toString());
+	        String targetStr = new String(sw.toString().trim());
 	        for (Iterator<String> it = in.iterator(); it.hasNext();) {
 	            String element = it.next();
 	            if (element.contains(targetStr)) {
