@@ -36,6 +36,7 @@ public class Compiler {
 	public static final String INPUT_IRGEN = "--irgen";
 	public static final String INPUT_IRRUN = "--irrun";
 	public static final String INPUT_OPTIR = "--optir";
+	public static final String INPUT_OPTCFG = "--optcfg";
 	public static final String INPUT_OPTIMIZATION = "-O";
 	public static final String INPUT_TARGET = "-target";
 	public static final String NO_CF = "-O-no-cf";
@@ -44,12 +45,14 @@ public class Compiler {
 	public static final String NO_CP = "-O-no-cp";
 	public static final String NO_VN = "-O-no-vn";
 	public static int MINIMUM_ARG_COUNT = 2; 
-	public static String optir_phase =null;
+	public static String opt_phase =null;
 	public static Boolean toCF = true;
 	public static Boolean toCSE = true;
 	public static Boolean toUCE = true;
 	public static Boolean toCP = true;
 	public static Boolean toVN = true;
+	public static Boolean toDrawCFG = false;
+	public static Boolean toGenOPTIR= false;
 
 
 
@@ -181,8 +184,16 @@ public class Compiler {
 				break;
 			case INPUT_OPTIR:
 				i ++;
-				toRunIR = true;
-				if(i < args.length) optir_phase = args[i];
+				toGenIR = true;
+				toGenOPTIR = true;
+				if(i < args.length) opt_phase = args[i];
+				break;
+			case INPUT_OPTCFG:
+				i ++;
+				toGenIR = true;
+				toDrawCFG = true;
+				if(i < args.length) opt_phase = args[i];
+				break;
 			case INPUT_OPTIMIZATION:
 				i++;
 				String ss = "";
@@ -448,11 +459,14 @@ public class Compiler {
 			 ///////////////////////////////////////////
 			if(toGenIR || toRunIR) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"ir";
+				String fileDot = "";
 				if(diagnosisRoot != null){fN = diagnosisRoot + "/" +fN;}
-				if(optir_phase != null && optir_phase.equals("initial")){
-					fN = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_initial.ir";
-				}else if (optir_phase != null && optir_phase.equals("final")){
-					fN = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_final.ir";
+				if(opt_phase != null && opt_phase.equals("initial")){
+					if (toGenOPTIR){fN = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_initial.ir";}
+					if (toDrawCFG){fileDot = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_f_initial.dot";}
+				}else if (opt_phase != null && opt_phase.equals("final")){
+					if (toGenOPTIR){fN = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_final.ir";}
+					if (toDrawCFG){fileDot = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_f_final.dot";}
 				}
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
@@ -485,28 +499,29 @@ public class Compiler {
 					program.secondPass(table);
 					program.returnPass();
 
-					if(optir_phase != null && optir_phase.equals("final")){
+					if(opt_phase != null && opt_phase.equals("final")){
 						program.constantFold();
 						program.unreachableCodeRemove();
 					}
 
-					if(optir_phase == null && toOptimize){
+					if(opt_phase == null && toOptimize){
 						if (toCF) program.constantFold();
 						if (toUCE) program.unreachableCodeRemove();
 					}
 
 					IRCompUnit compUnit = new IRCompUnit("test");
+					int nodeNumber = 0;
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						if(optir_phase != null &&optir_phase.equals("final")){ //Do all the optimizations
+						if(opt_phase != null &&opt_phase.equals("final")){ //Do all the optimizations
 							F.CSE();
 							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
 							a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
 						}
-						if(optir_phase == null && toOptimize){
+						if(opt_phase == null && toOptimize){
 							if (toCSE) {F.CSE();}
 							if (toCP) {
 								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
@@ -516,6 +531,13 @@ public class Compiler {
 								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
 							}
+						}
+						if(toDrawCFG){
+							FileWriter fwCFG = new FileWriter(fileDot);
+							fwCFG.write("digraph CFG"+nodeNumber+"{\n");
+							fwCFG.write(" \"\" [shape = none] \n");
+							F.drawCFG(fwCFG,nodeNumber);
+							fwCFG.close();
 						}
 						compUnit.appendFunc(F);
 					}
@@ -557,6 +579,12 @@ public class Compiler {
 			/////////////////////////////////////
 			if(toAssembly) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"s";
+				String fileDot = "";
+				if(opt_phase != null && opt_phase.equals("initial")){
+					fileDot = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_f_initial.dot";
+				}else if (opt_phase != null && opt_phase.equals("final")){
+					fileDot = p.OriginFileName.substring(0,p.OriginFileName.length()-3)+"_f_final.dot";
+				}
 				if(assemblyRoot != null){fN = diagnosisRoot + "/" +fN;}
 				Reader fr = new FileReader(p.getFile());
 				Lexer lexer = new Lexer(fr);
@@ -588,16 +616,17 @@ public class Compiler {
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
-					if(optir_phase == null && toOptimize){
+					if(opt_phase == null && toOptimize){
 						if (toCF) program.constantFold();
 						if (toUCE) program.unreachableCodeRemove();
 					}
 					String assembly= ".text";
 					IRCompUnit compUnit = new IRCompUnit("test");
+					int nodeNumber = 0;
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
-						if(optir_phase == null && toOptimize){
+						if(opt_phase == null && toOptimize){
 							if (toCSE) F.CSE();
 							if (toCP) {
 								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
@@ -610,6 +639,14 @@ public class Compiler {
 						}
 						compUnit.appendFunc(F);
 						assembly += F.getBestTile().getData();
+					
+						if(toDrawCFG){
+							FileWriter fwCFG = new FileWriter(fileDot);
+							fwCFG.write("digraph CFG"+nodeNumber+"{\n");
+							fwCFG.write(" \"\" [shape = none] \n");
+							F.drawCFG(fwCFG,nodeNumber);
+							fwCFG.close();
+						}
 					}
 					fw.write(assembly);
 				}

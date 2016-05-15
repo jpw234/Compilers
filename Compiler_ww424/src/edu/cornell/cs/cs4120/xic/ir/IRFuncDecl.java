@@ -6,7 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import compiler_ww424.ArrayInitException;
+import compiler_ww424.Function;
 import compiler_ww424.LabelMaker;
+import compiler_ww424.Lexer;
+import compiler_ww424.Program;
+import compiler_ww424.parser;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.util.CodeWriterSExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.IRBinOp.OpType;
@@ -14,7 +19,11 @@ import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
 
 /** An IR function declaration */
@@ -427,145 +436,216 @@ public class IRFuncDecl extends IRNode {
 		}
 		return bestTile;
 	}
+
+	//Optimization : common subexpression elimination
+	public void CSE(){
+		HashMap<String, Integer> labelPos = new HashMap<String, Integer>();
+		HashSet<String> allExprs = new HashSet<String>();
+		HashMap<String, List<IRStmt>> allExprsMap = new HashMap<String, List<IRStmt>>();
+		//first pass: record Label position & compute all exprs
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(s instanceof IRLabel){
+				labelPos.put( ((IRLabel)(s)).name(), i);
+			}
+			else if(s instanceof IRMove && 
+					!(((IRMove)s).expr() instanceof IRCall) && 
+					!(((IRMove)s).expr() instanceof IRTemp)){
+				StringWriter sw = new StringWriter();
+				try (PrintWriter pw = new PrintWriter(sw);
+						SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+					((IRMove)s).expr().printSExp(sp);
+				}
+				allExprs.add(sw.toString());
+				if(allExprsMap.containsKey(sw.toString())){
+					allExprsMap.get(sw.toString()).add(s);
+				}
+				else {
+					List<IRStmt> tmp = new ArrayList<IRStmt>();
+					tmp.add(s);
+					allExprsMap.put(sw.toString(), tmp);
+				}
+			}
+			else if(s instanceof IRCJump && 
+					!(((IRCJump)s).expr() instanceof IRCall) && 
+					!(((IRCJump)s).expr() instanceof IRTemp)){
+				StringWriter sw = new StringWriter();
+				try (PrintWriter pw = new PrintWriter(sw);
+						SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+					((IRCJump)s).expr().printSExp(sp);
+				}
+				allExprs.add(sw.toString());
+				if(allExprsMap.containsKey(sw.toString())){
+					allExprsMap.get(sw.toString()).add(s);
+				}
+				else {
+					List<IRStmt> tmp = new ArrayList<IRStmt>();
+					tmp.add(s);
+					allExprsMap.put(sw.toString(), tmp);
+				}
+			}
+		}
+		//build graph(define predecessor & successor)
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(s.nodeAE() == null) {s.nodeAE_init(allExprs);}
+		}
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(!(s instanceof IRReturn)){//if not IRReturn, must have successor
+				if(s instanceof IRJump){
+					String jmpLabel = ((IRName)(((IRJump)s).target())).name();
+					int sucIdx = -1;//successor index
+					if(labelPos.containsKey(jmpLabel)){sucIdx = labelPos.get(jmpLabel);}
+					else {System.out.println("jmpLabel not found in labelPos!");}
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
+					((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
+				}
+				else if(s instanceof IRCJump){
+					String cjmpLabel = ((IRCJump)s).trueLabel();
+					int sucIdx = -1;//successor index
+					if(labelPos.containsKey(cjmpLabel)){sucIdx = labelPos.get(cjmpLabel);}
+					else {System.out.println("jmpLabel not found in labelPos!");}
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
+					((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
+					if(sucIdx != i+1){
+						s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
+						((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
+					}
+				}
+				else {
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
+					((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
+				}
+			}
+		}
+		//data flow analysis : worklist algorithm for available expression
+		ArrayDeque<IRStmt> irFIFO = new ArrayDeque<IRStmt>();
+		//initially add all nodes
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			irFIFO.addLast(((IRSeq)body).stmts().get(i));
+		}
+		//run until no change
+		while(!irFIFO.isEmpty()){
+			IRStmt s = irFIFO.removeFirst();
+			boolean isChanged = s.nodeAE().transferFunction(s);
+			if(isChanged){
+				if(s.nodeAE().successor().size() == 1){
+					IRStmt suc0 = s.nodeAE().successor().get(0);
+					if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
+				}
+				else if(s.nodeAE().successor().size() == 2){
+					IRStmt suc0 = s.nodeAE().successor().get(0);
+					IRStmt suc1 = s.nodeAE().successor().get(1);
+					if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
+					if(!irFIFO.contains(suc1)) {irFIFO.addLast(suc1);}
+				}
+			}
+		}
+		//DFS to validate common subexpression
+		for(String str : allExprsMap.keySet()){
+			if(allExprsMap.get(str).size() >= 2){
+				int n = allExprsMap.get(str).size();
+				boolean isFirst = true;
+				String _cse = "";
+				for(int i = 0; i < n-1; i++){
+					if(DFS_validCommonExpr(allExprsMap.get(str).get(i), allExprsMap.get(str).get(i+1), str)){
+						if(isFirst){
+							_cse = LabelMaker.Generate_Unique_Label("_CSETemp");
+							isFirst = false;
+							int idx = ((IRSeq)body).stmts().indexOf(allExprsMap.get(str).get(i));
+							IRExpr commonExpr = (allExprsMap.get(str).get(i) instanceof IRMove)? ((IRMove)allExprsMap.get(str).get(i)).expr(): 
+								((IRCJump)allExprsMap.get(str).get(i)).expr();
+							((IRSeq)body).stmts().add(idx, new IRMove(new IRTemp(_cse), commonExpr));
+						}
+						if(allExprsMap.get(str).get(i) instanceof IRMove){((IRMove)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
+						else{((IRCJump)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
+					}
+				}
+			}
+		}
+	}
+
+	boolean DFS_validCommonExpr(IRStmt start, IRStmt end, String conmmonExpr){//since backtrace, start node is successor, end node is predecessor
+		if(!(start.nodeAE().availExprs().contains(conmmonExpr))) {return false;}
+		else if(start == end) {return true;}
+		else if(start.nodeAE().predecessor().size() == 0){return false;}
+		boolean isCommon = true;
+		for(IRStmt s : start.nodeAE().predecessor()){
+			isCommon = (isCommon && DFS_validCommonExpr(s, end, conmmonExpr));
+			if(isCommon == false) {break;}
+		}
+		return isCommon;
+	}
+
+
+	public void drawCFG(FileWriter fw , int nodeNumber) throws IOException {
+		//FileWriter fw = new FileWriter(fileName);
+		HashSet<String> allExprs = new HashSet<String>();
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			allExprs.add(((IRSeq)body).stmts().get(i).toString());
+		}
 	
-    //Optimization : common subexpression elimination
-    public void CSE(){
-    	HashMap<String, Integer> labelPos = new HashMap<String, Integer>();
-    	HashSet<String> allExprs = new HashSet<String>();
-    	HashMap<String, List<IRStmt>> allExprsMap = new HashMap<String, List<IRStmt>>();
-    	//first pass: record Label position & compute all exprs
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		IRStmt s = ((IRSeq)body).stmts().get(i);
-    		if(s instanceof IRLabel){
-    			labelPos.put( ((IRLabel)(s)).name(), i);
-    		}
-    		else if(s instanceof IRMove && 
-    				!(((IRMove)s).expr() instanceof IRCall) && 
-    				!(((IRMove)s).expr() instanceof IRTemp)){
-    			StringWriter sw = new StringWriter();
-    	        try (PrintWriter pw = new PrintWriter(sw);
-    	             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
-    	        	((IRMove)s).expr().printSExp(sp);
-    	        }
-    	        allExprs.add(sw.toString());
-    	        if(allExprsMap.containsKey(sw.toString())){
-    	        	allExprsMap.get(sw.toString()).add(s);
-    	        }
-    	        else {
-    	        	List<IRStmt> tmp = new ArrayList<IRStmt>();
-    	        	tmp.add(s);
-    	        	allExprsMap.put(sw.toString(), tmp);
-    	        }
-    		}
-    		else if(s instanceof IRCJump && 
-    				!(((IRCJump)s).expr() instanceof IRCall) && 
-    				!(((IRCJump)s).expr() instanceof IRTemp)){
-    			StringWriter sw = new StringWriter();
-    	        try (PrintWriter pw = new PrintWriter(sw);
-    	             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
-    	        	((IRCJump)s).expr().printSExp(sp);
-    	        }
-    	        allExprs.add(sw.toString());
-    	        if(allExprsMap.containsKey(sw.toString())){
-    	        	allExprsMap.get(sw.toString()).add(s);
-    	        }
-    	        else {
-    	        	List<IRStmt> tmp = new ArrayList<IRStmt>();
-    	        	tmp.add(s);
-    	        	allExprsMap.put(sw.toString(), tmp);
-    	        }
-    		}
-    	}
-    	//build graph(define predecessor & successor)
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		IRStmt s = ((IRSeq)body).stmts().get(i);
-    		if(s.nodeAE() == null) {s.nodeAE_init(allExprs);}
-    	}
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		IRStmt s = ((IRSeq)body).stmts().get(i);
-    		if(!(s instanceof IRReturn)){//if not IRReturn, must have successor
-    			if(s instanceof IRJump){
-    				String jmpLabel = ((IRName)(((IRJump)s).target())).name();
-    				int sucIdx = -1;//successor index
-    				if(labelPos.containsKey(jmpLabel)){sucIdx = labelPos.get(jmpLabel);}
-    				else {System.out.println("jmpLabel not found in labelPos!");}
-    				s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
-    				((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
-    			}
-    			else if(s instanceof IRCJump){
-    				String cjmpLabel = ((IRCJump)s).trueLabel();
-    				int sucIdx = -1;//successor index
-    				if(labelPos.containsKey(cjmpLabel)){sucIdx = labelPos.get(cjmpLabel);}
-    				else {System.out.println("jmpLabel not found in labelPos!");}
-    				s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
-    				((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
-    				if(sucIdx != i+1){
-    					s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
-        				((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
-    				}
-    			}
-    			else {
-    				s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
-    				((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
-    			}
-    		}
-    	}
-    	//data flow analysis : worklist algorithm for available expression
-    	ArrayDeque<IRStmt> irFIFO = new ArrayDeque<IRStmt>();
-    	//initially add all nodes
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		irFIFO.addLast(((IRSeq)body).stmts().get(i));
-    	}
-    	//run until no change
-    	while(!irFIFO.isEmpty()){
-    		IRStmt s = irFIFO.removeFirst();
-    		boolean isChanged = s.nodeAE().transferFunction(s);
-    		if(isChanged){
-    			if(s.nodeAE().successor().size() == 1){
-    				IRStmt suc0 = s.nodeAE().successor().get(0);
-    				if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
-    			}
-    			else if(s.nodeAE().successor().size() == 2){
-    				IRStmt suc0 = s.nodeAE().successor().get(0);
-    				IRStmt suc1 = s.nodeAE().successor().get(1);
-    				if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
-    				if(!irFIFO.contains(suc1)) {irFIFO.addLast(suc1);}
-    			}
-    		}
-    	}
-    	//DFS to validate common subexpression
-    	for(String str : allExprsMap.keySet()){
-    		if(allExprsMap.get(str).size() >= 2){
-    			int n = allExprsMap.get(str).size();
-    			boolean isFirst = true;
-    			String _cse = "";
-    			for(int i = 0; i < n-1; i++){
-    				if(DFS_validCommonExpr(allExprsMap.get(str).get(i), allExprsMap.get(str).get(i+1), str)){
-    					if(isFirst){
-    						_cse = LabelMaker.Generate_Unique_Label("_CSETemp");
-    						isFirst = false;
-    						int idx = ((IRSeq)body).stmts().indexOf(allExprsMap.get(str).get(i));
-    						IRExpr commonExpr = (allExprsMap.get(str).get(i) instanceof IRMove)? ((IRMove)allExprsMap.get(str).get(i)).expr(): 
-    							((IRCJump)allExprsMap.get(str).get(i)).expr();
-    						((IRSeq)body).stmts().add(idx, new IRMove(new IRTemp(_cse), commonExpr));
-    					}
-    					if(allExprsMap.get(str).get(i) instanceof IRMove){((IRMove)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
-    					else{((IRCJump)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
-    				}
-    			}
-    		}
-    	}
-    }
-    
-    boolean DFS_validCommonExpr(IRStmt start, IRStmt end, String conmmonExpr){//since backtrace, start node is successor, end node is predecessor
-    	if(!(start.nodeAE().availExprs().contains(conmmonExpr))) {return false;}
-    	else if(start == end) {return true;}
-    	else if(start.nodeAE().predecessor().size() == 0){return false;}
-    	boolean isCommon = true;
-    	for(IRStmt s : start.nodeAE().predecessor()){
-    		isCommon = (isCommon && DFS_validCommonExpr(s, end, conmmonExpr));
-    		if(isCommon == false) {break;}
-    	}
-    	return isCommon;
-    }
+		HashMap<Integer, ArrayList<Integer>> edges = new HashMap<Integer, ArrayList<Integer>>();		
+		//fw.write("digraph CFG {\n");
+		//fw.write(" \"\" [shape = none] \n");
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			try{
+				if (s.nodeAE() == null ){s.nodeAE_init(allExprs);} 
+				CFGNodeAE curNode = s.nodeAE();
+				for(int j = 0 ; j < curNode.successor().size();j++){
+					String curNodeS = printStmt(curNode.successor().get(j));
+					int num = nodeNumber; 
+					if (curNodeS.length() >2) {
+						nodeNumber += 1;
+						curNodeS = curNodeS.substring(0, curNodeS.length()-1);
+						String append = ""+nodeNumber + " [label=\" " +curNodeS +"\"]\n";
+						if (edges.containsKey(num)){
+							edges.get(num).add(nodeNumber);
+						}else{
+							ArrayList<Integer> temp = new ArrayList<Integer>();
+							temp.add(nodeNumber);
+							edges.put(num, temp);
+						}
+						fw.write(append);
+					}
+				}
+			}
+			catch(Error e) {
+				System.out.println(e.getMessage());
+				fw.write(e.getMessage()+"\r\n");
+			}
+		}
+		fw.write("\"\" -> 1");
+		for (Integer a : edges.keySet()){
+			for (int j = 0 ; j < edges.get(a).size();j++){
+				fw.write(""+a+"->"+edges.get(a).get(j)+"\n");
+			}
+		}
+		fw.write("}");
+		//fw.close();
+
+	}
+
+	public String printStmt(IRStmt s){
+		String selfExprPrint = "";
+		if(s instanceof IRMove && !(((IRMove)s).expr() instanceof IRCall) && !(((IRMove)s).expr() instanceof IRTemp)){
+			StringWriter sw = new StringWriter();
+			try (PrintWriter pw = new PrintWriter(sw);
+					SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+				((IRMove)s).expr().printSExp(sp);
+			}
+			selfExprPrint = new String(sw.toString());
+		}
+		else if(s instanceof IRCJump && !(((IRCJump)s).expr() instanceof IRCall) && !(((IRCJump)s).expr() instanceof IRTemp)){
+			StringWriter sw = new StringWriter();
+			try (PrintWriter pw = new PrintWriter(sw);
+					SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+				((IRCJump)s).expr().printSExp(sp);
+			}
+			selfExprPrint = new String(sw.toString());
+		}
+		return selfExprPrint;
+	}
 }
