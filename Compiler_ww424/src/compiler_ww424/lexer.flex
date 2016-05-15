@@ -96,7 +96,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	"false"							{ return token(sym.FALSE,"false"); }
 	"int"							{ return token(sym.INT,"int"); }
 	"bool" 							{ return token(sym.BOOL,"bool"); }
-	"class"							{ return token(sym.CLASS, "class"); }
+	"class"							{ return token(sym.CLASSTERM, "class"); }
 	"new"							{ return token(sym.NEW, "new"); }
 	"this"							{ return token(sym.THIS, "this"); }
 	"extends"						{ return token(sym.EXTENDS, "extends"); }
