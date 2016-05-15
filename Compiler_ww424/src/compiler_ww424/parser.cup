@@ -141,8 +141,15 @@ precedence nonassoc ELSE;
 
 start with program;
 
-program             ::= uselist:us programopts:p         {:if(!parser.getState()) RESULT = new Program(us,p);
-                                        else RESULT = new Program(new ArrayList<Use>(), p); :}
+program             ::= uselist:us programopts:p         {:
+						if(!parser.getState()) {
+							List<Function> temp = new ArrayList<Function>();
+							for(Object o : p){temp.add(((Function)o));}
+							RESULT = new Program(us,temp);}
+                                        else {
+							List<Function> temp = new ArrayList<Function>();
+							for(Object o : p){temp.add(((Function)o));}
+							RESULT = new Program(new ArrayList<Use>(), temp); }:}
              ;
 uselist             ::= uselist:ul useprod:up                 {:ul.add(up); RESULT = ul;:}
              |                              {:RESULT = new ArrayList<Use>(); :}
