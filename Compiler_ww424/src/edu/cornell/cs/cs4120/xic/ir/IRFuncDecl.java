@@ -203,37 +203,33 @@ public class IRFuncDecl extends IRNode {
 			Integer number = 0;
 			for (int i=0; i < box.size(); i++){
 				IRStmt s = box.get(i);
-
 				if (s instanceof IRMove){
 					IRExpr left = ((IRMove)s).target();
 					IRExpr right= ((IRMove)s).expr();
 					if (left instanceof IRTemp && right instanceof IRConst){
-						if (hashmap.containsKey(left)){
-							hashmap.replace((IRTemp)left, ((IRConst)right).value());
-						}
-						else{
-							hashmap.put((IRTemp)left, ((IRConst)right).value());
-						}
+						if (hashmap.containsKey((IRTemp)left)){hashmap.replace((IRTemp)left, ((IRConst)right).value());}
+						else{hashmap.put((IRTemp)left, ((IRConst)right).value());}
+						if (!valuenumberingmap.containsKey(((IRConst)right).value()))
+						{valuenumberingmap.put(((IRConst)right).value(), number);
+						number += 1;}
 					}
 					else if (left instanceof IRTemp && right instanceof IRBinOp){
 						OpType type = ((IRBinOp)right).opType();
 						IRExpr binopLeft = ((IRBinOp)right).left();
 						IRExpr binopRight= ((IRBinOp)right).right();
 						Long value = hashnumber(type,binopLeft,binopRight,hashmap);
-						if(!hashmap.containsKey((IRTemp)left)){
-							hashmap.put((IRTemp)left, value);
-						}else{
-							hashmap.replace((IRTemp)left, value);
-						}
+
+					
+						if(!hashmap.containsKey((IRTemp)left)){hashmap.put((IRTemp)left, value);}
+						else{hashmap.replace((IRTemp)left, value);}
 						if (!valuenumberingmap.containsKey(value)){
 							valuenumberingmap.put(value, number);
-							number += 1; 
-							box = valueNumberingHelper((IRTemp)left,value,i,box,hashmap);
-							boxes.remove(b);
-							boxes.add(b,box);}
+							number += 1;}
+						valueNumberingHelper((IRTemp)left,value,i,box,hashmap);
 					}
 				}
 			}
+
 		}
 		List<IRStmt> ret = new ArrayList<IRStmt>();
 		for (int b=0; b < boxes.size(); b++){
@@ -241,9 +237,10 @@ public class IRFuncDecl extends IRNode {
 				ret.add(boxes.get(b).get(i));
 			}
 		}
+
 		return ret;
 	}
-	public static List<IRStmt> valueNumberingHelper(IRTemp n,Long value, int index,
+	public static void valueNumberingHelper(IRTemp n,Long value, int index,
 			List<IRStmt> lists,HashMap<IRTemp,Long> hashmap){
 		//TODO
 		for(int i = index+1 ; i < lists.size(); i++){
@@ -251,14 +248,7 @@ public class IRFuncDecl extends IRNode {
 			if (s instanceof IRMove){
 				IRExpr left = ((IRMove)s).target();
 				IRExpr right= ((IRMove)s).expr();
-				if (left instanceof IRTemp && right instanceof IRConst){
-					//REASSIGN
-					if((((IRTemp)left).name()).equals(n.name()) && ((Long)((IRConst)right).value()).equals(value)){
-						lists.remove(i);
-					}
-					return lists;
-				}
-				else if (left instanceof IRTemp && right instanceof IRBinOp){
+				if (left instanceof IRTemp && right instanceof IRBinOp){
 					//TODO
 					IRExpr binleft = ((IRBinOp)right).left();
 					IRExpr binright= ((IRBinOp)right).right();
@@ -268,111 +258,124 @@ public class IRFuncDecl extends IRNode {
 							hashnumber(optype,binleft,binright,hashmap).equals(value) ){
 						lists.remove(i);
 					}
-					else if (((IRTemp)left).name().equals(n.name()) && 
-							!hashnumber(optype,binleft,binright,hashmap).equals(value)){
-						return lists;
-					}
-					//REASSIGN
 					else if (!((IRTemp)left).name().equals(n.name()) &&
 							hashnumber(optype,binleft,binright,hashmap).equals(value)){
-						lists.remove(i);
+						IRStmt t = lists.remove(i);
+						System.out.println(value.toString());
 						lists.add(i, new IRMove(new IRTemp(((IRTemp)left).name()), new IRTemp(n.name())));
 					}
 				}
 			}
 		}
-		return lists;
+		return ;
 
 	}
 
 	public static Long hashnumber(OpType type, IRExpr left, IRExpr right,HashMap<IRTemp,Long> map){
-		Long value = (long) 0;
+		Long value = new Long(0);
 		switch(type){
 		case ADD: //*10
 			if (left instanceof IRTemp && right instanceof IRTemp){
-				if(!map.containsKey(left) || !map.containsKey(right)) break;
-				value = 10*map.get(((IRTemp)left)) * map.get((IRTemp)right) + 100;
+				if(!map.containsKey((IRTemp)left) || !map.containsKey((IRTemp)right)) break;
+				return 10*map.get(((IRTemp)left)) * map.get((IRTemp)right) + 100;
 			}
 			else if (left instanceof IRConst && right instanceof IRTemp){
-				if( !map.containsKey(right)) break;
-				value = 10* ((IRConst)left).value() * map.get(right) + 100;
+				if( !map.containsKey((IRTemp)right)) break;
+				return 10* ((IRConst)left).value() * map.get(right) + 100;
 			}
 			else if (left instanceof IRTemp && right instanceof IRConst){
-				if( !map.containsKey(left)) break;
-				value = 10*map.get(((IRTemp)left))* ((IRConst)right).value() + 100;
+				if( !map.containsKey((IRTemp)left)) break;
+				return 10*map.get(((IRTemp)left))* ((IRConst)right).value() + 100;
+			}
+			else if (left instanceof IRConst && right instanceof IRConst){
+				return 10* ((IRConst)left).value() * ((IRConst)right).value() + 100;
 			}
 			break;
 		case MUL://*20
 			if (left instanceof IRTemp && right instanceof IRTemp){
-				if(!map.containsKey(left) || !map.containsKey(right)) break;
+				if(!map.containsKey((IRTemp)left) || !map.containsKey((IRTemp)right)) break;
 				value = 20*map.get(((IRTemp)left)) * map.get((IRTemp)right) + 200;
 			}
 			else if (left instanceof IRConst && right instanceof IRTemp){
-				if( !map.containsKey(right)) break;
+				if( !map.containsKey((IRTemp)right)) break;
 				value = 20* ((IRConst)left).value() * map.get((IRTemp)right) + 200;
 			}
 			else if (left instanceof IRTemp && right instanceof IRConst){
-				if( !map.containsKey(left)) break;
+				if( !map.containsKey((IRTemp)left)) break;
 				value = 20* map.get(((IRTemp)left))* ((IRConst)right).value() + 200;
+			}
+			else if (left instanceof IRConst && right instanceof IRConst){
+				return 20* ((IRConst)left).value() * ((IRConst)right).value() + 200;
 			}
 			break;
 		case SUB://*30
 			if (left instanceof IRTemp && right instanceof IRTemp){
-				if(!map.containsKey(left) || !map.containsKey(right)) break;
+				if(!map.containsKey((IRTemp)left) || !map.containsKey((IRTemp)right)) break;
 				value = 30*map.get(((IRTemp)left)) * map.get((IRTemp)right) + 300;
 			}
 			else if (left instanceof IRConst && right instanceof IRTemp){
-				if( !map.containsKey(right)) break;
+				if( !map.containsKey((IRTemp)right)) break;
 				value = 30* ((IRConst)left).value() * map.get((IRTemp)right) + 300;
 			}
 			else if (left instanceof IRTemp && right instanceof IRConst){
-				if( !map.containsKey(left)) break;
+				if( !map.containsKey((IRTemp)left)) break;
 				value = 30* map.get(((IRTemp)left))* ((IRConst)right).value() + 300;
 			}
-
+			else if (left instanceof IRConst && right instanceof IRConst){
+				return 30* ((IRConst)left).value() * ((IRConst)right).value() + 300;
+			}
 			break;
 		case DIV://*40
 			if (left instanceof IRTemp && right instanceof IRTemp){
-				if(!map.containsKey(left) || !map.containsKey(right)) break;
+				if(!map.containsKey((IRTemp)left) || !map.containsKey((IRTemp)right)) break;
 				value = 40*map.get(((IRTemp)left)) * map.get((IRTemp)right) + 400;
 			}
 			else if (left instanceof IRConst && right instanceof IRTemp){
-				if( !map.containsKey(right)) break;
+				if( !map.containsKey((IRTemp)right)) break;
 				value = 40* ((IRConst)left).value() * map.get((IRTemp)right) + 400;
 			}
 			else if (left instanceof IRTemp && right instanceof IRConst){
-				if( !map.containsKey(left)) break;
+				if( !map.containsKey((IRTemp)left)) break;
 				value = 40* map.get(((IRTemp)left))* ((IRConst)right).value() + 400;
+			}
+			else if (left instanceof IRConst && right instanceof IRConst){
+				return 40* ((IRConst)left).value() * ((IRConst)right).value() + 400;
 			}
 
 			break;
 		case MOD://*50
 			if (left instanceof IRTemp && right instanceof IRTemp){
-				if(!map.containsKey(left) || !map.containsKey(right)) break;
+				if(!map.containsKey((IRTemp)left) || !map.containsKey((IRTemp)right)) break;
 				value = 50*map.get(((IRTemp)left)) * map.get((IRTemp)right) + 500;
 			}
 			else if (left instanceof IRConst && right instanceof IRTemp){
-				if( !map.containsKey(right)) break;
+				if( !map.containsKey((IRTemp)right)) break;
 				value = 50* ((IRConst)left).value() * map.get((IRTemp)right) + 500;
 			}
 			else if (left instanceof IRTemp && right instanceof IRConst){
-				if( !map.containsKey(left)) break;
+				if( !map.containsKey((IRTemp)left)) break;
 				value = 50* map.get(((IRTemp)left))* ((IRConst)right).value() + 500;
+			}
+			else if (left instanceof IRConst && right instanceof IRConst){
+				return 50* ((IRConst)left).value() * ((IRConst)right).value() + 500;
 			}
 
 			break;
 		case HMUL:
 			if (left instanceof IRTemp && right instanceof IRTemp){
-				if(!map.containsKey(left) || !map.containsKey(right)) break;
+				if(!map.containsKey((IRTemp)left) || !map.containsKey((IRTemp)right)) break;
 				value = 60*map.get(((IRTemp)left)) * map.get((IRTemp)right) + 600;
 			}
 			else if (left instanceof IRConst && right instanceof IRTemp){
-				if( !map.containsKey(right)) break;
+				if( !map.containsKey((IRTemp)right)) break;
 				value = 60* ((IRConst)left).value() * map.get((IRTemp)right) + 600;
 			}
 			else if (left instanceof IRTemp && right instanceof IRConst){
-				if( !map.containsKey(left)) break;
+				if( !map.containsKey((IRTemp)left)) break;
 				value = 60* map.get(((IRTemp)left))* ((IRConst)right).value() + 600;
+			}
+			else if (left instanceof IRConst && right instanceof IRConst){
+				return 60* ((IRConst)left).value() * ((IRConst)right).value() + 600;
 			}
 			break;
 		}
@@ -427,188 +430,188 @@ public class IRFuncDecl extends IRNode {
 		}
 		return bestTile;
 	}
-	
-    //Optimization : common subexpression elimination
-    public void CSE(){
-    	HashMap<String, Integer> labelPos = new HashMap<String, Integer>();
-    	HashSet<String> allExprs = new HashSet<String>();
-    	HashMap<String, List<IRStmt>> allExprsMap = new HashMap<String, List<IRStmt>>();
-    	//first pass: record Label position & compute all exprs
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		IRStmt s = ((IRSeq)body).stmts().get(i);
-    		if(s instanceof IRLabel){
-    			labelPos.put( ((IRLabel)(s)).name(), i);
-    		}
-    		else if(s instanceof IRMove && 
-    				!(((IRMove)s).expr() instanceof IRCall) && 
-    				!(((IRMove)s).expr() instanceof IRTemp) && 
-    				!(((IRMove)s).expr() instanceof IRConst)){
-    			StringWriter sw = new StringWriter();
-    	        try (PrintWriter pw = new PrintWriter(sw);
-    	             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
-    	        	((IRMove)s).expr().printSExp(sp);
-    	        }
-    	        String exprTmp = sw.toString().trim();
-    	        allExprs.add(exprTmp);
-    	        if(allExprsMap.containsKey(exprTmp)){
-    	        	allExprsMap.get(exprTmp).add(s);
-    	        }
-    	        else {
-    	        	List<IRStmt> tmp = new ArrayList<IRStmt>();
-    	        	tmp.add(s);
-    	        	allExprsMap.put(exprTmp, tmp);
-    	        }
-    		}
-    		else if(s instanceof IRCJump && 
-    				!(((IRCJump)s).expr() instanceof IRCall) && 
-    				!(((IRCJump)s).expr() instanceof IRTemp)){
-    			StringWriter sw = new StringWriter();
-    	        try (PrintWriter pw = new PrintWriter(sw);
-    	             SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
-    	        	((IRCJump)s).expr().printSExp(sp);
-    	        }
-    	        String exprTmp = sw.toString().trim();
-    	        allExprs.add(exprTmp);
-    	        if(allExprsMap.containsKey(exprTmp)){
-    	        	allExprsMap.get(exprTmp).add(s);
-    	        }
-    	        else {
-    	        	List<IRStmt> tmp = new ArrayList<IRStmt>();
-    	        	tmp.add(s);
-    	        	allExprsMap.put(exprTmp, tmp);
-    	        }
-    		}
-    	}
-    	//DEBUG
-//    	System.out.println("Size of allExprsMap = " + allExprsMap.size());
-//    	System.out.println("Size of allExprs = " + allExprs.size());
-//    	for(Map.Entry<String, List<IRStmt>> entry : allExprsMap.entrySet()){
-//    		System.out.print(entry.getKey() + ": ");
-//    		for(IRStmt ss : entry.getValue()){
-//    			System.out.print(((IRSeq)body).stmts().indexOf(ss) + " ");
-//    		}
-//    		System.out.print("\n");
-//    	}
-    	//build graph(define predecessor & successor)
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		IRStmt s = ((IRSeq)body).stmts().get(i);
-    		if(s.nodeAE() == null) {s.nodeAE_init(allExprs);}
-    	}
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		IRStmt s = ((IRSeq)body).stmts().get(i);
-    		if(!(s instanceof IRReturn)){//if not IRReturn, must have successor
-    			if(s instanceof IRJump){
-    				String jmpLabel = ((IRName)(((IRJump)s).target())).name();
-    				int sucIdx = -1;//successor index
-    				if(labelPos.containsKey(jmpLabel)){sucIdx = labelPos.get(jmpLabel);}
-    				else {System.out.println("jmpLabel not found in labelPos!");}
-    				s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
-    				((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
-    			}
-    			else if(s instanceof IRCJump){
-    				String cjmpLabel = ((IRCJump)s).trueLabel();
-    				int sucIdx = -1;//successor index
-    				if(labelPos.containsKey(cjmpLabel)){sucIdx = labelPos.get(cjmpLabel);}
-    				else {System.out.println("jmpLabel not found in labelPos!");}
-    				s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
-    				((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
-    				if(sucIdx != i+1){
-    					s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
-        				((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
-    				}
-    			}
-    			else {
-    				s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
-    				((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
-    			}
-    		}
-    	}
-    	//DEBUG
-//    	System.out.println("Graph : ");
-//    	List<IRStmt> funcStmtList = ((IRSeq)body).stmts();
-//    	for(int i = 0; i < funcStmtList.size(); i++){
-//    		System.out.print(i + "th stmt --> ");
-//    		System.out.print("pre: ");
-//    		for(int j = 0; j < funcStmtList.get(i).nodeAE().predecessor().size(); j++){
-//    			System.out.print(funcStmtList.indexOf(funcStmtList.get(i).nodeAE().predecessor().get(j)) + " ");
-//    		}
-//    		System.out.print("suc: ");
-//    		for(int j = 0; j < funcStmtList.get(i).nodeAE().successor().size(); j++){
-//    			System.out.print(funcStmtList.indexOf(funcStmtList.get(i).nodeAE().successor().get(j)) + " ");
-//    		}
-//    		System.out.print("\n");
-//    	}
-    	//data flow analysis : worklist algorithm for available expression
-    	ArrayDeque<IRStmt> irFIFO = new ArrayDeque<IRStmt>();
-    	//initially add all nodes
-    	for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
-    		irFIFO.addLast(((IRSeq)body).stmts().get(i));
-    	}
-    	//run until no change
-    	while(!irFIFO.isEmpty()){
-    		IRStmt s = irFIFO.removeFirst();
-    		boolean isChanged = s.nodeAE().transferFunction(s);
-    		if(isChanged){
-    			if(s.nodeAE().successor().size() == 1){
-    				IRStmt suc0 = s.nodeAE().successor().get(0);
-    				if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
-    			}
-    			else if(s.nodeAE().successor().size() == 2){
-    				IRStmt suc0 = s.nodeAE().successor().get(0);
-    				IRStmt suc1 = s.nodeAE().successor().get(1);
-    				if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
-    				if(!irFIFO.contains(suc1)) {irFIFO.addLast(suc1);}
-    			}
-    		}
-    	}
-    	//DEBUG
-//    	System.out.println("Available Expression : ");
-//    	for(int i = 0; i < funcStmtList.size(); i++){
-//    		System.out.print(i + "th stmt --> ");
-//    		for(String ss : funcStmtList.get(i).nodeAE().availExprs()){
-//    			System.out.print(ss + " , ");
-//    		}
-//    		System.out.print("\n");
-//    	}
-    	//DFS to validate common subexpression
-    	for(String str : allExprsMap.keySet()){
-    		if(allExprsMap.get(str).size() >= 2){
-    			int n = allExprsMap.get(str).size();
-    			boolean isFirst = true;
-    			String _cse = "";
-    			for(int i = 0; i < n-1; i++){
-    				if(DFS_validCommonExpr(allExprsMap.get(str).get(i+1), allExprsMap.get(str).get(i), str)){
-    					if(isFirst){
-    						_cse = LabelMaker.Generate_Unique_Label("_CSETemp");
-    						isFirst = false;
-    						int idx = ((IRSeq)body).stmts().indexOf(allExprsMap.get(str).get(i));
-    						IRExpr commonExpr = (allExprsMap.get(str).get(i) instanceof IRMove)? ((IRMove)allExprsMap.get(str).get(i)).expr(): 
-    							((IRCJump)allExprsMap.get(str).get(i)).expr();
-    						((IRSeq)body).stmts().add(idx, new IRMove(new IRTemp(_cse), commonExpr));
-    					}
-    					if(allExprsMap.get(str).get(i) instanceof IRMove){((IRMove)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
-    					else{((IRCJump)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
-    					if(allExprsMap.get(str).get(i+1) instanceof IRMove){((IRMove)allExprsMap.get(str).get(i+1)).CSE_modifyExpr(new IRTemp(_cse));}
-    					else{((IRCJump)allExprsMap.get(str).get(i+1)).CSE_modifyExpr(new IRTemp(_cse));}
-    				}
-    			}
-    		}
-    	}
-    }
-    
-    boolean DFS_validCommonExpr(IRStmt start, IRStmt end, String conmmonExpr){//since backtrace, start node is successor, end node is predecessor
-    	if(!(start.nodeAE().availExprs().contains(conmmonExpr))) {return false;}
-    	else if(start == end) {return true;}
-    	else if(start.nodeAE().predecessor().size() == 0){return false;}
-    	boolean isCommon = true;
-    	for(IRStmt s : start.nodeAE().predecessor()){
-    		isCommon = (isCommon && DFS_validCommonExpr(s, end, conmmonExpr));
-    		if(isCommon == false) {break;}
-    	}
-    	return isCommon;
-    }
-    
-    public void drawCFG(FileWriter fw , int nodeNumber) throws IOException {
+
+	//Optimization : common subexpression elimination
+	public void CSE(){
+		HashMap<String, Integer> labelPos = new HashMap<String, Integer>();
+		HashSet<String> allExprs = new HashSet<String>();
+		HashMap<String, List<IRStmt>> allExprsMap = new HashMap<String, List<IRStmt>>();
+		//first pass: record Label position & compute all exprs
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(s instanceof IRLabel){
+				labelPos.put( ((IRLabel)(s)).name(), i);
+			}
+			else if(s instanceof IRMove && 
+					!(((IRMove)s).expr() instanceof IRCall) && 
+					!(((IRMove)s).expr() instanceof IRTemp) && 
+					!(((IRMove)s).expr() instanceof IRConst)){
+				StringWriter sw = new StringWriter();
+				try (PrintWriter pw = new PrintWriter(sw);
+						SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+					((IRMove)s).expr().printSExp(sp);
+				}
+				String exprTmp = sw.toString().trim();
+				allExprs.add(exprTmp);
+				if(allExprsMap.containsKey(exprTmp)){
+					allExprsMap.get(exprTmp).add(s);
+				}
+				else {
+					List<IRStmt> tmp = new ArrayList<IRStmt>();
+					tmp.add(s);
+					allExprsMap.put(exprTmp, tmp);
+				}
+			}
+			else if(s instanceof IRCJump && 
+					!(((IRCJump)s).expr() instanceof IRCall) && 
+					!(((IRCJump)s).expr() instanceof IRTemp)){
+				StringWriter sw = new StringWriter();
+				try (PrintWriter pw = new PrintWriter(sw);
+						SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+					((IRCJump)s).expr().printSExp(sp);
+				}
+				String exprTmp = sw.toString().trim();
+				allExprs.add(exprTmp);
+				if(allExprsMap.containsKey(exprTmp)){
+					allExprsMap.get(exprTmp).add(s);
+				}
+				else {
+					List<IRStmt> tmp = new ArrayList<IRStmt>();
+					tmp.add(s);
+					allExprsMap.put(exprTmp, tmp);
+				}
+			}
+		}
+		//DEBUG
+		//    	System.out.println("Size of allExprsMap = " + allExprsMap.size());
+		//    	System.out.println("Size of allExprs = " + allExprs.size());
+		//    	for(Map.Entry<String, List<IRStmt>> entry : allExprsMap.entrySet()){
+		//    		System.out.print(entry.getKey() + ": ");
+		//    		for(IRStmt ss : entry.getValue()){
+		//    			System.out.print(((IRSeq)body).stmts().indexOf(ss) + " ");
+		//    		}
+		//    		System.out.print("\n");
+		//    	}
+		//build graph(define predecessor & successor)
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(s.nodeAE() == null) {s.nodeAE_init(allExprs);}
+		}
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(!(s instanceof IRReturn)){//if not IRReturn, must have successor
+				if(s instanceof IRJump){
+					String jmpLabel = ((IRName)(((IRJump)s).target())).name();
+					int sucIdx = -1;//successor index
+					if(labelPos.containsKey(jmpLabel)){sucIdx = labelPos.get(jmpLabel);}
+					else {System.out.println("jmpLabel not found in labelPos!");}
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
+					((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
+				}
+				else if(s instanceof IRCJump){
+					String cjmpLabel = ((IRCJump)s).trueLabel();
+					int sucIdx = -1;//successor index
+					if(labelPos.containsKey(cjmpLabel)){sucIdx = labelPos.get(cjmpLabel);}
+					else {System.out.println("jmpLabel not found in labelPos!");}
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
+					((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
+					if(sucIdx != i+1){
+						s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
+						((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
+					}
+				}
+				else {
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
+					((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
+				}
+			}
+		}
+		//DEBUG
+		//    	System.out.println("Graph : ");
+		//    	List<IRStmt> funcStmtList = ((IRSeq)body).stmts();
+		//    	for(int i = 0; i < funcStmtList.size(); i++){
+		//    		System.out.print(i + "th stmt --> ");
+		//    		System.out.print("pre: ");
+		//    		for(int j = 0; j < funcStmtList.get(i).nodeAE().predecessor().size(); j++){
+		//    			System.out.print(funcStmtList.indexOf(funcStmtList.get(i).nodeAE().predecessor().get(j)) + " ");
+		//    		}
+		//    		System.out.print("suc: ");
+		//    		for(int j = 0; j < funcStmtList.get(i).nodeAE().successor().size(); j++){
+		//    			System.out.print(funcStmtList.indexOf(funcStmtList.get(i).nodeAE().successor().get(j)) + " ");
+		//    		}
+		//    		System.out.print("\n");
+		//    	}
+		//data flow analysis : worklist algorithm for available expression
+		ArrayDeque<IRStmt> irFIFO = new ArrayDeque<IRStmt>();
+		//initially add all nodes
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			irFIFO.addLast(((IRSeq)body).stmts().get(i));
+		}
+		//run until no change
+		while(!irFIFO.isEmpty()){
+			IRStmt s = irFIFO.removeFirst();
+			boolean isChanged = s.nodeAE().transferFunction(s);
+			if(isChanged){
+				if(s.nodeAE().successor().size() == 1){
+					IRStmt suc0 = s.nodeAE().successor().get(0);
+					if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
+				}
+				else if(s.nodeAE().successor().size() == 2){
+					IRStmt suc0 = s.nodeAE().successor().get(0);
+					IRStmt suc1 = s.nodeAE().successor().get(1);
+					if(!irFIFO.contains(suc0)) {irFIFO.addLast(suc0);}
+					if(!irFIFO.contains(suc1)) {irFIFO.addLast(suc1);}
+				}
+			}
+		}
+		//DEBUG
+		//    	System.out.println("Available Expression : ");
+		//    	for(int i = 0; i < funcStmtList.size(); i++){
+		//    		System.out.print(i + "th stmt --> ");
+		//    		for(String ss : funcStmtList.get(i).nodeAE().availExprs()){
+		//    			System.out.print(ss + " , ");
+		//    		}
+		//    		System.out.print("\n");
+		//    	}
+		//DFS to validate common subexpression
+		for(String str : allExprsMap.keySet()){
+			if(allExprsMap.get(str).size() >= 2){
+				int n = allExprsMap.get(str).size();
+				boolean isFirst = true;
+				String _cse = "";
+				for(int i = 0; i < n-1; i++){
+					if(DFS_validCommonExpr(allExprsMap.get(str).get(i+1), allExprsMap.get(str).get(i), str)){
+						if(isFirst){
+							_cse = LabelMaker.Generate_Unique_Label("_CSETemp");
+							isFirst = false;
+							int idx = ((IRSeq)body).stmts().indexOf(allExprsMap.get(str).get(i));
+							IRExpr commonExpr = (allExprsMap.get(str).get(i) instanceof IRMove)? ((IRMove)allExprsMap.get(str).get(i)).expr(): 
+								((IRCJump)allExprsMap.get(str).get(i)).expr();
+							((IRSeq)body).stmts().add(idx, new IRMove(new IRTemp(_cse), commonExpr));
+						}
+						if(allExprsMap.get(str).get(i) instanceof IRMove){((IRMove)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
+						else{((IRCJump)allExprsMap.get(str).get(i)).CSE_modifyExpr(new IRTemp(_cse));}
+						if(allExprsMap.get(str).get(i+1) instanceof IRMove){((IRMove)allExprsMap.get(str).get(i+1)).CSE_modifyExpr(new IRTemp(_cse));}
+						else{((IRCJump)allExprsMap.get(str).get(i+1)).CSE_modifyExpr(new IRTemp(_cse));}
+					}
+				}
+			}
+		}
+	}
+
+	boolean DFS_validCommonExpr(IRStmt start, IRStmt end, String conmmonExpr){//since backtrace, start node is successor, end node is predecessor
+		if(!(start.nodeAE().availExprs().contains(conmmonExpr))) {return false;}
+		else if(start == end) {return true;}
+		else if(start.nodeAE().predecessor().size() == 0){return false;}
+		boolean isCommon = true;
+		for(IRStmt s : start.nodeAE().predecessor()){
+			isCommon = (isCommon && DFS_validCommonExpr(s, end, conmmonExpr));
+			if(isCommon == false) {break;}
+		}
+		return isCommon;
+	}
+
+	public void drawCFG(FileWriter fw , int nodeNumber) throws IOException {
 		//FileWriter fw = new FileWriter(fileName);
 		HashMap<String, Integer> labelPos = new HashMap<String, Integer>();
 		HashSet<String> allExprs = new HashSet<String>();
@@ -673,7 +676,7 @@ public class IRFuncDecl extends IRNode {
 				}
 			}
 		}
-	
+
 		HashMap<Integer, ArrayList<Integer>> edges = new HashMap<Integer, ArrayList<Integer>>();		
 		//fw.write("digraph CFG {\n");
 		//fw.write(" \"\" [shape = none] \n");
