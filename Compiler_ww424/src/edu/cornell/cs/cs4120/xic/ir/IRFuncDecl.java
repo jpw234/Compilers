@@ -15,6 +15,8 @@ import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.InsnMapsBuilder;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -608,4 +610,133 @@ public class IRFuncDecl extends IRNode {
     	}
     	return isCommon;
     }
+    
+    public void drawCFG(FileWriter fw , int nodeNumber) throws IOException {
+		//FileWriter fw = new FileWriter(fileName);
+		HashMap<String, Integer> labelPos = new HashMap<String, Integer>();
+		HashSet<String> allExprs = new HashSet<String>();
+		//first pass: record Label position & compute all exprs
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(s instanceof IRLabel){
+				labelPos.put( ((IRLabel)(s)).name(), i);
+			}
+			else if(s instanceof IRMove && 
+					!(((IRMove)s).expr() instanceof IRCall) && 
+					!(((IRMove)s).expr() instanceof IRTemp)){
+				StringWriter sw = new StringWriter();
+				try (PrintWriter pw = new PrintWriter(sw);
+						SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+					((IRMove)s).expr().printSExp(sp);
+				}
+				allExprs.add(sw.toString());
+			}
+			else if(s instanceof IRCJump && 
+					!(((IRCJump)s).expr() instanceof IRCall) && 
+					!(((IRCJump)s).expr() instanceof IRTemp)){
+				StringWriter sw = new StringWriter();
+				try (PrintWriter pw = new PrintWriter(sw);
+						SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+					((IRCJump)s).expr().printSExp(sp);
+				}
+				allExprs.add(sw.toString());
+			}
+		}
+		//build graph(define predecessor & successor)
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(s.nodeAE() == null) {s.nodeAE_init(allExprs);}
+		}
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			if(!(s instanceof IRReturn)){//if not IRReturn, must have successor
+				if(s instanceof IRJump){
+					String jmpLabel = ((IRName)(((IRJump)s).target())).name();
+					int sucIdx = -1;//successor index
+					if(labelPos.containsKey(jmpLabel)){sucIdx = labelPos.get(jmpLabel);}
+					else {System.out.println("jmpLabel not found in labelPos!");}
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
+					((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
+				}
+				else if(s instanceof IRCJump){
+					String cjmpLabel = ((IRCJump)s).trueLabel();
+					int sucIdx = -1;//successor index
+					if(labelPos.containsKey(cjmpLabel)){sucIdx = labelPos.get(cjmpLabel);}
+					else {System.out.println("jmpLabel not found in labelPos!");}
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(sucIdx));//successor
+					((IRSeq)body).stmts().get(sucIdx).nodeAE().predecessor().add(s);//predecessor
+					if(sucIdx != i+1){
+						s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
+						((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
+					}
+				}
+				else {
+					s.nodeAE().successor().add(((IRSeq)body).stmts().get(i+1));//successor
+					((IRSeq)body).stmts().get(i+1).nodeAE().predecessor().add(s);//predecessor
+				}
+			}
+		}
+	
+		HashMap<Integer, ArrayList<Integer>> edges = new HashMap<Integer, ArrayList<Integer>>();		
+		//fw.write("digraph CFG {\n");
+		//fw.write(" \"\" [shape = none] \n");
+		for(int i = 0; i < ((IRSeq)body).stmts().size(); i++){
+			IRStmt s = ((IRSeq)body).stmts().get(i);
+			try{
+				if (s.nodeAE() == null ){s.nodeAE_init(allExprs);} 
+				CFGNodeAE curNode = s.nodeAE();
+				for(int j = 0 ; j < curNode.successor().size();j++){
+					String curNodeS = printStmt(curNode.successor().get(j));
+					int num = nodeNumber; 
+					if (curNodeS.length() >2) {
+						nodeNumber += 1;
+						curNodeS = curNodeS.substring(0, curNodeS.length()-1);
+						String append = ""+nodeNumber + " [label=\" " +curNodeS +"\"]\n";
+						if (edges.containsKey(num)){
+							edges.get(num).add(nodeNumber);
+						}else{
+							ArrayList<Integer> temp = new ArrayList<Integer>();
+							temp.add(nodeNumber);
+							edges.put(num, temp);
+						}
+						fw.write(append);
+					}
+				}
+			}
+			catch(Error e) {
+				System.out.println(e.getMessage());
+				fw.write(e.getMessage()+"\r\n");
+			}
+		}
+		fw.write("\"\" -> 1");
+		for (Integer a : edges.keySet()){
+			for (int j = 0 ; j < edges.get(a).size();j++){
+				fw.write(""+a+"->"+edges.get(a).get(j)+"\n");
+			}
+		}
+		fw.write("}");
+		//fw.close();
+
+	}
+
+	public String printStmt(IRStmt s){
+		String selfExprPrint = "";
+		if(s instanceof IRMove && !(((IRMove)s).expr() instanceof IRCall) && !(((IRMove)s).expr() instanceof IRTemp)){
+			StringWriter sw = new StringWriter();
+			try (PrintWriter pw = new PrintWriter(sw);
+					SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+				((IRMove)s).expr().printSExp(sp);
+			}
+			selfExprPrint = new String(sw.toString());
+		}
+		else if(s instanceof IRCJump && !(((IRCJump)s).expr() instanceof IRCall) && !(((IRCJump)s).expr() instanceof IRTemp)){
+			StringWriter sw = new StringWriter();
+			try (PrintWriter pw = new PrintWriter(sw);
+					SExpPrinter sp = new CodeWriterSExpPrinter(pw)) {
+				((IRCJump)s).expr().printSExp(sp);
+			}
+			selfExprPrint = new String(sw.toString());
+		}
+		return selfExprPrint;
+	}
 }
