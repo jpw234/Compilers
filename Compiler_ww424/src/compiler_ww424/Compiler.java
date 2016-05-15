@@ -134,7 +134,7 @@ public class Compiler {
 		Boolean toRunIR = false;
 		Boolean toOptimize = true;
 		Boolean toAssembly = false;
-		
+
 
 		// Use All The Arguments
 		for(int i = 0;i < args.length;i++) {
@@ -223,14 +223,14 @@ public class Compiler {
 						toCSE = false;
 						toCF = false;
 						toVN = false;
-						}
+					}
 					else if(ss.equals("vn")) {
 						toVN = true;
 						toCP = true;
 						toUCE = false;
 						toCSE = false;
 						toCF = false;}
-					
+
 					else {i--; toOptimize = false;}
 				}
 				else{i--; toOptimize = false;}
@@ -274,7 +274,7 @@ public class Compiler {
 			Boolean toGenIR, Boolean toRunIR, Boolean toOptimize,Boolean toAssembly,
 			ArrayList<CodePath> pathArgs,ArrayList<CodePath> codeToCompile ,
 			String sourceRoot,String diagnosisRoot,String assemblyRoot, String libRoot) throws Exception{
-		
+
 		if(pathArgs.size() < 1) {
 			pathArgs.add(new CodePath(sourceRoot, "."));
 		}
@@ -312,23 +312,23 @@ public class Compiler {
 		//System.out.println("Attempting To Compile " + codeToCompile.size() + " File(s)");
 
 		for (CodePath p: codeToCompile){
-			
-			 ////////////////////////////////////////////////		
-			 /* check if file exists or file empty or not */
-			 ///////////////////////////////////////////////	
+
+			////////////////////////////////////////////////		
+			/* check if file exists or file empty or not */
+			///////////////////////////////////////////////	
 			try {
 				Reader abc = new FileReader(p.getFile());
 				abc.close();}
 			catch(IOException ioe){
 				System.err.println("No such File in Directory");
 				return;}
-			
+
 			Boolean isempty = emptyFile(p.OriginFileName,toLex,toParse, toGenIR ,toRunIR,toAssembly);
 			if (isempty) break;
-			
-			 //////////////////////////////////////		
-			 /* to Lex and generate lexed files */
-			 /////////////////////////////////////	
+
+			//////////////////////////////////////		
+			/* to Lex and generate lexed files */
+			/////////////////////////////////////	
 
 			if (toLex){
 				String fileName = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"lexed";
@@ -382,9 +382,9 @@ public class Compiler {
 				fw.close();
 			}
 
-			 /////////////////////////////////////////		
-			 /* to Parse and generate parsed files */
-			 ////////////////////////////////////////	
+			/////////////////////////////////////////		
+			/* to Parse and generate parsed files */
+			////////////////////////////////////////	
 			if(toParse){
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"parsed";
 				if(diagnosisRoot != null){fN = diagnosisRoot + "/" +fN;}
@@ -406,9 +406,9 @@ public class Compiler {
 				fw.close();
 			}
 
-			 //////////////////////////////////////////		
-			 /* Type Check and generate typed files */
-			 /////////////////////////////////////////			
+			//////////////////////////////////////////		
+			/* Type Check and generate typed files */
+			/////////////////////////////////////////			
 
 			if(toTypecheck) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"typed";
@@ -453,10 +453,10 @@ public class Compiler {
 				}
 				fw.close();
 			}
-			 ////////////////////////////////////////////		
-			 /* Generate IR File and Run IR Simulator
-			  *  and generate .ir file*/
-			 ///////////////////////////////////////////
+			////////////////////////////////////////////		
+			/* Generate IR File and Run IR Simulator
+			 *  and generate .ir file*/
+			///////////////////////////////////////////
 			if(toGenIR || toRunIR) {
 				String fN = p.OriginFileName.substring(0,p.OriginFileName.length()-2)+"ir";
 				String fileDot = "";
@@ -511,6 +511,12 @@ public class Compiler {
 
 					IRCompUnit compUnit = new IRCompUnit("test");
 					int nodeNumber = 0;
+					if(toDrawCFG){
+						FileWriter fwCFG = new FileWriter(fileDot);
+						fwCFG.write("digraph CFG {\n");
+						fwCFG.write(" \"\" [shape = none] \n");
+						fwCFG.close();
+					}
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
@@ -533,13 +539,16 @@ public class Compiler {
 							}
 						}
 						if(toDrawCFG){
-							FileWriter fwCFG = new FileWriter(fileDot);
-							fwCFG.write("digraph CFG"+nodeNumber+"{\n");
-							fwCFG.write(" \"\" [shape = none] \n");
-							F.drawCFG(fwCFG,nodeNumber);
+							FileWriter fwCFG = new FileWriter(fileDot, true);
+							nodeNumber = F.drawCFG(fwCFG,nodeNumber,opt_phase);
 							fwCFG.close();
 						}
 						compUnit.appendFunc(F);
+					}
+					if(toDrawCFG){
+						FileWriter fwCFG = new FileWriter(fileDot, true);
+						fwCFG.write("}\n");
+						fwCFG.close();
 					}
 					StringWriter sw = new StringWriter();
 					try (PrintWriter pw = new PrintWriter(sw);
@@ -574,7 +583,7 @@ public class Compiler {
 				fw.close();
 			}
 
-			 /////////////////////////////////////
+			/////////////////////////////////////
 			/* Run Target and generate .s file */
 			/////////////////////////////////////
 			if(toAssembly) {
@@ -623,6 +632,12 @@ public class Compiler {
 					String assembly= ".text";
 					IRCompUnit compUnit = new IRCompUnit("test");
 					int nodeNumber = 0;
+					if(toDrawCFG){
+						FileWriter fwCFG = new FileWriter(fileDot);
+						fwCFG.write("digraph CFG {\n");
+						fwCFG.write(" \"\" [shape = none] \n");
+						fwCFG.close();
+					}
 					for (Function f: program.getFunctions()){
 						IRFuncDecl F = f.buildIR();
 						F.IRLower();
@@ -639,16 +654,19 @@ public class Compiler {
 						}
 						compUnit.appendFunc(F);
 						assembly += F.getBestTile().getData();
-					
+
 						if(toDrawCFG){
-							FileWriter fwCFG = new FileWriter(fileDot);
-							fwCFG.write("digraph CFG"+nodeNumber+"{\n");
-							fwCFG.write(" \"\" [shape = none] \n");
-							F.drawCFG(fwCFG,nodeNumber);
+							FileWriter fwCFG = new FileWriter(fileDot, true);
+							nodeNumber = F.drawCFG(fwCFG,nodeNumber,opt_phase);
 							fwCFG.close();
 						}
 					}
 					fw.write(assembly);
+					if(toDrawCFG){
+						FileWriter fwCFG = new FileWriter(fileDot, true);
+						fwCFG.write("}\n");
+						fwCFG.close();
+					}
 				}
 				catch(Error e) {
 					System.out.println(e.getMessage());
@@ -663,12 +681,12 @@ public class Compiler {
 	}
 
 
-	 ///////////////////////////////////////
+	///////////////////////////////////////
 	/* Empty file checker helper function */
 	///////////////////////////////////////
 
 	public static Boolean emptyFile(String fileName, Boolean toLex,Boolean toparse,
-		Boolean toGenIR,Boolean toRunIR,Boolean toAssembly) throws IOException{
+			Boolean toGenIR,Boolean toRunIR,Boolean toAssembly) throws IOException{
 		FileReader fr = new FileReader(fileName);
 		String outFile = fileName.substring(0,fileName.length()-2)+"typed";;
 		if (toLex){outFile = fileName.substring(0,fileName.length()-2)+"lexed";}
