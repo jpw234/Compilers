@@ -95,7 +95,7 @@ terminal IF, ELSE, WHILE, RETURN, USE, LENGTH,
   
 
 nonterminal Program program;
-nonterminal List<Object> programopts;
+nonterminal List<Function> programopts;
 nonterminal List<Object> classopts;
 nonterminal List<Use> uselist;
 nonterminal List<Function> funclist;
@@ -158,9 +158,9 @@ programopts 	::= decl:dl programopts:p		{: p.add(dl); RESULT = p; :}
 				 | 								{: RESULT = new ArrayList<Object>(); :}
 				 ;
 clss			::= CLASSTERM:c ID:cl LBRACKET classopts:bd RBRACKET		
-						{: RESULT = new ClassDef(cl, bd, cleft+1, cright+1, bdleft+1, bdright+1) :}
+						{: RESULT = new ClassDef(cl, bd, cleft+1, cright+1, bdleft+1, bdright+1); :}
 				 |  CLASSTERM:c ID:cl EXTENDS ID:ecl LBRACKET classopts:bd RBRACKET
-				 		{: RESULT = new ClassDef(cl, ecl, bd, cleft+1, cright+1, bdleft+1, bdright+1) :}
+				 		{: RESULT = new ClassDef(cl, ecl, bd, cleft+1, cright+1, bdleft+1, bdright+1); :}
 				 ;
 classopts		::= decl:dl classopts:c			{: c.add(dl); RESULT = c; :}
 				 |  func:f classopts:c			{: c.add(f); RESULT = c; :}
@@ -232,7 +232,7 @@ stmt                ::=   ifblock:s                     {: RESULT = s; :}
                     | declassign:s                      {: RESULT = s; :}
                     | ass:a                         {: RESULT = a; :}
                     | block:bl                          {: RESULT = bl; :}
-                    | BREAK:v							{: RESULT = new BreakStmt(vleft+1, vright+1) :}
+                    | BREAK:v							{: RESULT = new BreakStmt(vleft+1, vright+1); :}
                     ;
 idlist              ::= expr :exp1                      {: ArrayList<Expr> retlist = new ArrayList<Expr>(); retlist.add(exp1); RESULT = retlist; :}
             | expr:exp1 COMMA idlist:idl              {: idl.add(0, exp1); RESULT = idl; :}
@@ -285,7 +285,7 @@ decllist       ::=   UNDERSCORE:u
 //assignment
 ass            ::= 	  var:x EQ expr:exp1 {: RESULT = new Assign(x, exp1, xleft+1, xright+1); :}
 					| var:x EQ NEW methodcall:mc {: RESULT = new Assign(x, mc, mcleft+1, mcright+1); :}
-					| field:f EQ expr:exp1 {: RESULT = new Assign(f, exp1, xleft+1, xright+1); :}
+					| field:f EQ expr:exp1 {: RESULT = new Assign(f, exp1, fleft+1, fright+1); :}
 					| field:f EQ NEW methodcall:mc {: RESULT = new Assign(f, mc, mcleft+1, mcright+1); :}
                    ;
 //variable type w/o initialization
