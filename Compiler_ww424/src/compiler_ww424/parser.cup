@@ -341,8 +341,8 @@ expr           ::=   INTEGER:i                  {: RESULT = new NumExpr(i,ileft+
                    | tuple:tl                 {: RESULT = tl;:}                   
           ;
 field		   ::= ID:cl DOT var:v			{: RESULT = new FieldExpr(cl, v.getName(), v.getAccesses(), v.getLine(), v.getColumn()); :};
-methodcall     ::= ID:cl DOT funcall:fc		{: RESULT = new MethodCall(cl, fc.getName(), fc.getArgs(), fc.getLine(), fc.getColumn()); :}
-funcall        ::=   ID:x LPAREN idlist:el RPAREN         {: RESULT = new FunCall( new IDExpr(x,xleft+1,xright+1), el,xleft+1,xright+1); :};
+methodcall     ::= ID:cl DOT funcall:fc		{: RESULT = new MethodCall(cl, fc.getName(), fc.getArgs(), fc.getLine(), fc.getColumn()); :};
+funcall        ::= ID:x LPAREN idlist:el RPAREN         {: RESULT = new FunCall( new IDExpr(x,xleft+1,xright+1), el,xleft+1,xright+1); :};
 //could be tuple or string (e.g. {1,2,3} or "Hello")
 tuple          ::=   LBRACE idlist:vt RBRACE          {: RESULT = new ArrLiteralExpr(vt, vtleft+1, vtright+1); :}
                    | STRING:s                                   {: RESULT = new ArrLiteralExpr(s, sleft+1, sright+1); :}
