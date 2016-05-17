@@ -428,10 +428,10 @@ public class Compiler {
 					for(int a = 0; a < program.getImports().size(); a++) {
 						Reader impReader = null;
 						try {
-							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
+							impReader = new FileReader("./" + libRoot + "/" + program.getImports().get(a).getString()+".ixi");
 						}
 						catch(Exception excp) {
-							throw new Error("Interface file " + libRoot + program.getImports().get(a).getString()+".ixi not found.");
+							throw new Error("Interface file " + libRoot + "/" + program.getImports().get(a).getString()+".ixi not found.");
 						}
 						Lexer impLexer = new Lexer(impReader);
 						parser impPar = new parser(impLexer);
@@ -483,10 +483,10 @@ public class Compiler {
 					for(int a = 0; a < program.getImports().size(); a++) {
 						Reader impReader = null;
 						try {
-							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
+							impReader = new FileReader("./" + libRoot + "/" + program.getImports().get(a).getString()+".ixi");
 						}
 						catch(Exception excp) {
-							throw new Error("Interface file " + libRoot + program.getImports().get(a).getString()+".ixi not found.");
+							throw new Error("Interface file " + libRoot + "/" + program.getImports().get(a).getString()+".ixi not found.");
 						}
 						Lexer impLexer = new Lexer(impReader);
 						parser impPar = new parser(impLexer);
@@ -610,10 +610,10 @@ public class Compiler {
 					for(int a = 0; a < program.getImports().size(); a++) {
 						Reader impReader = null;
 						try {
-							impReader = new FileReader(libRoot + program.getImports().get(a).getString()+".ixi");
+							impReader = new FileReader("./" + libRoot + "/" + program.getImports().get(a).getString()+".ixi");
 						}
 						catch(Exception excp) {
-							throw new Error("Interface file " + libRoot + program.getImports().get(a).getString()+".ixi not found.");
+							throw new Error("Interface file " + libRoot + "/" + program.getImports().get(a).getString()+".ixi not found.");
 						}
 						Lexer impLexer = new Lexer(impReader);
 						parser impPar = new parser(impLexer);
