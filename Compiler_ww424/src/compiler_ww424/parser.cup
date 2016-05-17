@@ -124,7 +124,8 @@ nonterminal IfElseStmt ifelseblock;
 nonterminal ReturnStmt retop;
 nonterminal FieldExpr field;
 nonterminal MethodCall methodcall;
-nonterminal List<Expr> pureidlist;
+nonterminal List<IDExpr> pureidlist;
+nonterminal MultiDecl multidecl;
 
 precedence left OR;
 precedence left AND;
@@ -243,6 +244,7 @@ stmt                ::=   ifblock:s                     {: RESULT = s; :}
                     | ass:a                         {: RESULT = a; :}
                     | block:bl                          {: RESULT = bl; :}
                     | BREAK:v							{: RESULT = new BreakStmt(vleft+1, vright+1); :}
+                    | multidecl:md                      {: RESULT = md; :}
                     ;
 idlist              ::= expr :exp1                      {: ArrayList<Expr> retlist = new ArrayList<Expr>(); retlist.add(exp1); RESULT = retlist; :}
             | expr:exp1 COMMA idlist:idl              {: idl.add(0, exp1); RESULT = idl; :}
@@ -265,13 +267,13 @@ ifelseblock    ::=  IF LPAREN expr:cond RPAREN stmt:is ELSE stmt:es
             :}
                    ;
 //declaration
-pureidlist     ::=   ID:x COMMA ID:y    {: List<Expr> tmp = new ArrayList<Expr>(); 
+pureidlist     ::=   ID:x COMMA ID:y    {: List<IDExpr> tmp = new ArrayList<IDExpr>(); 
                                            tmp.add(new IDExpr(x, xleft+1, xright+1));
                                            tmp.add(new IDExpr(y, yleft+1, yright+1)); 
                                            RESULT = tmp; :}
                   | pureidlist:pidl COMMA ID:x    {: pidl.add(new IDExpr(x, xleft+1, xright+1)); RESULT = pidl; :};
-decl           ::=   decllist: dl      {: RESULT = dl.get(0); :}
-                  | pureidlist COLON vartype_init:vt    {: ; :};
+decl           ::=   decllist: dl      {: RESULT = dl.get(0); :};
+multidecl      ::=   pureidlist:pidl COLON vartype_init:vt    {: RESULT = new MultiDecl(pidl, vt, pidlleft+1, pidlright+1); :};
 declassign     ::=  decllist:dcl EQ expr:exp1  {: RESULT = new DeclAssign( dcl , exp1 ,dclleft+1,dclright+1); :}
                   | decllist:dcl EQ NEW ID:x   {: ; :}
                   | decllist:dcl EQ NEW methodcall:mc   {: ; :};
@@ -307,7 +309,7 @@ ass            ::= 	  var:x EQ expr:exp1 {: RESULT = new Assign(x, exp1, xleft+1
 //variable type w/o initialization
 vartype_init  ::=  INT:x                      {: RESULT = new Decl(new IDExpr("int",xleft+1,xright+1), new Type("int"), new ArrayList<Expr>(), xleft+1, xright+1);:}
                  | BOOL:x                         {: RESULT = new Decl(new IDExpr("bool",xleft+1,xright+1), new Type("bool"), new ArrayList<Expr>(), xleft+1, xright+1);:}
-                 | ID:x                       {: ; :}
+                 | ID:x                       {: RESULT = new Decl(new IDExpr(x,xleft+1,xright+1), new Type(x), new ArrayList<Expr>(), xleft+1, xright+1);:}
                  | vartype_init:vt LBRACKET RBRACKET                {: vt.getType().addDepth(); RESULT = vt; :}
                  | vartype_init:vt LBRACKET expr:exp RBRACKET     
                  {: 

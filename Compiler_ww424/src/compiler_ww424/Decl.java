@@ -25,6 +25,15 @@ public class Decl extends Stmt {
 		column = colNum;
 	}
 	
+	public Decl(IDExpr n, Decl d, int lineNum, int colNum){
+		name = n;
+		type = new Type(d.getType().getType(), d.getType().getDepth());
+		accesses = new ArrayList<Expr>();
+		for(Expr e : d.getAccesses()){accesses.add(e);}// not deep copy, watch out!!!
+		line = lineNum;
+		column = colNum;
+	}
+	
 	public void setID (IDExpr n){
 		name = n ;
 	}
