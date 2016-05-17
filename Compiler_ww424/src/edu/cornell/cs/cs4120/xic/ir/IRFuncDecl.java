@@ -261,8 +261,10 @@ public class IRFuncDecl extends IRNode {
 					}
 					else if (!((IRTemp)left).name().equals(n.name()) &&
 							hashnumber(optype,binleft,binright,hashmap).equals(value)){
+						if (binleft instanceof IRBinOp || binright instanceof IRBinOp) break;
 						IRStmt t = lists.remove(i);
 						lists.add(i, new IRMove(new IRTemp(((IRTemp)left).name()), new IRTemp(n.name())));
+						
 					}
 				}
 			}
