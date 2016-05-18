@@ -3,7 +3,7 @@ package compiler_ww424;
 import java.util.ArrayList;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
-public class FieldExpr extends Expr{
+public class FieldExpr extends Expr {
 	private ArrExpr preDot;
 	private ArrExpr postDot;
 	private String classType;
@@ -35,6 +35,14 @@ public class FieldExpr extends Expr{
 		//if this typechecks, the full FieldExpr is good
 		type = real.typecheck(s);
 		return type;
+	}
+	
+	public ArrExpr getLeft() {
+		return preDot;
+	}
+	
+	public ArrExpr getRight() {
+		return postDot;
 	}
 	
 	public String getClassType() {
