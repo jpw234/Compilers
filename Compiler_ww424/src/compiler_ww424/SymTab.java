@@ -19,7 +19,7 @@ public class SymTab {
 			System.out.println(key + ":" + value.toString());
 		}*/
 		if(table.get(id) != null) return table.get(id);
-		else if(classContext != null && table.get(classContext + "." + id) != null) return table.get(classContext + "." + id);
+		else if(getClassContext() != null && table.get(getClassContext() + "." + id) != null) return table.get(getClassContext() + "." + id);
 		else if(parent != null) return parent.lookup(id);
 		else throw new Error("Semantic Error: var does not exist");
 	}
@@ -32,8 +32,8 @@ public class SymTab {
 		}*/
 		if(table.get(id) != null) return table.get(id);
 		else if(table.get("*"+id) != null) return table.get("*"+id);
-		else if(classContext != null && table.get(classContext + "." + id) != null) return table.get(classContext + "." + id);
-		else if(classContext != null && table.get("*"+ classContext + "." + id) != null) return table.get("*" + classContext + "." + id);
+		else if(getClassContext() != null && table.get(getClassContext() + "." + id) != null) return table.get(getClassContext() + "." + id);
+		else if(getClassContext() != null && table.get("*"+ getClassContext() + "." + id) != null) return table.get("*" + getClassContext() + "." + id);
 		else if(parent != null) return parent.lookupFunction(id);
 		else throw new Error("Semantic Error: var does not exist");
 	}
@@ -53,11 +53,13 @@ public class SymTab {
 	}
 	
 	public String getClassContext() {
-		return classContext;
+		if(classContext != null) return classContext;
+		else if(parent != null) return parent.getClassContext();
+		else return null;
 	}
 	
-	//invariant: class fields/functions are entered as class.field (i.e. method len() of class array() is array.len)
 	public void add(String id, Type t) {
-		table.put(id, t);
+		if(getClassContext() != null) table.put(getClassContext() + "." + id, t);
+		else table.put(id, t);
 	}
 }
