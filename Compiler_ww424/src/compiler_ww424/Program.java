@@ -7,11 +7,38 @@ import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class Program {
 	List<Use> imports;
+	List<Object> initial;
 	List<Function> funcs;
+	List<ClassDef> classes;
+	List<Object> decls;
 
-	public Program(List<Use> i, List<Function> f) {
+	public Program(List<Use> i, List<Object> f) {
 		imports = i;
-		funcs = f;
+		initial = f;
+		
+		funcs = new ArrayList<Function>();
+		classes = new ArrayList<ClassDef>();
+		//all decls (Decl, DeclAssign, MultiDecl) must be condensed to one list b/c must be treated in order
+		decls = new ArrayList<Object>();
+		
+		for(Object k : initial) {
+			if(k instanceof Function)  {
+				funcs.add((Function) k);
+			}
+			else if(k instanceof ClassDef) {
+				classes.add((ClassDef) k);
+			}
+			else if(k instanceof Decl) {
+				decls.add(k);
+			}
+			else if(k instanceof DeclAssign) {
+				decls.add(k);
+			}
+			else if(k instanceof MultiDecl) {
+				decls.add(k);
+			}
+			else throw new Error("unacceptable type in program");
+		}
 	}
 
 	public List<Use> getImports() {
@@ -32,15 +59,35 @@ public class Program {
 
 	public void firstPass(SymTab s) {
 		//TODO: Insert use logic
+		
+		//first do all the globals, in order
+		for(Object a : decls) {
+			if(a instanceof Decl) {
+				((Decl) a).typecheck(s);
+			}
+			else if(a instanceof DeclAssign) {
+				((DeclAssign) a).typecheck(s);
+			}
+			else if(a instanceof MultiDecl) {
+				((MultiDecl) a).typecheck(s);
+			}
+		}
 
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).firstPass(s);
+		}
+		
+		for(int a = 0; a < classes.size(); a++) {
+			classes.get(a).firstpass(s);
 		}
 	}
 
 	public void secondPass(SymTab s) {
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).typecheck(s);
+		}
+		for(int a = 0; a < classes.size(); a++) {
+			classes.get(a).typecheck(s);
 		}
 	}
 	public void returnPass() {
@@ -52,6 +99,9 @@ public class Program {
 	public void constantFold() {
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).constantFold();
+		}
+		for(int a = 0; a < classes.size(); a++) {
+			classes.get(a).constantFold();
 		}
 	}
 	
