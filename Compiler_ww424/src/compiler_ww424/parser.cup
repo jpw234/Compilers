@@ -176,6 +176,7 @@ clss			::= CLASSTERM:c ID:cl LBRACE classopts:bd RBRACE
 classopts		::= classopts:c decl:dl 		{: c.add(dl); RESULT = c; :}
 				 |  classopts:c func:f 			{: c.add(f); RESULT = c; :}
 				 |  classopts:c declassign:dla  {: c.add(dla); RESULT = c; :}
+				 |  classopts:c multidecl:mld	{: c.add(mld); RESULT = c; :}
 				 |								{: RESULT = new ArrayList<Object>(); :}
 				 ;
 funclist            ::= funclist: fl func:f                       {: fl.add(f); RESULT = fl;:}
