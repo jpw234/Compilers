@@ -213,7 +213,7 @@ funtype             ::= COLON vartype:vt
 //function declaration variable type
 vartype        ::=   INT                      {: RESULT = new Type("int"); :}
                    | BOOL                         {: RESULT = new Type("bool"); :}
-                   | ID:x                           {: ; :}
+                   | ID:x                           {: RESULT = new Type(x); :}
                    | vartype:vt LBRACKET RBRACKET           {: vt.addDepth(); RESULT = vt; :}
                    ;
 block               ::=  LBRACE:x stmtlist:sl retop:ret RBRACE          
