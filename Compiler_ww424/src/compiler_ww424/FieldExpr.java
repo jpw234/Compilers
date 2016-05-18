@@ -1,34 +1,47 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import edu.cornell.cs.cs4120.xic.ir.*;
 
-public class FieldExpr extends ArrExpr {
-	private String ownerClass;
+public class FieldExpr extends Expr{
+	private ArrExpr preDot;
+	private ArrExpr postDot;
+	private String classType;
 	
-	public FieldExpr(String cl, IDExpr s,int lineNum, int colNum) {
-		super(s, lineNum, colNum);
-		
-		ownerClass = cl;
+	public FieldExpr(ArrExpr pre, ArrExpr post,int lineNum, int colNum) {
+		preDot = pre;
+		postDot = post;
+		line = lineNum;
+		column = colNum;
 	}
-	
-	public FieldExpr(String cl, IDExpr s, ArrayList<Expr> list, int l, int c) {
-		super(s, list, l, c);
-		
-		ownerClass = cl;
-	}
-
-	//TODO: decide if typecheck(SymTab s) and buildIRExpr() must be changed
 	
 	@Override
 	public Type typecheck(SymTab s) {
-		Type temp = s.lookup(ownerClass + "." + name.getName());
-		if(temp.getDepth()-accesses.size() < 0) throw new Error(line + ":" + column + " error: " + "illegal access: that is not an array");
-		for(int a = 0; a < accesses.size(); a++) {
-			if(accesses.get(a).typecheck(s).getType() != "int") {
-				throw new Error(line + ":" + column + " error: " + "illegal expr: non-integer value used as array access");
-			}
+		Type varType = preDot.typecheck(s); //this must be a class type
+		//if it's another type throw an error
+		if(varType.getType() == "int" || varType.getType() == "bool" || varType.getType() == "empty") {
+			throw new Error(line + ":" + column + " error: " + "used non-class variabe like a class (bad field access)");
 		}
-		type = new Type(temp.getType(), temp.getDepth()-accesses.size());
+		
+		classType = varType.getType();
+		
+		/* Currently postDot is an ArrExpr that is kinda broken. Take example FieldExpr a.var, a:Point, var:int[]
+		 * postDot currently has name as an IDExpr with name "var", but "var" isn't a variable
+		 * Construct a new ArrExpr with postDot's accesses but prepend the classname, and typecheck it
+		 */
+		ArrExpr real = new ArrExpr(new IDExpr(varType.getType() + "." + postDot.getName().getName(), line, column),
+								   postDot.getAccesses(), postDot.getLine(), postDot.getColumn());
+		
+		//if this typechecks, the full FieldExpr is good
+		type = real.typecheck(s);
 		return type;
+	}
+	
+	public String getClassType() {
+		return classType;
+	}
+	
+	public IRExpr buildIRExpr() {
+		return null;
 	}
 }
