@@ -277,7 +277,7 @@ pureidlist     ::=   ID:x COMMA ID:y    {: List<IDExpr> tmp = new ArrayList<IDEx
 decl           ::=   decllist: dl      {: RESULT = dl.get(0); :};
 multidecl      ::=   pureidlist:pidl COLON vartype_init:vt    {: RESULT = new MultiDecl(pidl, vt, pidlleft+1, pidlright+1); :};
 declassign     ::=  decllist:dcl EQ expr:exp1  {: RESULT = new DeclAssign( dcl , exp1 ,dclleft+1,dclright+1); :}
-                  | decllist:dcl EQ NEW ID:x   {: RESULT = new DeclAssign( dcl, new NullExpr(xleft+1, xright+1), dclleft+1, dclright+1); :}
+                  | decllist:dcl EQ NEW ID:x   {: RESULT = new DeclAssign( dcl, new DefaultClass(x, xleft+1, xright+1), dclleft+1, dclright+1); :}
                   | decllist:dcl EQ NEW methodcall:mc   {: RESULT = new DeclAssign(dcl, mc, dclleft+1, dclright+1); :};
 //declaration list
 decllist       ::=   UNDERSCORE:u                     
@@ -306,8 +306,8 @@ ass            ::= 	  var:x EQ expr:exp1 {: RESULT = new Assign(x, exp1, xleft+1
 					| var:x EQ NEW methodcall:mc {: RESULT = new Assign(x, mc, mcleft+1, mcright+1); :}
 					| field:f EQ expr:exp1 {: RESULT = new Assign(f, exp1, fleft+1, fright+1); :}
 					| field:f EQ NEW methodcall:mc {: RESULT = new Assign(f, mc, mcleft+1, mcright+1); :}
-					| field:f EQ NEW ID:clsstype {: RESULT = new Assign(f, new NullExpr(clsstypeleft+1, clsstyperight+1), fleft+1, fright+1); :}
-					| var:x EQ NEW ID:clsstype {: RESULT = new Assign(x, new NullExpr(clsstypeleft+1, clsstyperight+1), xleft+1, xright+1); :}
+					| field:f EQ NEW ID:clsstype {: RESULT = new Assign(f, new DefaultClass(clsstype, clsstypeleft+1, clsstyperight+1), fleft+1, fright+1); :}
+					| var:x EQ NEW ID:clsstype {: RESULT = new Assign(x, new DefaultClass(clsstype, clsstypeleft+1, clsstyperight+1), xleft+1, xright+1); :}
                    ;
 //variable type w/o initialization
 vartype_init  ::=  INT:x                      {: RESULT = new Decl(new IDExpr("int",xleft+1,xright+1), new Type("int"), new ArrayList<Expr>(), xleft+1, xright+1);:}
