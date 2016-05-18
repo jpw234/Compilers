@@ -145,13 +145,9 @@ start with program;
 
 program             ::= uselist:us programopts:p         {:
 						if(!parser.getState()) {
-							List<Function> temp = new ArrayList<Function>();
-							for(Object o : p){temp.add(((Function)o));}
-							RESULT = new Program(us,temp);}
+							RESULT = new Program(us,p);}
                                         else {
-							List<Function> temp = new ArrayList<Function>();
-							for(Object o : p){temp.add(((Function)o));}
-							RESULT = new Program(new ArrayList<Use>(), temp); }:}
+							RESULT = new Program(new ArrayList<Use>(), p); }:}
              ;
 uselist             ::= uselist:ul useprod:up                 {:ul.add(up); RESULT = ul;:}
              |                              {:RESULT = new ArrayList<Use>(); :}
