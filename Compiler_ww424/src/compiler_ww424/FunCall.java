@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class FunCall extends Expr {
-	private IDExpr name;
-	private ArrayList<Expr> args;
-	private FunType ft;
+	protected IDExpr name;
+	protected ArrayList<Expr> args;
+	protected FunType ft;
 
 	public static String mangle_name(String n, FunType t){
 		String res = "_I" + n.replaceAll("_", "__") + "_";

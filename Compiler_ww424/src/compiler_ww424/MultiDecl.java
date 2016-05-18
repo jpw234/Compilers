@@ -29,6 +29,10 @@ public class MultiDecl extends Stmt{
 	}
 	
 	public Type typecheck(SymTab s){
-		return null;
+		for(Decl d : declList) {
+			d.typecheck(s);
+		}
+		
+		return new Type("unit");
 	}
 }

@@ -36,6 +36,9 @@ public class Type {
 			|| (this.getType()=="empty" && t.getDepth()>=1)) {
 				return true;
 		}
+		if(t.getType()=="null" && type=="null") return true;
+		if(t.getType()=="null" && !this.equals(new Type("int")) && !this.equals(new Type("bool"))) return true;
+		if(type == "null" && !t.equals(new Type("int")) && !t.equals(new Type("bool"))) return true;
 		return ((type==t.getType()) && (arrDepth==t.getDepth()));
 	}
 	public String toString(){

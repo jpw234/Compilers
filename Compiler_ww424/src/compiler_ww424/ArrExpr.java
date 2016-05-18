@@ -5,9 +5,9 @@ import java.util.List;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class ArrExpr extends Expr {
-	private IDExpr name;
-	private ArrayList<Expr> accesses ;
-	private int depth=0;
+	protected IDExpr name;
+	protected ArrayList<Expr> accesses ;
+	protected int depth=0;
 	
 	public ArrExpr(IDExpr n,int l,int c) {
 		name = n;

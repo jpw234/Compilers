@@ -18,4 +18,17 @@ public class FieldExpr extends ArrExpr {
 	}
 
 	//TODO: decide if typecheck(SymTab s) and buildIRExpr() must be changed
+	
+	@Override
+	public Type typecheck(SymTab s) {
+		Type temp = s.lookup(ownerClass + "." + name.getName());
+		if(temp.getDepth()-accesses.size() < 0) throw new Error(line + ":" + column + " error: " + "illegal access: that is not an array");
+		for(int a = 0; a < accesses.size(); a++) {
+			if(accesses.get(a).typecheck(s).getType() != "int") {
+				throw new Error(line + ":" + column + " error: " + "illegal expr: non-integer value used as array access");
+			}
+		}
+		type = new Type(temp.getType(), temp.getDepth()-accesses.size());
+		return type;
+	}
 }

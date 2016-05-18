@@ -50,6 +50,10 @@ public class BinaryExpr extends Expr {
 		
 		if(ltype.getDepth() > 0) {
 			if(op == BinaryOp.PLUS || op == BinaryOp.EQEQ || op == BinaryOp.NEQ) {
+				if(ltype.getType() == "null" || rtype.getType() == "null") {
+					type = new Type("null");
+					return type;
+				}
 				type = ltype;
 				return type;
 			}
@@ -79,7 +83,19 @@ public class BinaryExpr extends Expr {
 			else throw new Error(line + ":" + column + " error: " + "that binary operation does not work on integers");
 		}
 		
-		else throw new Error(line + ":" + column + " error: " + "this shouldn't happen but the BinaryExpr got messed up");
+		//it's a class
+		else {
+			//must be in class definition
+			if(ltypeVal != s.getClassContext()) {
+				throw new Error(line + ":" + column + " error: " + "illegal operation: performed binary operation on class object outside class definition");
+			}
+			//legal operations are == and !=, which are pointer comparisons (type bool)
+			if(op == BinaryOp.EQEQ || op == BinaryOp.NEQ) {
+				type = new Type("bool");
+				return type;
+			}
+			else throw new Error(line + ":" + column + " error: " + "can't perform that binary operation on objects");
+		}
 	}
 	
 	@Override
