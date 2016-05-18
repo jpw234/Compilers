@@ -161,10 +161,11 @@ useprod             ::= USE ID:id
            RESULT = new Use( id, idleft+1 ,idright+1); :}
              | USE ID:id SEMI                     
                      {:RESULT = new Use( id, idleft+1 ,idright+1 ); :};
-programopts 	::= programopts:p decl:dl 		{: p.add(dl); RESULT = p; :}
-				 |  programopts:p func:f 		{: p.add(f); RESULT = p; :}
-				 |  programopts:p clss:c 		{: p.add(c); RESULT = p; :}
-				 | 								{: RESULT = new ArrayList<Object>(); :}
+programopts 	::= programopts:p decl:dl 			{: p.add(dl); RESULT = p; :}
+				 |  programopts:p declassign:dla 	{: p.add(dla); RESULT = p; :}
+				 |  programopts:p func:f 			{: p.add(f); RESULT = p; :}
+				 |  programopts:p clss:c 			{: p.add(c); RESULT = p; :}
+				 | 									{: RESULT = new ArrayList<Object>(); :}
 				 ;
 clss			::= CLASSTERM:c ID:cl LBRACE classopts:bd RBRACE		
 						{: RESULT = new ClassDef(cl, (ArrayList<Object>)bd, cleft+1, cright+1, bdleft+1, bdright+1); :}
@@ -173,7 +174,7 @@ clss			::= CLASSTERM:c ID:cl LBRACE classopts:bd RBRACE
 				 ;
 classopts		::= classopts:c decl:dl 		{: c.add(dl); RESULT = c; :}
 				 |  classopts:c func:f 			{: c.add(f); RESULT = c; :}
-				 |  classopts:c declassign:dla  {: ; :}
+				 |  classopts:c declassign:dla  {: c.add(dla); RESULT = c; :}
 				 |								{: RESULT = new ArrayList<Object>(); :}
 				 ;
 funclist            ::= funclist: fl func:f                       {: fl.add(f); RESULT = fl;:}
