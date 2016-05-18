@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class MultiDecl extends Stmt{
 	private List<Decl> declList = null;
+	private boolean isGlobal = false;
 	
 	public MultiDecl(List<IDExpr> idList, Decl varType, int lineNum, int colNum){
 		declList = new ArrayList<Decl>();
@@ -17,6 +18,14 @@ public class MultiDecl extends Stmt{
 	
 	public List<Decl> getDeclList(){
 		return declList;
+	}
+	
+	public void setGlobal(boolean v) {
+		isGlobal = v;
+	}
+	
+	public boolean isGlobal() {
+		return isGlobal;
 	}
 	
 	public Type typecheck(SymTab s){
