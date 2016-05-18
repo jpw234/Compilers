@@ -5,6 +5,7 @@ public class SymTab {
 	private SymTab parent = null;
 	private HashMap<String, Type> table = new HashMap<String, Type>();
 	private Type retval = null;
+	private String classContext = null;
 	
 	public SymTab(SymTab p) {
 		parent = p;
@@ -18,6 +19,7 @@ public class SymTab {
 			System.out.println(key + ":" + value.toString());
 		}*/
 		if(table.get(id) != null) return table.get(id);
+		else if(classContext != null && table.get(classContext + "." + id) != null) return table.get(classContext + "." + id);
 		else if(parent != null) return parent.lookup(id);
 		else throw new Error("Semantic Error: var does not exist");
 	}
@@ -30,6 +32,8 @@ public class SymTab {
 		}*/
 		if(table.get(id) != null) return table.get(id);
 		else if(table.get("*"+id) != null) return table.get("*"+id);
+		else if(classContext != null && table.get(classContext + "." + id) != null) return table.get(classContext + "." + id);
+		else if(classContext != null && table.get("*"+ classContext + "." + id) != null) return table.get("*" + classContext + "." + id);
 		else if(parent != null) return parent.lookupFunction(id);
 		else throw new Error("Semantic Error: var does not exist");
 	}
@@ -44,6 +48,15 @@ public class SymTab {
 		else return null;
 	}
 	
+	public void setClassContext(String s) {
+		classContext = s;
+	}
+	
+	public String getClassContext() {
+		return classContext;
+	}
+	
+	//invariant: class fields/functions are entered as class.field (i.e. method len() of class array() is array.len)
 	public void add(String id, Type t) {
 		table.put(id, t);
 	}
