@@ -161,8 +161,8 @@ useprod             ::= USE ID:id
            RESULT = new Use( id, idleft+1 ,idright+1); :}
              | USE ID:id SEMI                     
                      {:RESULT = new Use( id, idleft+1 ,idright+1 ); :};
-programopts 	::= programopts:p decl:dl 			{: p.add(dl); RESULT = p; :}
-				 |  programopts:p declassign:dla 	{: p.add(dla); RESULT = p; :}
+programopts 	::= programopts:p decl:dl 			{: dl.setGlobal(true); p.add(dl); RESULT = p; :}
+				 |  programopts:p declassign:dla 	{: dla.setGlobal(true); p.add(dla); RESULT = p; :}
 				 |  programopts:p func:f 			{: p.add(f); RESULT = p; :}
 				 |  programopts:p clss:c 			{: p.add(c); RESULT = p; :}
 				 | 									{: RESULT = new ArrayList<Object>(); :}

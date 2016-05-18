@@ -9,6 +9,7 @@ public class Decl extends Stmt {
 	private IDExpr name;
 	private Type type;
 	private List<Expr> accesses = null;
+	private boolean isGlobal = false;
 	
 	public Decl(IDExpr n, Type t,int lineNum,int colNum) {
 		name = n;
@@ -51,6 +52,14 @@ public class Decl extends Stmt {
 	
 	public List<Expr> getAccesses() {
 		return accesses;
+	}
+	
+	public void setGlobal(boolean v) {
+		isGlobal = v;
+	}
+	
+	public boolean isGlobal() {
+		return isGlobal;
 	}
 	
 	public Type typecheck(SymTab s) {

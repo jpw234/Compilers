@@ -7,6 +7,7 @@ import edu.cornell.cs.cs4120.xic.ir.*;
 public class DeclAssign extends Stmt {
 	private List<Decl> left;
 	private Expr right;
+	private boolean isGlobal = false;
 	
 	public DeclAssign(List<Decl> l, Expr r,int lineNum,int colNum) throws ArrayInitException {
 		try{
@@ -29,6 +30,14 @@ public class DeclAssign extends Stmt {
 	
 	public Expr getRight() {
 		return right;
+	}
+	
+	public void setGlobal(boolean v) {
+		isGlobal = v;
+	}
+	
+	public boolean isGlobal() {
+		return isGlobal;
 	}
 	
 	public Type typecheck(SymTab s) {
