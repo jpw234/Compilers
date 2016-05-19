@@ -1,6 +1,8 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import edu.cornell.cs.cs4120.xic.ir.*;
@@ -15,12 +17,12 @@ public class Program {
 	public Program(List<Use> i, List<Object> f) {
 		imports = i;
 		initial = f;
-		
+
 		funcs = new ArrayList<Function>();
 		classes = new ArrayList<ClassDef>();
 		//all decls (Decl, DeclAssign, MultiDecl) must be condensed to one list b/c must be treated in order
 		decls = new ArrayList<Object>();
-		
+
 		for(Object k : initial) {
 			if(k instanceof Function)  {
 				funcs.add((Function) k);
@@ -59,7 +61,7 @@ public class Program {
 
 	public void firstPass(SymTab s) {
 		//TODO: Insert use logic
-		
+
 		//first do all the globals, in order
 		for(Object a : decls) {
 			if(a instanceof Decl) {
@@ -76,7 +78,7 @@ public class Program {
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).firstPass(s);
 		}
-		
+
 		for(int a = 0; a < classes.size(); a++) {
 			classes.get(a).firstpass(s);
 		}
@@ -95,7 +97,7 @@ public class Program {
 			funcs.get(a).returncheck();
 		}
 	}
-	
+
 	public void constantFold() {
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).constantFold();
@@ -104,10 +106,41 @@ public class Program {
 			classes.get(a).constantFold();
 		}
 	}
-	
+
 	public void unreachableCodeRemove() {
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).unreachableCodeRemove();
+		}
+	}
+
+	public HashMap<String,Wrapper> buildDispachTable(){
+		HashMap<String,Wrapper> dispatchTable = new HashMap<String, Wrapper>();
+		while (dispatchTable.size() != classes.size()){
+			for (int i =0; i<classes.size();i++){
+				DispatchTableHelper(classes.get(i),dispatchTable);
+			}
+		}
+		return dispatchTable;
+	}
+	public void DispatchTableHelper(ClassDef cl,HashMap<String,Wrapper> map){
+		if (cl.getExtend() == null){
+			List<String> temp = new ArrayList<String>();
+			temp.add(cl.getName()+" Begins");
+			temp.addAll(cl.getFunctions());
+			map.put(cl.getName(), new Wrapper(cl.getFields(),temp));
+		}else{
+			String parentClass = cl.getExtend();
+			if (!map.containsKey(parentClass)) return;
+			List<String> parentsClassField = map.get(parentClass).getFields();
+			List<String> parentsClassMethod= map.get(parentClass).getMethods();
+			List<String> Fields = new ArrayList<String>();
+			List<String> Methods= new ArrayList<String>();
+			Fields.addAll(parentsClassField);
+			Fields.addAll(cl.getFields());
+			Methods.addAll(parentsClassMethod);
+			Methods.add(cl.getName()+ " Begins");
+			Methods.addAll(cl.getFunctions());
+			map.put(cl.getName(), new Wrapper(Fields,Methods));
 		}
 	}
 
