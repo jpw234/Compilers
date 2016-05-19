@@ -54,6 +54,7 @@ public class Compiler {
 	public static Boolean toVN = true;
 	public static Boolean toDrawCFG = false;
 	public static Boolean toGenOPTIR= false;
+	public static HashMap<String,Wrapper> DispachTable;
 
 
 
@@ -441,7 +442,7 @@ public class Compiler {
 						impProgram.firstPass(table);
 						impReader.close();
 					}
-					HashMap<String,Wrapper> DispachTable = program.buildDispachTable();
+					DispachTable = program.buildDispachTable();
 					//Test DispachTable
 					/*for (String s:DispachTable.keySet()){
 						System.out.println(s);
@@ -516,7 +517,7 @@ public class Compiler {
 						impProgram.firstPass(table);
 						impReader.close();
 					}
-					HashMap<String,Wrapper> DispachTable = program.buildDispachTable();
+					DispachTable = program.buildDispachTable();
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
@@ -644,7 +645,7 @@ public class Compiler {
 						impProgram.firstPass(table);
 						impReader.close();
 					}
-					HashMap<String,Wrapper> DispachTable = program.buildDispachTable();
+					DispachTable = program.buildDispachTable();
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
