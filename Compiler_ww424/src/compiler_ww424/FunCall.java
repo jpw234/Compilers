@@ -76,7 +76,9 @@ public class FunCall extends Expr {
 	public List<Expr> getArgs() {
 		return args;
 	}
-
+	public FunType getFunType(){
+		return ft;
+	}
 	public Type typecheck(SymTab s) {
 		try {
 			ft = (FunType) s.lookupFunction(name.getName());

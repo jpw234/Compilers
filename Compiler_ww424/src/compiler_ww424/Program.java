@@ -126,10 +126,18 @@ public class Program {
 		if (cl.getExtend() == null){
 			List<String> temp = new ArrayList<String>();
 			temp.add(cl.getName()+" Begins");
-			temp.addAll(cl.getFunctions());
+			for(Function f : cl.getFuncts()){
+				List<Type> input = new ArrayList<Type>();
+				for(int d =0;d< f.getArgs().size();d++){
+					input.add(f.getArgs().get(d).getType());
+				}
+				FunType ft = new FunType(new Tuple(input), f.getRetType());
+				temp.add(FunCall.mangle_name(f.getName().getName(), ft));
+			}
 			map.put(cl.getName(), new Wrapper(cl.getFields(),temp));
 		}else{
 			String parentClass = cl.getExtend();
+			//String parentClass = cl.getExtend();
 			if (!map.containsKey(parentClass)) return;
 			List<String> parentsClassField = map.get(parentClass).getFields();
 			List<String> parentsClassMethod= map.get(parentClass).getMethods();
@@ -139,7 +147,17 @@ public class Program {
 			Fields.addAll(cl.getFields());
 			Methods.addAll(parentsClassMethod);
 			Methods.add(cl.getName()+ " Begins");
-			Methods.addAll(cl.getFunctions());
+			
+			List<String> temp = new ArrayList<String>();
+			for(Function f : cl.getFuncts()){
+				List<Type> input = new ArrayList<Type>();
+				for(int d =0;d< f.getArgs().size();d++){
+					input.add(f.getArgs().get(d).getType());
+				}
+				FunType ft = new FunType(new Tuple(input), f.getRetType());
+				temp.add(FunCall.mangle_name(f.getName().getName(), ft));
+			}			
+			Methods.addAll(temp);
 			map.put(cl.getName(), new Wrapper(Fields,Methods));
 		}
 	}

@@ -96,6 +96,9 @@ public class ClassDef {
 	public List<String> getFunctions() {
 		return functionNames;
 	}
+	public List<Function> getFuncts() {
+		return funcs;
+	}
 	
 	public List<String> getFields() {
 		return fieldNames;
