@@ -124,7 +124,39 @@ public class Program {
 	}
 	public void DispatchTableHelper(ClassDef cl,HashMap<String,Wrapper> map){
 		if (cl.getExtend() == null){
+			List<String> temp1 = new ArrayList<String>();
+			temp1.add(cl.getName()+" Begins");
+			//Mangling Name
+			for(Function f : cl.getFuncts()){
+				List<Type> input = new ArrayList<Type>();
+				for(int d =0;d< f.getArgs().size();d++){
+					input.add(f.getArgs().get(d).getType());
+				}
+				FunType ft = new FunType(new Tuple(input), f.getRetType());
+				temp1.add(FunCall.mangle_name(f.getName().getName(), ft));
+			}
+			//Normal Name 
+			List<String> temp2 = new ArrayList<String>();
+			temp2.add(cl.getName()+" Begins");
+			temp2.addAll(cl.getFunctions());
+			StringWrapper methods = new StringWrapper(temp2,temp1);
+			map.put(cl.getName(), new Wrapper(cl.getFields(),methods));
+		}else{
+			String parentClass = cl.getExtend();
+			//String parentClass = cl.getExtend();
+			if (!map.containsKey(parentClass)) return;
+			//Parents'
+			List<String> parentsClassField = map.get(parentClass).getFields();
+			StringWrapper parentsClassMethod= map.get(parentClass).getMethods();
+			//Child's Fields
+			List<String> Fields = new ArrayList<String>();
+			Fields.addAll(parentsClassField);
+			Fields.addAll(cl.getFields());
+			//Child's Methods
+			
+			//Mangling Name
 			List<String> temp = new ArrayList<String>();
+			temp.addAll(parentsClassMethod.getMangleMethod());
 			temp.add(cl.getName()+" Begins");
 			for(Function f : cl.getFuncts()){
 				List<Type> input = new ArrayList<Type>();
@@ -134,30 +166,12 @@ public class Program {
 				FunType ft = new FunType(new Tuple(input), f.getRetType());
 				temp.add(FunCall.mangle_name(f.getName().getName(), ft));
 			}
-			map.put(cl.getName(), new Wrapper(cl.getFields(),temp));
-		}else{
-			String parentClass = cl.getExtend();
-			//String parentClass = cl.getExtend();
-			if (!map.containsKey(parentClass)) return;
-			List<String> parentsClassField = map.get(parentClass).getFields();
-			List<String> parentsClassMethod= map.get(parentClass).getMethods();
-			List<String> Fields = new ArrayList<String>();
-			List<String> Methods= new ArrayList<String>();
-			Fields.addAll(parentsClassField);
-			Fields.addAll(cl.getFields());
-			Methods.addAll(parentsClassMethod);
-			Methods.add(cl.getName()+ " Begins");
-			
-			List<String> temp = new ArrayList<String>();
-			for(Function f : cl.getFuncts()){
-				List<Type> input = new ArrayList<Type>();
-				for(int d =0;d< f.getArgs().size();d++){
-					input.add(f.getArgs().get(d).getType());
-				}
-				FunType ft = new FunType(new Tuple(input), f.getRetType());
-				temp.add(FunCall.mangle_name(f.getName().getName(), ft));
-			}			
-			Methods.addAll(temp);
+			//Normal Name
+			List<String> tempN = new ArrayList<String>();
+			tempN.addAll(parentsClassMethod.getMethod());
+			tempN.add(cl.getName()+" Begins");
+			tempN.addAll(cl.getFunctions());
+			StringWrapper Methods = new StringWrapper(tempN,temp);
 			map.put(cl.getName(), new Wrapper(Fields,Methods));
 		}
 	}

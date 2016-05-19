@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Wrapper {
-    public Wrapper(List<String> list, List<String> list2) {
+    public Wrapper(List<String> list, StringWrapper methods) {
         this.field = list;
-        this.method = list2;
+        this.method = methods;
      }
 
      public List<String> getFields() { return this.field; }
-     public List<String> getMethods() { return this.method; }
+     public StringWrapper getMethods() { return this.method; }
 
      private List<String> field;
-     private List<String> method;
+     private StringWrapper method;
 }

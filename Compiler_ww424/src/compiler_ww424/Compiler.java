@@ -442,6 +442,25 @@ public class Compiler {
 						impReader.close();
 					}
 					HashMap<String,Wrapper> DispachTable = program.buildDispachTable();
+					//Test DispachTable
+					/*for (String s:DispachTable.keySet()){
+						System.out.println(s);
+						System.out.println("-----------");
+						// Here is the Filds 
+						for(int i = 0 ; i < DispachTable.get(s).getFields().size();i++){
+							System.out.println(DispachTable.get(s).getFields().get(i));
+						}
+						System.out.println("-----------");
+						// Here is the Normal Name Methods 
+						for(int i = 0 ; i < DispachTable.get(s).getMethods().getMethod().size();i++){
+							System.out.println( DispachTable.get(s).getMethods().getMethod().get(i));
+						}
+						System.out.println("-----------");
+						// Here is the Mangling Name Methods 
+						for(int i = 0 ; i < DispachTable.get(s).getMethods().getMangleMethod().size();i++){
+							System.out.println(  DispachTable.get(s).getMethods().getMangleMethod().get(i));
+						}
+					}*/
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
