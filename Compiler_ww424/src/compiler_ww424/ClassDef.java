@@ -6,11 +6,11 @@ import java.util.List;
 public class ClassDef {
 	private String name;
 	private String extendClass;
-	private ArrayList<Object> initial;
-	private ArrayList<Object> decls;
-	private ArrayList<Function> funcs;
-	private ArrayList<String> functionNames;
-	private ArrayList<String> fieldNames;
+	private ArrayList<Object> initial = new ArrayList<Object>();
+	private ArrayList<Object> decls = new ArrayList<Object>();
+	private ArrayList<Function> funcs = new ArrayList<Function>();
+	private ArrayList<String> functionNames = new ArrayList<String>();
+	private ArrayList<String> fieldNames = new ArrayList<String>();
 	
 	private int line;
 	private int column;
