@@ -10,10 +10,10 @@ public class ForStmt extends Stmt {
 	private Assign update;
 	private List<Stmt> body;
 	
-	public ForStmt(DeclAssign i, Expr c, Assign e, List<Stmt> b, int lineNum, int colNum) {
+	public ForStmt(DeclAssign i, Expr c, Stmt e, List<Stmt> b, int lineNum, int colNum) {
 		init = i;
 		cond = c;
-		update = e;
+		update =(Assign)e;
 		body = b;
 		line = lineNum;
 		column = colNum;
