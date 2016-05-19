@@ -360,6 +360,7 @@ expr           ::=   INTEGER:i                  {: RESULT = new NumExpr(i,ileft+
                    | TRUE:v                   {: RESULT = new BoolExpr(true,vleft+1,vright+1); :}
                    | FALSE:v                  {: RESULT = new BoolExpr(false,vleft+1,vright+1); :}
                    | NULL:n						{: RESULT = new NullExpr(nleft+1, nright+1); :}
+                   | THIS:t						{: RESULT = new IDExpr("this", tleft+1, tright+1); :}
                    | methodcall:mc				{: RESULT = mc; :}
                    | field:f					{: RESULT = f; :}
                    | LENGTH LPAREN expr:e1 RPAREN       {: RESULT = new Length(e1,e1left+1,e1right+1); :}
