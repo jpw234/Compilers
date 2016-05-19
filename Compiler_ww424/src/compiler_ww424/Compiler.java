@@ -547,8 +547,8 @@ public class Compiler {
 							F.CSE();
 							List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
-							a = ((IRSeq)(F.body())).stmts();
-							F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
+							//a = ((IRSeq)(F.body())).stmts();
+							//F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
 						}
 						if(opt_phase == null && toOptimize){
 							if (toCSE) {F.CSE();}
@@ -556,10 +556,10 @@ public class Compiler {
 								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
 							}
-							if (toVN) {
-								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
-								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
-							}
+							//if (toVN) {
+							//	List<IRStmt> a = ((IRSeq)(F.body())).stmts();
+							//	F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
+							//}
 						}
 						if(toDrawCFG){
 							FileWriter fwCFG = new FileWriter(fileDot, true);
@@ -671,10 +671,10 @@ public class Compiler {
 								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.constantPropagation(a)));
 							}
-							if (toVN) {
+							/*if (toVN) {
 								List<IRStmt> a = ((IRSeq)(F.body())).stmts();
 								F = new IRFuncDecl(F.name(),new IRSeq(IRFuncDecl.valueNumbering(a)));
-							}
+							}*/
 						}
 						compUnit.appendFunc(F);
 						assembly += F.getBestTile().getData();
