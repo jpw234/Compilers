@@ -255,7 +255,7 @@ forblock			::= FOR LPAREN declassign:i COMMA expr:c COMMA ass:e RPAREN stmts:s
 							ret.add(s);
 							RESULT = new ForStmt(i, c, e, ret, ileft+1, iright+1);
 						}
-						:}
+						:};
 idlist              ::= expr :exp1                      {: ArrayList<Expr> retlist = new ArrayList<Expr>(); retlist.add(exp1); RESULT = retlist; :}
             | expr:exp1 COMMA idlist:idl              {: idl.add(0, exp1); RESULT = idl; :}
             |                             {: RESULT = new ArrayList<Expr>(); :}

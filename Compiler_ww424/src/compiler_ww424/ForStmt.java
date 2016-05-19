@@ -57,6 +57,15 @@ public class ForStmt extends Stmt {
 		throw new Error("shouldn't get here in forblock typecheck");
 	}
 	
+	public String toString(){
+		String bodyString = "";
+		for (int i = 0 ; i < body.size(); i ++){
+			bodyString += body.get(i).toString()+" ";
+		}
+		
+		return String.format("(%s %s, %s, %s (%s))", "for", init.toString(), cond.toString(), update.toString(), bodyString.trim());
+	}
+	
 	@Override
 	public IRStmt buildIRStmt() {
 		ArrayList<IRStmt> stmts = new ArrayList<IRStmt>();
