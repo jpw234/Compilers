@@ -1,6 +1,9 @@
 package compiler_ww424;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import compiler_ww424.Compiler;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class MethodCall extends FunCall {
@@ -50,4 +53,18 @@ public class MethodCall extends FunCall {
 		return String.format("(%s)", ownerClass.toString());
 	}
 	//TODO: reimplement buildIRExpr
+	public IRExpr buildIRExpr() {
+		String _this = LabelMaker.Generate_Unique_Label("_this");
+		String _temp = LabelMaker.Generate_Unique_Label("_temp");
+		List<IRStmt> seqList = new ArrayList<IRStmt>();
+		seqList.add(new IRMove(new IRTemp(_this), ownerClass.buildIRExpr()));
+		seqList.add(new IRMove(new IRTemp(_temp), new IRMem(new IRTemp(_this))));
+		int offset = (Compiler.DispachTable.get(classType).getMethods().getMethod().indexOf(this.getName().getName())) * 8;
+		seqList.add(new IRMove(new IRTemp(_temp), new IRBinOp(IRBinOp.OpType.ADD, new IRTemp(_temp), new IRConst(offset))));
+		ArrayList<IRExpr> irargs = new ArrayList<IRExpr>();
+		for(int a = 0; a < args.size(); a++) {
+			irargs.add(args.get(a).buildIRExpr());
+		}
+		return new IRESeq(new IRSeq(seqList), new IRCall(new IRMem(new IRTemp(_temp)), irargs));
+	}
 }
