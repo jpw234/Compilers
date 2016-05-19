@@ -125,7 +125,6 @@ public class Program {
 	public void DispatchTableHelper(ClassDef cl,HashMap<String,Wrapper> map){
 		if (cl.getExtend() == null){
 			List<String> temp1 = new ArrayList<String>();
-			temp1.add(cl.getName()+" Begins");
 			//Mangling Name
 			for(Function f : cl.getFuncts()){
 				List<Type> input = new ArrayList<Type>();
@@ -137,7 +136,6 @@ public class Program {
 			}
 			//Normal Name 
 			List<String> temp2 = new ArrayList<String>();
-			temp2.add(cl.getName()+" Begins");
 			temp2.addAll(cl.getFunctions());
 			StringWrapper methods = new StringWrapper(temp2,temp1);
 			map.put(cl.getName(), new Wrapper(cl.getFields(),methods));
@@ -157,7 +155,6 @@ public class Program {
 			//Mangling Name
 			List<String> temp = new ArrayList<String>();
 			temp.addAll(parentsClassMethod.getMangleMethod());
-			temp.add(cl.getName()+" Begins");
 			for(Function f : cl.getFuncts()){
 				List<Type> input = new ArrayList<Type>();
 				for(int d =0;d< f.getArgs().size();d++){
@@ -169,13 +166,14 @@ public class Program {
 			//Normal Name
 			List<String> tempN = new ArrayList<String>();
 			tempN.addAll(parentsClassMethod.getMethod());
-			tempN.add(cl.getName()+" Begins");
 			tempN.addAll(cl.getFunctions());
 			StringWrapper Methods = new StringWrapper(tempN,temp);
 			map.put(cl.getName(), new Wrapper(Fields,Methods));
 		}
 	}
 
+	
+	
 	public String toString(){
 
 		String s_imports = "";

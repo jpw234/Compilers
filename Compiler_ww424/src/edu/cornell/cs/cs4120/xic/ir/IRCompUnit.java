@@ -3,8 +3,10 @@ package edu.cornell.cs.cs4120.xic.ir;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
+import compiler_ww424.Wrapper;
 import edu.cornell.cs.cs4120.util.SExpPrinter;
 import edu.cornell.cs.cs4120.xic.ir.visit.AggregateVisitor;
 import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
@@ -16,7 +18,7 @@ public class IRCompUnit extends IRNode {
     private String name;
     private Map<String, IRFuncDecl> functions;
     private static List<String> globalVar2Assembly = new ArrayList<String>();
-
+   
     public IRCompUnit(String name) {
         this.name = name;
         functions = new LinkedHashMap<>();
@@ -35,6 +37,37 @@ public class IRCompUnit extends IRNode {
         return name;
     }
 
+    public static List<String> classConstr2Assembly(HashMap<String,Wrapper> DispachTable){
+    	List<String> ret = new ArrayList<String>();
+    	for (String s : DispachTable.keySet()){
+    		String size = "_I_size_"+s;
+    		String vt = "_I_vt_"+s;
+    		String init = "_I_init_"+s;
+    		int fieldNum = DispachTable.get(s).getFields().size();
+    		int methodNum= DispachTable.get(s).getMethods().getMethod().size();
+    		
+    		ret.add(".globl "+size);
+    		ret.add(size+":");
+    		int quad = (fieldNum+1)*8;
+    		ret.add("    .quad " + quad );
+    		ret.add("    .text \n");
+    		ret.add("    .bss");
+    		ret.add("    .align 8");
+    		ret.add(".globl "+vt);
+    		ret.add(vt+":");
+    		int zero = methodNum * 8;
+    		ret.add("    .zero " + zero );
+    		ret.add("    .text \n");
+    		ret.add(".section .ctors");
+    		ret.add("    .align 8");
+    		ret.add("    .quad " +init);
+    		ret.add("    .text \n");
+    		ret.add("    .bss");
+    		ret.add("    .align 8");
+    	}
+    	return ret;
+    }
+    
     public Map<String, IRFuncDecl> functions() {
         return functions;
     }
@@ -51,6 +84,7 @@ public class IRCompUnit extends IRNode {
     	globalVar2Assembly.add(s);
     }
 
+    
     @Override
     public String label() {
         return "COMPUNIT";

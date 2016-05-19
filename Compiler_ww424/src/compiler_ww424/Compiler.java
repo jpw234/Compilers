@@ -684,6 +684,9 @@ public class Compiler {
 							fwCFG.close();
 						}
 					}
+					for(String s: IRCompUnit.classConstr2Assembly(DispachTable)){
+						assembly += s+"\n";
+					}
 					for(String s : IRCompUnit.getGlobalVar2Assembly()){
 						assembly += s;
 					}

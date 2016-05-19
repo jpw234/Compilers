@@ -247,7 +247,7 @@ stmt                ::=   ifblock:s                     {: RESULT = s; :}
                     | multidecl:md                      {: RESULT = md; :}
                     | forblock:fb						{: RESULT = fb; :}
                     ;
-forblock			::= FOR LPAREN declassign:i COMMA expr:c COMMA ass:e RPAREN stmts:s
+forblock			::= FOR LPAREN declassign:i COMMA expr:c COMMA ass:e RPAREN stmt:s
 						{:
 						if(s instanceof Block) {RESULT = new ForStmt(i, c, e, ((Block)s).getBody(), ileft+1, iright+1);}
 						else {
