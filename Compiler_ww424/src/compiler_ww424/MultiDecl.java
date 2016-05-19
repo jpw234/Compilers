@@ -3,6 +3,8 @@ package compiler_ww424;
 import java.util.List;
 import java.util.ArrayList;
 
+import edu.cornell.cs.cs4120.xic.ir.*;
+
 public class MultiDecl extends Stmt{
 	private List<Decl> declList = null;
 	private boolean isGlobal = false;
