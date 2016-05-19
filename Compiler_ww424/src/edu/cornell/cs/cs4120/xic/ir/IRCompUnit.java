@@ -1,6 +1,8 @@
 package edu.cornell.cs.cs4120.xic.ir;
 
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import edu.cornell.cs.cs4120.util.SExpPrinter;
@@ -13,6 +15,7 @@ import edu.cornell.cs.cs4120.xic.ir.visit.IRVisitor;
 public class IRCompUnit extends IRNode {
     private String name;
     private Map<String, IRFuncDecl> functions;
+    private static List<String> globalVar2Assembly = new ArrayList<String>();
 
     public IRCompUnit(String name) {
         this.name = name;
@@ -38,6 +41,14 @@ public class IRCompUnit extends IRNode {
 
     public IRFuncDecl getFunction(String name) {
         return functions.get(name);
+    }
+    
+    public List<String> getGlobalVar2Assembly(){
+    	return globalVar2Assembly;
+    }
+    
+    public static void addGlobal(String s){
+    	globalVar2Assembly.add(s);
     }
 
     @Override

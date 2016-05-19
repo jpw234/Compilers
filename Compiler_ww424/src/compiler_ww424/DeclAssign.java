@@ -100,6 +100,32 @@ public class DeclAssign extends Stmt {
 	}
 	@Override
 	public IRStmt buildIRStmt() {
+		if(isGlobal == true){
+			Decl d = left.get(0);
+			String assembly = "";//y_final
+			String mngName = Decl.globalVariableMangler(d.getName().getName(), d.getType());//_I_g_y__final_i
+			String Val = "0";
+			if(right instanceof NumExpr){Val = "" + ((NumExpr)right).getIntVal();}
+			else if(right instanceof BoolExpr){
+				if(((BoolExpr)right).getVal() == true){Val = "1";}
+				else {Val = "0";}
+			}
+			assembly += "\n.globl " + mngName;//.globl _I_g_y__final_i
+			assembly += "\n" + mngName + ":";//_I_g_y__final_i:
+			assembly += "\n\t.quad " + Val;//	.zero 8
+			assembly += "\n\t.text";//	.text
+			assembly += "\n";
+			if(d.getType().getDepth() != 0){
+				assembly += "\n.section .ctors";//.section .ctors
+				assembly += "\n\t.align 8";//	.align 8
+				assembly += "\n\t.quad " + "_I_init_" + mngName.substring(5);//	.align 8
+				assembly += "\n";
+			}
+			assembly += "\n\t.bss";//	.bss
+			assembly += "\n\t.align 8";//	.align 8
+			IRCompUnit.addGlobal(assembly);
+			return null;
+		}
 		List<IRStmt> seqList = new ArrayList<IRStmt>();
 		if(left.size() == 1){seqList.add(new IRMove(new IRTemp(left.get(0).getName().toString()), right.buildIRExpr()));}
 		else{ //multiple returns for function call
