@@ -87,7 +87,7 @@ terminal Long INTEGER;
 terminal INT, BOOL;
 terminal TRUE, FALSE;
 terminal IF, ELSE, WHILE, RETURN, USE, LENGTH, 
-  CLASSTERM, NEW, THIS, EXTENDS, NULL, BREAK,
+  CLASSTERM, NEW, THIS, EXTENDS, NULL, BREAK, FOR,
   PLUS, MINUS, TIMES,
   DIV, MOD, NOT, LANGLE, LEQ, RANGLE, GEQ, EQEQ, AND, OR, EQ, NEQ,
   LBRACKET, RBRACKET, LPAREN, RPAREN, LBRACE, RBRACE,
@@ -126,6 +126,7 @@ nonterminal FieldExpr field;
 nonterminal MethodCall methodcall;
 nonterminal List<IDExpr> pureidlist;
 nonterminal MultiDecl multidecl;
+nonterminal ForStmt forblock;
 
 precedence left OR;
 precedence left AND;
@@ -244,7 +245,17 @@ stmt                ::=   ifblock:s                     {: RESULT = s; :}
                     | block:bl                          {: RESULT = bl; :}
                     | BREAK:v							{: RESULT = new BreakStmt(vleft+1, vright+1); :}
                     | multidecl:md                      {: RESULT = md; :}
+                    | forblock:fb						{: RESULT = fb; :}
                     ;
+forblock			::= FOR LPAREN declassign:i COMMA expr:c COMMA ass:e RPAREN stmts:s
+						{:
+						if(s instanceof Block) {RESULT = new ForStmt(i, c, e, ((Block)s).getBody(), ileft+1, iright+1);}
+						else {
+							List<Stmt> ret = new ArrayList<Stmt>();
+							ret.add(s);
+							RESULT = new ForStmt(i, c, e, ret, ileft+1, iright+1);
+						}
+						:}
 idlist              ::= expr :exp1                      {: ArrayList<Expr> retlist = new ArrayList<Expr>(); retlist.add(exp1); RESULT = retlist; :}
             | expr:exp1 COMMA idlist:idl              {: idl.add(0, exp1); RESULT = idl; :}
             |                             {: RESULT = new ArrayList<Expr>(); :}

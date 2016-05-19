@@ -102,6 +102,7 @@ Identifier = {Letter} [a-zA-Z0-9_']*
 	"extends"						{ return token(sym.EXTENDS, "extends"); }
 	"null"							{ return token(sym.NULL, "null"); }
 	"break"							{ return token(sym.BREAK, "break"); }
+	"for"							{ return token(sym.FOR, "for"); }
 	
 	/*symbols*/
 	"="								{ return token(sym.EQ,"="); }
