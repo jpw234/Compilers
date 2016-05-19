@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import compiler_ww424.Lexer.Token;
@@ -440,6 +441,7 @@ public class Compiler {
 						impProgram.firstPass(table);
 						impReader.close();
 					}
+					HashMap<String,Wrapper> DispachTable = program.buildDispachTable();
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
@@ -495,6 +497,7 @@ public class Compiler {
 						impProgram.firstPass(table);
 						impReader.close();
 					}
+					HashMap<String,Wrapper> DispachTable = program.buildDispachTable();
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
@@ -622,6 +625,7 @@ public class Compiler {
 						impProgram.firstPass(table);
 						impReader.close();
 					}
+					HashMap<String,Wrapper> DispachTable = program.buildDispachTable();
 					program.firstPass(table);
 					program.secondPass(table);
 					program.returnPass();
