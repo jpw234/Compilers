@@ -665,6 +665,9 @@ public class Compiler {
 							fwCFG.close();
 						}
 					}
+					for(String s : IRCompUnit.getGlobalVar2Assembly()){
+						assembly += s;
+					}
 					fw.write(assembly);
 					if(toDrawCFG){
 						FileWriter fwCFG = new FileWriter(fileDot, true);

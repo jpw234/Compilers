@@ -43,7 +43,7 @@ public class IRCompUnit extends IRNode {
         return functions.get(name);
     }
     
-    public List<String> getGlobalVar2Assembly(){
+    public static List<String> getGlobalVar2Assembly(){
     	return globalVar2Assembly;
     }
     
