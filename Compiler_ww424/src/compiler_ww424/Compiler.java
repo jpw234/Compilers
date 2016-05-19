@@ -685,11 +685,14 @@ public class Compiler {
 							fwCFG.close();
 						}
 					}
+					for(String s : IRCompUnit.getGlobalVar2Assembly()){
+						assembly += s;
+					}
 					for(String s: IRCompUnit.classConstr2Assembly(DispachTable)){
 						assembly += s+"\n";
 					}
-					for(String s : IRCompUnit.getGlobalVar2Assembly()){
-						assembly += s;
+					for(String s: IRCompUnit.classInit2Assembly(DispachTable)){
+						assembly += s+"\n";
 					}
 					fw.write(assembly);
 					if(toDrawCFG){

@@ -115,6 +115,7 @@ public class Program {
 
 	public HashMap<String,Wrapper> buildDispachTable(){
 		HashMap<String,Wrapper> dispatchTable = new HashMap<String, Wrapper>();
+		if (classes == null || classes.size() ==0) return dispatchTable;
 		while (dispatchTable.size() != classes.size()){
 			for (int i =0; i<classes.size();i++){
 				DispatchTableHelper(classes.get(i),dispatchTable);

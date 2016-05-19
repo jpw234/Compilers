@@ -68,6 +68,30 @@ public class IRCompUnit extends IRNode {
     	return ret;
     }
     
+    public static List<String> classInit2Assembly(HashMap<String,Wrapper> DispachTable){
+    	List<String> ret = new ArrayList<String>();
+    	for (String s : DispachTable.keySet()){
+    		String init = "_I_init_"+s;
+    		String vt = "_I_vt_" +s;
+    		
+    		int methodNum= DispachTable.get(s).getMethods().getMethod().size();
+    		ret.add(".globl "+init);
+    		ret.add(init+":");
+    		ret.add("subq $8, %rsp");
+    		int index = 0;
+    		ret.add("leaq " + vt +"(%rip), %r10");
+    		for(int i = 0 ; i < methodNum; i++){
+    			String func = DispachTable.get(s).getMethods().getMangleMethod().get(i);
+    			ret.add("leaq "+ func+"(%rip), %r11");
+    			ret.add("movq  %r11," +func+index+"(%r10)");
+    			index += 8;
+    		}
+    		ret.add("addq $8, %rsp");
+    		ret.add("ret");
+    	}
+    	return ret;
+    }
+    
     public Map<String, IRFuncDecl> functions() {
         return functions;
     }
