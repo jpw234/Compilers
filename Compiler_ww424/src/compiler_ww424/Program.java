@@ -133,7 +133,9 @@ public class Program {
 					input.add(f.getArgs().get(d).getType());
 				}
 				FunType ft = new FunType(new Tuple(input), f.getRetType());
-				temp1.add(FunCall.mangle_name(f.getName().getName(), ft));
+				String preMangle = (FunCall.mangle_name(f.getName().getName(), ft));
+				String postMangle = "_I_"+cl.getName()+"_"+preMangle.substring(2);
+				temp1.add(postMangle);
 			}
 			//Normal Name 
 			List<String> temp2 = new ArrayList<String>();
@@ -162,7 +164,9 @@ public class Program {
 					input.add(f.getArgs().get(d).getType());
 				}
 				FunType ft = new FunType(new Tuple(input), f.getRetType());
-				temp.add(FunCall.mangle_name(f.getName().getName(), ft));
+				String preMangle = (FunCall.mangle_name(f.getName().getName(), ft));
+				String postMangle = "_I_"+cl.getName()+"_"+preMangle.substring(2);
+				temp.add(postMangle);
 			}
 			//Normal Name
 			List<String> tempN = new ArrayList<String>();
@@ -209,6 +213,7 @@ public class Program {
 				s_decls += decls.get(i).toString()+" ";
 			}
 		}
-		return String.format("((%s) (%s) (%s) (%s) (%s))", s_imports,s_initial,s_funcs,s_classes,s_decls);
+		return String.format("((%s) (%s))", s_imports,s_funcs);
+		
 	}
 }
