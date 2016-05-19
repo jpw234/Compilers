@@ -100,7 +100,12 @@ public class ClassDef {
 	public List<String> getFields() {
 		return fieldNames;
 	}
-	
+	public String getExtend(){
+		return extendClass;
+	}
+	public String getName(){
+		return name;
+	}
 	public void firstpass(SymTab s) {
 		s.setClassContext(name);
 		
