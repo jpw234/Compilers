@@ -6,6 +6,28 @@ import java.util.List;
 import edu.cornell.cs.cs4120.xic.ir.*;
 
 public class Decl extends Stmt {
+	
+	public static String globalVariableMangler(String varName, Type varType) {
+		String res = "_I_g_";
+		res += varName.replaceAll("_", "__");
+		
+		for(int a = 0; a < varType.getDepth(); a++) {
+			res += "a";
+		}
+		
+		if(varType.getType() == "int") res += "i";
+		else if(varType.getType() == "bool") res += "b";
+		else {//class
+			String c = varType.getType();
+			int len = c.length();
+			res = res + "o" + len + c.replaceAll("_", "__");
+		}
+		
+		return res;
+	}
+	
+	
+	
 	private IDExpr name;
 	private Type type;
 	private List<Expr> accesses = null;

@@ -20,7 +20,12 @@ public class FunCall extends Expr {
 					res = res + "a";
 				}
 				if(out.getArgs().get(a).getType().equals("int")) res = res + "i";
-				else res = res + "b";
+				else if(out.getArgs().get(a).getType().equals("bool")) res = res + "b";
+				else {//class
+					String c = out.getArgs().get(a).getType();
+					int len = c.length();
+					res = res + "o" + len + c.replaceAll("_", "__");
+				}
 			}
 		}
 
@@ -34,6 +39,11 @@ public class FunCall extends Expr {
 					}
 					if(((Tuple)(in.getArgs().get(a))).getArgs().get(0).getType().equals("int")) res = res + "i";
 					else if(((Tuple)(in.getArgs().get(a))).getArgs().get(0).getType().equals("bool")) res = res + "b";
+					else {
+						String c = ((Tuple) (in.getArgs().get(a))).getArgs().get(0).getType();
+						int len = c.length();
+						res = res + "o" + len + c.replaceAll("_", "__");
+					}
 				}
 				else{
 					for(int b = 0; b < in.getArgs().get(a).getDepth(); b++) {
@@ -41,6 +51,11 @@ public class FunCall extends Expr {
 					}
 					if(in.getArgs().get(a).getType().equals("int")) res = res + "i";
 					else if(in.getArgs().get(a).getType().equals("bool")) res = res + "b";
+					else {
+						String c = in.getArgs().get(a).getType();
+						int len = c.length();
+						res = res + "o" + len + c.replaceAll("_", "__");
+					}
 				}
 			}
 		}
