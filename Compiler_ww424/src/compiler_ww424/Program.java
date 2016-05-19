@@ -164,21 +164,38 @@ public class Program {
 
 	public String toString(){
 
-		String useString = "";
-		String funString = "";
-		if (imports == null && funcs == null){
-			return String.format("((%s) (%s))", useString,funString);
-		}
+		String s_imports = "";
+		String s_initial = "";
+		String s_funcs = "";
+		String s_classes = "";
+		String s_decls = "";
+		
+
 		if (imports != null){
 			for (int i = 0 ; i < imports.size(); i++){
-				useString += imports.get(i).toString()+" ";
+				s_imports += imports.get(i).toString()+" ";
+			}
+		}
+		if (initial != null){
+			for (int i = 0 ; i < initial.size(); i++){
+				s_initial += initial.get(i).toString()+" ";
 			}
 		}
 		if (funcs != null){
 			for (int i = 0 ; i < funcs.size(); i++){
-				funString += funcs.get(i).toString()+" ";
+				s_funcs += funcs.get(i).toString()+" ";
 			}
 		}
-		return String.format("((%s) (%s))", useString,funString);
+		if (classes != null){
+			for (int i = 0 ; i < classes.size(); i++){
+				s_funcs += classes.get(i).toString()+" ";
+			}
+		}		
+		if (decls != null){
+			for (int i = 0 ; i < decls.size(); i++){
+				s_decls += decls.get(i).toString()+" ";
+			}
+		}
+		return String.format("((%s) (%s) (%s) (%s) (%s))", s_imports,s_initial,s_funcs,s_classes,s_decls);
 	}
 }

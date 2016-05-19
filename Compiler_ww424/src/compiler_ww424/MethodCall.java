@@ -46,5 +46,8 @@ public class MethodCall extends FunCall {
 		}
 	}
 	
+	public String toString(){
+		return String.format("(%s)", ownerClass.toString());
+	}
 	//TODO: reimplement buildIRExpr
 }

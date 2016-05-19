@@ -143,6 +143,41 @@ public class ClassDef {
 		return null;
 	}
 	
+	
+	public String toString(){
+	
+		String s = "";
+		String s_initial = "";
+		String s_decls = "";
+		String s_funcs = "";
+		// Initials
+		if (initial != null){
+			for(int i = 0; i < initial.size(); i++){
+				s_initial = s_initial + " " + initial.get(i).toString();
+			}
+		}
+		s_initial = "( " + s_initial + " )";
+		//Decls
+		if (decls != null){
+			for(int i = 0; i < decls.size(); i++){
+				s_decls = s_decls + " " + decls.get(i).toString();
+			}
+		}
+		s_decls = "( " + s_decls + " )";
+		//Funcs
+		if (funcs != null){
+			for(int i = 0; i < funcs.size(); i++){
+				s_funcs = s_funcs + " " + funcs.get(i).toString();
+			}
+		}
+		s_funcs = "( " + s_funcs + " )";
+		
+		//add retType (from Tuple class) with "(" & ")" manually, because Tuple.toString() don't print parenthesis
+		s = "(" + name.toString() + " (" + extendClass+") " + s_initial + s_decls + s_funcs +  " )";
+		return s ;
+	}
+	
+	
 	public void constantFold() {
 		for(int a = 0; a < funcs.size(); a++) {
 			funcs.get(a).constantFold();

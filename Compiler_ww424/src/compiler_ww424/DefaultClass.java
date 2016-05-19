@@ -24,4 +24,8 @@ public class DefaultClass extends Expr {
 	public IRExpr buildIRExpr() {
 		return null;
 	}
+	@Override
+	public String toString(){
+		return "(" + className + ")";
+	}
 }

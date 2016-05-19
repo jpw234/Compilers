@@ -52,4 +52,21 @@ public class FieldExpr extends Expr {
 	public IRExpr buildIRExpr() {
 		return null;
 	}
+	
+	
+	public String toString(){
+		String s = "";
+		String s_pre = "";
+		String s_post = "";
+	
+		// PreDot 
+		if (preDot!=null) s_pre = preDot.toString();
+		if (postDot!= null) s_post = postDot.toString();
+		
+		s_pre = "(" + s_pre + ")";
+		s_post= "(" +s_post + ")";	
+		s = "(" + s_pre + s_post +")";
+		return s ;
+	}
+	
 }

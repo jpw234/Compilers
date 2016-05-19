@@ -10,5 +10,9 @@ public class BreakStmt extends Stmt{
 		return new Type("void");
 	}
 	
+	@Override
+	public String toString(){
+		return "(break)";
+	}
 	//TODO: Implement buildIRStmt()
 }
