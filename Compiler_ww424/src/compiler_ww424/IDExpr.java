@@ -12,6 +12,13 @@ public class IDExpr extends Expr {
 	}
 	
 	public Type typecheck(SymTab s) {
+		if(name == "this") {
+			if(s.getClassContext() == null) throw new Error("used 'this' outside class");
+			
+			type = new Type(s.getClassContext());
+			return type;
+		}
+		
 		type = s.lookup(name);
 		return type;
 	}
