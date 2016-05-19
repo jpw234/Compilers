@@ -11,7 +11,9 @@ public class NullExpr extends Expr {
 	public Type typecheck(SymTab s) {
 		return new Type("null");
 	}
-	
+	public String toString(){
+		return "";
+	}
 	public IRExpr buildIRExpr() {
 		return new IRMem(new IRConst(0));
 		//TODO: check this
